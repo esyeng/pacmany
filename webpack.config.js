@@ -7,6 +7,7 @@ module.exports = {
 
     entry: './src/index.js',
 
+    mode: 'development',
     // devServer: {
     //   contentBase: './public',
     //   inline: true,
