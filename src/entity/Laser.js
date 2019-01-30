@@ -1,47 +1,48 @@
 import 'phaser';
 
-export default class Laser extends Phaser.GameObjects.Image {
-  constructor(scene, x, y) {
-    super(scene, x, y, 'laserBolt');
+export default class Laser extends Phaser.Physics.Arcade.Sprite {
+  constructor(scene, x, y, spriteKey, facingLeft) {
+    super(scene, x, y, spriteKey);
     // Store reference of scene passed to constructor
     this.scene = scene;
-    // Set the lifespan of a laserbolt
-    this.lifespan = 0;
-    // Set how fast the laser travels
-    this.speed = Phaser.Math.GetSpeed(800, 1);
     // Add laser to scene and enable physics
     this.scene.physics.world.enable(this);
     this.scene.add.existing(this);
-    // Scale laser
-    this.setScale(0.25);
+
+    // Set how fast the laser travels (pixels/ms)
+    this.speed = Phaser.Math.GetSpeed(800, 1); // (distance in pixels, time (ms))
+
+    // Important to not apply gravity to the laser bolt!
+    this.body.setAllowGravity(false);
+
+    // Our reset function will take care of initializing the remaining fields
+    this.reset(x, y, facingLeft)
   }
 
   // Check which direction the player is facing and move the laserbolt in that direction as long as it lives
-  update(direction, delta) {
+  update(time, delta) {
     this.lifespan -= delta;
-    if (this.direction === 'right') {
-      this.x += this.speed * delta;
+    const moveDistance = this.speed * delta
+    if (this.facingLeft) {
+      this.x -= moveDistance
     } else {
-      this.x -= this.speed * delta;
+      this.x += moveDistance
     }
+    // If this laser has run out of lifespan, we "kill it" by deactivating it.
+    // We can then reuse this laser object
     if (this.lifespan <= 0) {
       this.setActive(false);
       this.setVisible(false);
     }
   }
 
-  // Create a laserbolt
-  fire(x, y, left) {
+  // Reset this laserbolt to start at a particular location and
+  // fire in a particular direction.
+  reset(x, y, facingLeft) {
     this.setActive(true);
     this.setVisible(true);
-    this.body.allowGravity = false;
     this.lifespan = 900;
-    if (!left) {
-      this.setPosition(x + 56, y + 14);
-      this.direction = 'right';
-    } else {
-      this.setPosition(x - 56, y + 14);
-      this.direction = 'left';
-    }
+    this.facingLeft = facingLeft
+    this.setPosition(x, y)
   }
 }

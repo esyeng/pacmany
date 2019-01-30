@@ -1,5 +1,5 @@
 import player from '../entity/Player';
-import brandon from '../entity/Brandon';
+import enemy from '../entity/Enemy';
 import gun from '../entity/Gun';
 import Laser from '../entity/Laser';
 import Ground from '../entity/Ground';
@@ -8,10 +8,10 @@ export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
 
-    // Bind callback functions to the object context
+    // Lexically bind callback functions
     this.hit = this.hit.bind(this);
     this.collectGun = this.collectGun.bind(this);
-    this.addLaser = this.addLaser.bind(this);
+    this.fireLaser = this.fireLaser.bind(this);
   }
 
   preload() {
@@ -34,22 +34,27 @@ export default class FgScene extends Phaser.Scene {
   create() {
     // Create the ground and lasers
     this.createGroups();
-    // Brandon. The enemy.
-    this.brandon = new brandon(this, 600, 400);
-    // Josh. The player.
-    this.player = new player(this, 20, 400);
-    // Gun
-    this.gun = new gun(this, 300, 400, 'gun');
+
+    // Brandon. The enemy. Our sprite is a little large, so we'll scale it down
+    this.enemy = new enemy(this, 600, 400, 'brandon').setScale(0.25);
+
+    // Josh. The player. Our sprite is a little large, so we'll scale it down
+    this.player = new player(this, 20, 400, 'josh').setScale(0.25);
+
+    // Gun. Our sprite is a little large, so we'll scale it down
+    this.gun = new gun(this, 300, 400, 'gun').setScale(0.25);
+
     // Create player's animations
     this.createAnimations();
 
     // Create sounds
     this.jumpSound = this.sound.add('jump');
     this.laserSound = this.sound.add('laser');
+    // The laser sound is a bit too loud so we're going to turn it down
     this.laserSound.volume = 0.5;
     this.screamSound = this.sound.add('scream');
 
-    // Assign the curors
+    // Assign the cursors
     this.cursors = this.input.keyboard.createCursorKeys();
     // Create collions for all entities
     this.createCollisions();
@@ -63,15 +68,17 @@ export default class FgScene extends Phaser.Scene {
       time,
       this.player,
       this.cursors,
-      this.addLaser,
+      this.fireLaser,
       this.laserSound
     );
-    this.brandon.update(this.screamSound);
+    this.enemy.update(this.screamSound);
   }
+
   // Make the ground
   createGround(x, y) {
-    let ground = this.groundGroup.create(x, y, 'ground');
+    this.groundGroup.create(x, y, 'ground');
   }
+
   // Make all the groups
   createGroups() {
     this.groundGroup = this.physics.add.staticGroup({ classType: Ground });
@@ -82,6 +89,7 @@ export default class FgScene extends Phaser.Scene {
       classType: Laser,
       maxSize: 40,
       runChildUpdate: true,
+      allowGravity: false
     });
   }
 
@@ -90,18 +98,22 @@ export default class FgScene extends Phaser.Scene {
     gun.disableBody(true, true);
     this.player.armed = true;
   }
+
   // Callback fn
-  hit(brandon, laser) {
+  hit(enemy, laser) {
     laser.setActive(false);
     laser.setVisible(false);
   }
+
   // Make collisions
   createCollisions() {
     this.physics.add.collider(this.gun, this.groundGroup);
     this.physics.add.collider(this.player, this.groundGroup);
-    this.physics.add.collider(this.player, this.brandon);
-    this.physics.add.collider(this.brandon, this.groundGroup);
-    this.physics.add.collider(this.lasers, this.brandon);
+    // Important to put the enemy-ground collision before the player-enemy
+    // collision so enemy bounces slightly when you jump on his head
+    this.physics.add.collider(this.enemy, this.groundGroup);
+    this.physics.add.collider(this.player, this.enemy);
+    this.physics.add.collider(this.lasers, this.enemy);
     // create a checker to see if the player collides with the gun
     this.physics.add.overlap(
       this.player,
@@ -110,18 +122,37 @@ export default class FgScene extends Phaser.Scene {
       null,
       this
     );
-    // create a checker to see if the laser hits brandon
-    this.physics.add.overlap(this.brandon, this.lasers, this.hit, null, this);
+    // create a checker to see if the laser hits the enemy
+    this.physics.add.overlap(this.enemy, this.lasers, this.hit, null, this);
   }
+
   // Callback fn
-  addLaser(x, y, left) {
+  fireLaser() {
+    // These are the offsets from the player's position that make it look like
+    // the laser starts from the gun in the player's hand
+    const offsetX = 56;
+    const offsetY = 14;
+    const laserX =
+      this.player.x + (this.player.facingLeft ? -offsetX : offsetX);
+    const laserY = this.player.y + offsetY;
+
+    // Get the first available laser object that has been set to inactive
     let laser = this.lasers.getFirstDead();
+    // Check if we can reuse an inactive laser in our pool of lasers
     if (!laser) {
-      laser = new Laser(this, 0, 0);
+      // Create a laser bullet and scale the sprite down
+      laser = new Laser(
+        this,
+        laserX,
+        laserY,
+        'laserBolt',
+        this.player.facingLeft
+      ).setScale(0.25);
       this.lasers.add(laser);
     }
-    laser.fire(x, y, left);
+    laser.reset(laserX, laserY, this.player.facingLeft);
   }
+
   // Player animations
   createAnimations() {
     this.anims.create({
