@@ -1,17 +1,28 @@
 {
-  "name": "PhaserWorkshop",
+  "name": "bloc-party",
   "version": "1.0.0",
-  "description": "A workshop for getting started with Phaser",
-  "main": "src/index.js",
+  "description": "\"Web Block Brawler",
+  "main": "webpack.config.js",
   "scripts": {
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "start-dev": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/esyeng/bloc-party.git"
+  },
+  "author": "\"Emre Yenigun\"",
+  "license": "MIT",
+  "homepage": "https://github.com/esyeng/bloc-party#readme",
+  "devDependencies": {
+    "nodemon": "2.0.4",
+    "webpack": "4.44.1",
+    "webpack-dev-server": "3.11.0"
   },
   "dependencies": {
-    "phaser": "^3.15.1"
-  },
-  "devDependencies": {
-    "raw-loader": "^0.5.1",
-    "webpack": "^3.4.1",
-    "webpack-dev-server": "^2.11.0"
+    "express": "4.17.1",
+    "phaser": "3.24.1",
+    "socket.io": "2.3.0",
+    "socket.io-client": "2.3.0"
   }
 }
