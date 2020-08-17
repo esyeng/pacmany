@@ -6,6 +6,7 @@ import io, { connect } from "socket.io-client";
 export default class FgScene extends Phaser.Scene {
   constructor() {
     super("FgScene");
+    this.players = [];
   }
 
   preload() {
@@ -44,42 +45,58 @@ export default class FgScene extends Phaser.Scene {
 
   create() {
     // initialize socket connection
-    this.socket = io("http://localhost:8080");
-    this.socket.on("connect", () => {
-      console.log("connected");
-    });
+    // this.socket = io("http://localhost:8080");
+    // this.socket.on("connect", (socket) => {
+    //   console.log("connected");
+    //   if (this.players.length < 4) {
+    //     this.players.push(socket.id);
+    //   } else {
+    //     console.log("room full");
+    //   }
+    // });
     // Add static images
-    // this.createGroups();
-    this.add.image(500, 600, "floor");
-    this.add.image(700, 400, "plat");
-    this.add.image(300, 400, "plat");
-    this.add.image(500, 200, "plat");
+    this.createGroups();
+    // this.add.image(500, 600, "floor");
+    // this.add.image(700, 400, "plat");
+    // this.add.image(300, 400, "plat");
+    // this.add.image(500, 200, "plat");
     // this.add.spritesheet("red", {});
 
-    // * attempt to floor *
-
-    // let floorX = this.sys.game.config.width / 2;
-    // let floorY = this.sys.game.config.height * 0.95;
-    // let floor = this.physics.add.sprite(floorX, floorY, "floor");
-    // floor.setImmovable();
-    // floor.displayWidth = this.sys.game.config.width;
-    // this.floor = new Floor(500, 600, "floor");
-
     // init player
-    this.player = new Player(this, 500, 500, "red").setScale(0.2);
-    // this.player = new Player(this, 500, 500, "pink").setScale(1);
+    this.player = new Player(this, 500, 300, "blue").setScale(0.5);
 
     // MORE FLOOR EFFORTS
-    this.floorGroup = this.physics.add.staticGroup({
-      classType: Floor,
+
+    this.playerGroup = this.physics.add.staticGroup({
+      classType: Player,
       active: true,
     });
-    // this.floorGroup.setCollisionByExclusion([-1]);
-    // this.floor = this.createFloor(500, 600);
-    // this.add.physics.collider("floor");
+
+    this.createCollisions();
 
     // Create player's animations
-    this.createAnimations();
+    this.anims.create({
+      key: "run",
+      frames: this.anims.generateFrameNumbers("blue", { start: 1, end: 2 }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "jump",
+      frames: [{ key: "blue", frame: 2 }],
+      frameRate: 20,
+    });
+    this.anims.create({
+      key: "idleUnarmed",
+      frames: [{ key: "blue", frame: 1 }],
+      frameRate: 10,
+    });
+    this.anims.create({
+      key: "idleArmed",
+      frames: [{ key: "blue", frame: 5 }],
+      frameRate: 10,
+    });
 
     // Create sounds
     // this.jumpSound = this.sound.add("jump");
@@ -89,6 +106,7 @@ export default class FgScene extends Phaser.Scene {
     console.log(this.input.keyboard.createCursorKeys());
 
     // FLOOR PROBLEMS
+    this.floorGroup.setOrigin(800, 800);
     // this.physics.add.collider(this.player, floor);
   }
 
@@ -96,51 +114,71 @@ export default class FgScene extends Phaser.Scene {
   // delta: time elapsed (ms) since last update() call. 16.666 ms @ 60fps
   update(time, delta) {
     this.player.update(this.cursors);
+    // console.log(this.floorGroup.update);
+    // this.socket = io("http://localhost:8080");
+    // this.socket.on("connect", (socket) => {
+    //   console.log("connected");
+    //   if (this.players.length < 4) {
+    //     if (this.players.length === 1) {
+    //       this.player2 = new Player(500, 500, "blue");
+    //       this.player2.port = 2;
+    //       this.player2.id = socket.id;
+    //       this.players.push(this.player2);
+    //     }
+    //   } else if (this.players.length === 2) {
+    //     this.player3 = new Player(500, 500, "black");
+    //     this.player3.port = 3;
+    //     this.player3.id = socket.id;
+    //     this.players.push(this.player3);
+    //   } else if (this.players.length === 3) {
+    //     this.player4 = new Player(500, 500, "pink");
+    //     this.player4.port = 4;
+    //     this.player4.id = socket.id;
+    //     this.players.push(this.player4);
+    //   } else {
+    //     console.log("room full");
+    //   }
+    // });
+    // this.socket.on("disconnect", (socket) => {
+    //   console.log(`Player ${this.playerA.port} has left the game`);
+    //   this.players = this.players.filter((player) => player.id !== socket.id);
+    // });
   }
 
   // Make the ground
   createFloor(x, y) {
-    this.floorGroup.create(x, y, "floor");
+    this.floorGroup.create(x, y, "floor", 1);
+  }
+
+  createPlatforms(x, y) {
+    this.platGroup.create(x, y, "plat");
   }
 
   // Make all the groups
   createGroups() {
-    // platforms, maybe someday
-    // this.plats = this.physics.add.group({
-    //   classType: Plat,
-    //   maxSize: 200,
-    //   runChildUpdate: true,
-    //   allowGravity: false,
-    // });
+    // console.log(this.floorGroup, this.floor, Floor);
+    this.floorGroup = this.physics.add.staticGroup({
+      classType: Floor,
+      frameHeight: 90,
+    });
+    // console.log(this.floorGroup);
+
+    this.platGroup = this.physics.add.staticGroup({
+      classType: Floor,
+    });
+    this.createFloor(500, 600);
+    this.createPlatforms(200, 400);
+    this.createPlatforms(600, 400);
+    this.createPlatforms(500, 200);
   }
 
   // Make collisions
   createCollisions() {
-    // physical collisions to add once floor * is *
+    this.physics.add.collider(this.player, this.floorGroup);
+    this.physics.add.collider(this.player, this.platGroup);
+
+    // console.log(this.physics.add.collider());
   }
 
   // Player animations
-  createAnimations() {
-    this.anims.create({
-      key: "run",
-      frames: this.anims.generateFrameNumbers("red", { start: 1, end: 2 }),
-      frameRate: 20,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "jump",
-      frames: [{ key: "red", frame: 2 }],
-      frameRate: 20,
-    });
-    this.anims.create({
-      key: "idleUnarmed",
-      frames: [{ key: "red", frame: 1 }],
-      frameRate: 10,
-    });
-    this.anims.create({
-      key: "idleArmed",
-      frames: [{ key: "red", frame: 5 }],
-      frameRate: 10,
-    });
-  }
 }
