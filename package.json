@@ -5,7 +5,8 @@
   "main": "webpack.config.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "start-dev": "nodemon server"
+    "start-dev": "nodemon server",
+    "build": "webpack -w & nodemon server"
   },
   "repository": {
     "type": "git",

@@ -6,8 +6,8 @@ export default class Floor extends Phaser.Physics.Arcade.Sprite {
     // Store reference of scene passed to constructor
     this.scene = scene;
     // Add ground to scene and enable physics
-    this.scene.physics.world.enable(this);
+    console.log(this.scene.physics.world);
     this.scene.add.existing(this);
-    this.setCollideWorldBounds(true);
+    // this.setCollideWorldBounds(true);
   }
 }

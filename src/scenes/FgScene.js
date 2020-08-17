@@ -3,6 +3,7 @@ import Player from "../entity/Player";
 // import Laser from "../entity/Laser";
 import Floor from "../entity/Floor";
 import Plat from "../entity/Plat";
+import io, { connect } from "socket.io-client";
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
@@ -23,6 +24,12 @@ export default class FgScene extends Phaser.Scene {
       frameWidth: 400,
       frameHeight: 400,
     });
+
+    this.load.atlas(
+      "Red",
+      "assets/spriteSheets/Red.png",
+      "assets/backgrounds/Red.json"
+    );
 
     this.load.spritesheet("blue", "assets/spriteSheets/Blue.png", {
       frameWidth: 100,
@@ -45,9 +52,13 @@ export default class FgScene extends Phaser.Scene {
   }
 
   create() {
+    this.socket = io("http://localhost:8080");
+    this.socket.on("connect", () => {
+      console.log("connected");
+    });
     // Create the ground and lasers
     // this.createGroups();
-    // this.add.image(500, 600, "floor");
+    this.add.image(500, 600, "floor");
     this.add.image(700, 400, "plat");
     this.add.image(300, 400, "plat");
     this.add.image(500, 200, "plat");
@@ -62,9 +73,9 @@ export default class FgScene extends Phaser.Scene {
       classType: Floor,
       active: true,
     });
-    this.createFloor(500, 600);
-    // Gun. Our sprite is a little large, so we'll scale it down
-    // this.gun = new gun(this, 300, 400, "gun").setScale(0.25);
+    // this.floorGroup.setCollisionByExclusion([-1]);
+    // this.floor = this.createFloor(500, 600);
+    // this.add.physics.collider("floor");
 
     // Create player's animations
     this.createAnimations();
@@ -79,9 +90,9 @@ export default class FgScene extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
     console.log(this.input.keyboard.createCursorKeys());
     // Create collions for all entities
-    this.createCollisions();
-    this.physics.add.collider(this.player, this.floorGroup);
-    this.physics.add.collider(this.floorGroup, this.player);
+    // this.createCollisions();
+    // this.physics.add.collider(this.player, this.floorGroup);
+    // this.physics.add.collider(this.floorGroup, this.player);
   }
 
   // time: total time elapsed (ms)

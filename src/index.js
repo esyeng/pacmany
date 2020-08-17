@@ -13,25 +13,25 @@ But this hasn't happened yet!
 */
 
 // Bring in all the scenes
-import 'phaser';
-import MainScene from './scenes/MainScene'
-import BgScene from './scenes/BgScene';
-import FgScene from './scenes/FgScene';
-import config from './config/config'
+import "phaser";
+import MainScene from "./scenes/MainScene";
+import BgScene from "./scenes/BgScene";
+import FgScene from "./scenes/FgScene";
+import config from "./config/config";
 
 class Game extends Phaser.Game {
   constructor() {
     // Add the config file to the game
     super(config);
     // Add all the scenes
-    this.scene.add('BgScene', BgScene)
-    this.scene.add('FgScene', FgScene)
-    this.scene.add('MainScene', MainScene)
+    this.scene.add("BgScene", BgScene);
+    this.scene.add("FgScene", FgScene);
+    this.scene.add("MainScene", MainScene);
     // Start the game with the mainscene
-    this.scene.start('MainScene')
+    this.scene.start("MainScene");
   }
 }
 // Create new instance of game
 window.onload = function () {
   window.game = new Game();
-}
+};
