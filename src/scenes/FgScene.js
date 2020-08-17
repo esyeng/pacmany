@@ -1,6 +1,4 @@
 import Player from "../entity/Player";
-// import gun from "../entity/Gun";
-// import Laser from "../entity/Laser";
 import Floor from "../entity/Floor";
 import Plat from "../entity/Plat";
 import io, { connect } from "socket.io-client";
@@ -8,11 +6,6 @@ import io, { connect } from "socket.io-client";
 export default class FgScene extends Phaser.Scene {
   constructor() {
     super("FgScene");
-
-    // Lexically bind callback functions
-    // this.hit = this.hit.bind(this);
-    // this.collectGun = this.collectGun.bind(this);
-    // this.fireLaser = this.fireLaser.bind(this);
   }
 
   preload() {
@@ -43,20 +36,19 @@ export default class FgScene extends Phaser.Scene {
       frameWidth: 100,
       frameHeight: 100,
     });
-    // this.load.image("gun", "assets/sprites/gun.png");
-    // this.load.image("brandon", "assets/sprites/brandon.png");
-    // this.load.image("laserBolt", "assets/sprites/laserBolt.png");
-    // // Sounds
+
+    // sounds
     // this.load.audio("jump", "assets/audio/jump.wav");
-    // this.load.audio("laser", "assets/audio/laser.wav");
+    this.load.audio("laser", "assets/audio/laser.wav");
   }
 
   create() {
+    // initialize socket connection
     this.socket = io("http://localhost:8080");
     this.socket.on("connect", () => {
       console.log("connected");
     });
-    // Create the ground and lasers
+    // Add static images
     // this.createGroups();
     this.add.image(500, 600, "floor");
     this.add.image(700, 400, "plat");
@@ -64,11 +56,20 @@ export default class FgScene extends Phaser.Scene {
     this.add.image(500, 200, "plat");
     // this.add.spritesheet("red", {});
 
-    //
+    // * attempt to floor *
+
+    // let floorX = this.sys.game.config.width / 2;
+    // let floorY = this.sys.game.config.height * 0.95;
+    // let floor = this.physics.add.sprite(floorX, floorY, "floor");
+    // floor.setImmovable();
+    // floor.displayWidth = this.sys.game.config.width;
     // this.floor = new Floor(500, 600, "floor");
+
+    // init player
     this.player = new Player(this, 500, 500, "red").setScale(0.2);
     // this.player = new Player(this, 500, 500, "pink").setScale(1);
 
+    // MORE FLOOR EFFORTS
     this.floorGroup = this.physics.add.staticGroup({
       classType: Floor,
       active: true,
@@ -82,31 +83,19 @@ export default class FgScene extends Phaser.Scene {
 
     // Create sounds
     // this.jumpSound = this.sound.add("jump");
-    // this.laserSound = this.sound.add("laser");
-    // The laser sound is a bit too loud so we're going to turn it down
-    // this.laserSound.volume = 0.5;
 
     // Assign the cursors
     this.cursors = this.input.keyboard.createCursorKeys();
     console.log(this.input.keyboard.createCursorKeys());
-    // Create collions for all entities
-    // this.createCollisions();
-    // this.physics.add.collider(this.player, this.floorGroup);
-    // this.physics.add.collider(this.floorGroup, this.player);
+
+    // FLOOR PROBLEMS
+    // this.physics.add.collider(this.player, floor);
   }
 
   // time: total time elapsed (ms)
   // delta: time elapsed (ms) since last update() call. 16.666 ms @ 60fps
   update(time, delta) {
     this.player.update(this.cursors);
-    // this.gun.update(
-    // time,
-    // this.player,
-    // this.cursors,
-    // this.fireLaser,
-    // this.laserSound
-    // );
-    // this.enemy.update(this.screamSound);
   }
 
   // Make the ground
@@ -116,6 +105,7 @@ export default class FgScene extends Phaser.Scene {
 
   // Make all the groups
   createGroups() {
+    // platforms, maybe someday
     // this.plats = this.physics.add.group({
     //   classType: Plat,
     //   maxSize: 200,
@@ -124,72 +114,17 @@ export default class FgScene extends Phaser.Scene {
     // });
   }
 
-  // Callback fn
-  // collectGun(player, gun) {
-  //   gun.disableBody(true, true);
-  //   this.player.armed = true;
-  // }
-
-  // Callback fn
-  // hit(enemy, laser) {
-  //   laser.setActive(false);
-  //   laser.setVisible(false);
-  // }
-
   // Make collisions
   createCollisions() {
-    // this.physics.add.collider(this.gun, this.groundGroup);
-    // this.physics.add.collider(this.player, this.floorGroup);
-    // Important to put the enemy-ground collision before the player-enemy
-    // collision so enemy bounces slightly when you jump on his head
-    // this.physics.add.collider(this.enemy, this.groundGroup);
-    // this.physics.add.collider(this.player, this.enemy);
-    // this.physics.add.collider(this.lasers, this.enemy);
-    // create a checker to see if the player collides with the gun
-    // this.physics.add.overlap(
-    //   // this.player,
-    //   // this.gun,
-    //   // this.collectGun,
-    //   null,
-    //   this
-    // );
-    // create a checker to see if the laser hits the enemy
-    // this.physics.add.overlap(this.enemy, this.lasers, this.hit, null, this);
+    // physical collisions to add once floor * is *
   }
-
-  // Callback fn
-  // fireLaser() {
-  //   // These are the offsets from the player's position that make it look like
-  //   // the laser starts from the gun in the player's hand
-  //   const offsetX = 56;
-  //   const offsetY = 14;
-  //   const laserX =
-  //     this.player.x + (this.player.facingLeft ? -offsetX : offsetX);
-  //   const laserY = this.player.y + offsetY;
-
-  //   // Get the first available laser object that has been set to inactive
-  //   let laser = this.lasers.getFirstDead();
-  //   // Check if we can reuse an inactive laser in our pool of lasers
-  //   if (!laser) {
-  //     // Create a laser bullet and scale the sprite down
-  //     laser = new Laser(
-  //       this,
-  //       laserX,
-  //       laserY,
-  //       "laserBolt",
-  //       this.player.facingLeft
-  //     ).setScale(0.25);
-  //     this.lasers.add(laser);
-  //   }
-  //   laser.reset(laserX, laserY, this.player.facingLeft);
-  // }
 
   // Player animations
   createAnimations() {
     this.anims.create({
       key: "run",
       frames: this.anims.generateFrameNumbers("red", { start: 1, end: 2 }),
-      frameRate: 10,
+      frameRate: 20,
       repeat: -1,
     });
     this.anims.create({
