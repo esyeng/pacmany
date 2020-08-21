@@ -1,8 +1,54 @@
-# BLOCK PARTY
+# PAC MANY
 
-- Multiplayer Brawler -
+- PAC MAN with many people -
 
-by EY.
+2006 pepperlint-mocha
+
+# Overview
+
+Real time multiplayer Pac Man game in the browser for up to 4 people.
+
+# MVP
+
+A player should be able to play game:
+
+1. as a single player
+2. in a group of up to 4 at once.
+
+Player should be able to:
+
+1. Create a single game instance
+2. Create a multi game instance
+3. Join a multi game with a roomId
+
+Game should have these qualities:
+
+- Generate map and populate with interactive sprites
+- 4 people playing at once with no lag or stutter
+- Each player is a pac man that can eat pellets and power ups
+- Players compete for highest score / pellet percentage
+- Players immediately lose when HP goes below 0
+- Game ends when board is empty or all players get killed
+- Collisions between players
+- Exits that enter at opposite sides of board
+- Score count
+- Ghosts that move sporadically and target all players
+- When ghost hits player during normal state, player loses HP
+- When ghost hits player in power-up state, ghost is eaten
+
+## POC
+
+- Socket connection, 4 people can join/unjoin room
+- Basic canvas rendered with static game map
+
+# Stretch Goals
+
+- more maps
+- team games
+- voice chat
+- chatbox
+- video integration
+- mobile app
 
 # Tier 1: Game Completion
 
@@ -11,12 +57,11 @@ by EY.
 - Working sound design
 - All assets created and accessible via public folder
 - Rendered game window in browser
-- 4 characters to choose from
-- Animations for all characters
-- A single map with simple layout, ground, walls, and platforms (ssb battlefield esque)
 
 ## As an engineer, I want to be able to:
 
+- Create a game lobby
+- Have one 4 player room active
 - Run tests to verify funtionality
 - Tweak elements without major reworks
 - Serve up data on safe and secure API
@@ -26,12 +71,8 @@ by EY.
 - Visit site and successfully run game on local-host
 - Select a character
 - Move character Up, Down, Left, Right with fluid acceleration/glide/control
-- Attack
-- Defend
-- Jump
 - Dimish health meter of other characters
 - Lose life if my health bar gets too low
-- Play Best of three sets
 - Hear sounds corresponding to what's happening on screen
 
 # Tier 2: Connectivity
@@ -40,7 +81,7 @@ by EY.
 
 - UI that allows users/players to create game instance
 - UI that demonstrates controls and game rules clearly
-- Random tags for players
+- Random or custom tags for players
 - Game score shown on window
 
 ## As an engineer, I want to be able to:
@@ -52,7 +93,6 @@ by EY.
 
 ## As a player, I want to be able to:
 
-- Create a game lobby
 - Invite friends to game
 - Play with 3 other people in real time
 
@@ -67,7 +107,6 @@ by EY.
 
 ## As an engineer, I want to be able to:
 
-- Have many 4 player rooms active
 - Have fully working build on browser
 - Mobile app buld
 
