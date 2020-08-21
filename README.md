@@ -50,6 +50,14 @@ Game should have these qualities:
 - video integration
 - mobile app
 
+# Stack
+
+- Phaser
+- React
+- Express
+- Socket.io
+- Database TBD
+
 # Tier 1: Game Completion
 
 ## As a designer, I want to have:
