@@ -19,12 +19,6 @@ export default class FgScene extends Phaser.Scene {
       frameHeight: 400,
     });
 
-    this.load.atlas(
-      "Red",
-      "assets/spriteSheets/Red.png",
-      "assets/backgrounds/Red.json"
-    );
-
     this.load.spritesheet("blue", "assets/spriteSheets/Blue.png", {
       frameWidth: 100,
       frameHeight: 100,
@@ -38,13 +32,13 @@ export default class FgScene extends Phaser.Scene {
       frameHeight: 100,
     });
 
-    // sounds
+    // load sounds
     // this.load.audio("jump", "assets/audio/jump.wav");
-    this.load.audio("laser", "assets/audio/laser.wav");
   }
 
   create() {
     // initialize socket connection
+
     // this.socket = io("http://localhost:8080");
     // this.socket.on("connect", (socket) => {
     //   console.log("connected");
@@ -54,18 +48,14 @@ export default class FgScene extends Phaser.Scene {
     //     console.log("room full");
     //   }
     // });
+
     // Add static images
     this.createGroups();
-    // this.add.image(500, 600, "floor");
-    // this.add.image(700, 400, "plat");
-    // this.add.image(300, 400, "plat");
-    // this.add.image(500, 200, "plat");
-    // this.add.spritesheet("red", {});
 
     // init player
     this.player = new Player(this, 500, 300, "blue").setScale(0.5);
 
-    // MORE FLOOR EFFORTS
+    // Add floor group
 
     this.playerGroup = this.physics.add.staticGroup({
       classType: Player,
@@ -105,16 +95,14 @@ export default class FgScene extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
     console.log(this.input.keyboard.createCursorKeys());
 
-    // FLOOR PROBLEMS
+    // Floor
     this.floorGroup.setOrigin(800, 800);
-    // this.physics.add.collider(this.player, floor);
   }
 
   // time: total time elapsed (ms)
   // delta: time elapsed (ms) since last update() call. 16.666 ms @ 60fps
   update(time, delta) {
     this.player.update(this.cursors);
-    // console.log(this.floorGroup.update);
     // this.socket = io("http://localhost:8080");
     // this.socket.on("connect", (socket) => {
     //   console.log("connected");
@@ -156,12 +144,10 @@ export default class FgScene extends Phaser.Scene {
 
   // Make all the groups
   createGroups() {
-    // console.log(this.floorGroup, this.floor, Floor);
     this.floorGroup = this.physics.add.staticGroup({
       classType: Floor,
       frameHeight: 90,
     });
-    // console.log(this.floorGroup);
 
     this.platGroup = this.physics.add.staticGroup({
       classType: Floor,
@@ -176,9 +162,5 @@ export default class FgScene extends Phaser.Scene {
   createCollisions() {
     this.physics.add.collider(this.player, this.floorGroup);
     this.physics.add.collider(this.player, this.platGroup);
-
-    // console.log(this.physics.add.collider());
   }
-
-  // Player animations
 }
