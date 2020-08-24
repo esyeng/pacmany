@@ -1,33 +1,37 @@
 const path = require("path");
+const PORT = 8080;
 const express = require("express");
 const app = express();
 const server = require("http").createServer(app);
-const io = require("socket.io").listen(server);
-let players = [];
+const { MongoClient } = require("mongodb");
+const { uri } = require("../secrets");
+
+const client = new MongoClient(uri, { useNewUrlParser: true });
+const socketio = require("socket.io");
+const io = socketio(server);
+require("./socket/index")(io);
 
 app.use(express.static("public"));
+app.use(express.urlencoded());
+app.use(express.json());
 
+app.use("/", require("./socket/index"));
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/index.html"));
 });
 
-io.on("connection", (socket) => {
-  console.log("User joined: " + socket.id);
-  players.push(socket.id);
-  if (players.length === 1) {
-    io.emit("isPlayerA");
-  }
-
-  socket.on("createPlayer", () => {
-    io.emit("createPlayer");
-  });
-
-  socket.on("disconnect", () => {
-    console.log("User left: " + socket.id);
-    players = players.filter((player) => player !== socket.id);
-  });
+app.use((err, req, res, next) => {
+  console.error(err);
+  console.error(err.stack);
+  res.status(err.status || 500).send(err.message || "Internal server error.");
 });
 
-server.listen(8080, () => {
-  console.log("bloc party on port 8080");
+server.listen(PORT, async () => {
+  try {
+    await client.connect();
+    collection = client.db("pacmany").collection("players");
+    console.log(`Insert coin to play on port: ${PORT}`);
+  } catch (err) {
+    console.error(err);
+  }
 });
