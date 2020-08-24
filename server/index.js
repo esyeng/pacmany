@@ -9,18 +9,15 @@ const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 module.exports = app;
-// server.listen(io);
-let players = [];
-let roomCount = 0;
 
 /**********************************************
  * MONGO DB CLIENT
  */
 
-const { MongoClient } = require("mongodb");
-const uri =
-  "mongodb+srv://Admin_esy:GhostCherryRunUpStream@pacmany.g3sqg.gcp.mongodb.net/<dbname>?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useUnifiedTopology: true });
+// const { MongoClient } = require("mongodb");
+// const uri =
+//   "mongodb+srv://Admin_esy:GhostCherryRunUpStream@pacmany.g3sqg.gcp.mongodb.net/<dbname>?retryWrites=true&w=majority";
+// const client = new MongoClient(uri, { useUnifiedTopology: true });
 
 /**********************************************
  * EXPRESS ROUTER
@@ -46,14 +43,12 @@ app.use((err, req, res, next) => {
  * SOCKET HUB
  */
 
-console.log("before connect");
 require("./socket/index")(io);
 
 server.listen(PORT, async () => {
   try {
-    // console.log(io);
-    await client.connect();
-    collection = client.db("pacmany").collection("players");
+    // await client.connect();
+    // collection = client.db("pacmany").collection("players");
     console.log(`Insert coin to play on port: ${PORT}`);
   } catch (err) {
     console.error(err);
