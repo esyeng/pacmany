@@ -2,7 +2,7 @@ export default {
   type: Phaser.AUTO,
   parent: "Canvas",
   width: 1000, // Game width in pixels
-  height: 800, // Game height in pixels
+  height: 1000, // Game height in pixels // it was 800 from Emre
   physics: {
     // Optional: specify physics engine and configuration
     default: "arcade", // A simple and performant physics engine

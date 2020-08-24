@@ -2,7 +2,7 @@
   "name": "bloc-party",
   "version": "1.0.0",
   "description": "\"Web Block Brawler",
-  "main": "webpack.config.js",
+  "main": "src/index.js",
   "scripts": {
     "start": "webpack-dev-server",
     "start-dev": "nodemon server",
@@ -17,12 +17,14 @@
   "homepage": "https://github.com/esyeng/bloc-party#readme",
   "devDependencies": {
     "nodemon": "2.0.4",
+    "raw-loader": "^0.5.1",
     "webpack": "4.44.1",
     "webpack-cli": "3.3.12",
     "webpack-dev-server": "3.11.0"
   },
   "dependencies": {
     "express": "4.17.1",
+    "fsevents": "^2.1.3",
     "phaser": "3.24.1",
     "socket.io": "2.3.0",
     "socket.io-client": "2.3.0"
