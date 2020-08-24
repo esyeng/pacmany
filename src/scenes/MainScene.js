@@ -7,8 +7,7 @@ export default class MainScene extends Phaser.Scene {
 
   create() {
     // Load scenes in parallel
-    // this.scene.launch('BgScene');
-    // this.scene.launch('FgScene');
+    // this.scene.launch("SocketHub");
     this.scene.launch("TestMap");
   }
 }

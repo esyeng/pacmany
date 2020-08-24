@@ -57,6 +57,7 @@ jspm_packages/
 # dotenv environment variables file
 .env
 secrets.js
+devnotes.md
 # next.js build output
 .next
 

@@ -15,8 +15,9 @@ But this hasn't happened yet!
 // Bring in all the scenes
 import "phaser";
 import MainScene from "./scenes/MainScene";
-import BgScene from "./scenes/BgScene";
-import FgScene from "./scenes/FgScene";
+// import BgScene from "./scenes/BgScene";
+// import FgScene from "./scenes/FgScene";
+import socket from "./scenes/SocketHub";
 import TestMap from "./scenes/TestMap";
 import config from "./config/config";
 
@@ -25,8 +26,9 @@ class Game extends Phaser.Game {
     // Add the config file to the game
     super(config);
     // Add all the scenes
-    this.scene.add("BgScene", BgScene);
-    this.scene.add("FgScene", FgScene);
+    // this.scene.add("BgScene", BgScene);
+    // this.scene.add("FgScene", FgScene);
+    // this.scene.add("SocketHub", SocketHub);
     this.scene.add("TestMap", TestMap);
     this.scene.add("MainScene", MainScene);
 
