@@ -1,3 +1,4 @@
+
 import MainScene from "../scenes/MainScene";
 import PhaserMatterCollisionPlugin from "phaser-matter-collision-plugin/src";
 
@@ -23,6 +24,7 @@ export default {
       gravity: { y: 0 },
     },
   },
+
   // render: {
   //   pixelArt: true,
   // },
@@ -35,4 +37,7 @@ export default {
       },
     ],
   },
+
+  scene: MainScene,
+
 };

@@ -1,0 +1,108 @@
+export default (theme) => ({
+  grid: {
+    height: '100%',
+  },
+  gameHero: {
+    position: 'relative',
+    height: (props) => (props.height ? props.height : '100%'),
+    width: '100%',
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.background.dark,
+  },
+  blurBackground: {
+    position: 'absolute',
+    top: 0,
+    zIndex: 1,
+    height: '100%',
+    right: 0,
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
+    width: '100%',
+  },
+  infoSection: {
+    position: 'relative',
+    padding: theme.spacing(3),
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+    backgroundBlendMode: 'multiply',
+    background:
+      'linear-gradient(to right, rgba(0,0,0,.9) 25%, transparent 100%)',
+    zIndex: 2,
+  },
+  footer: {
+    position: 'absolute',
+    left: theme.spacing(4),
+    bottom: theme.spacing(2),
+    zIndex: 2,
+  },
+  icons: {
+    display: 'inline-block',
+    cursor: 'pointer',
+    color: 'rgba(255, 255, 255, 0.4)',
+    margin: theme.spacing(0, 1),
+    transition: 'all 0.3s',
+    '&:hover': {
+      color: 'rgba(255, 255, 255, 0.8)',
+      transform: 'scale(1.25)',
+      transition: 'all 0.3s',
+      transitionDelay: '0.15s',
+    },
+  },
+  gameActions: {position: 'absolute', bottom: 0, right: 0},
+  button: {
+    width: 200,
+    height: 70,
+    borderRadius: 0,
+    zIndex: 2,
+    fontFamily: 'Impact',
+  },
+  modal: {
+    display: 'flex',
+    padding: theme.spacing(1),
+    alignItems: 'center',
+    justifyContent: 'center',
+    outline: 'none',
+  },
+  paper: {
+    width: 600,
+    padding: theme.spacing(2, 4, 3),
+    justifyContent: 'center',
+    textAlign: 'center',
+    alignItems: 'center',
+    outline: 'none',
+  },
+  modalButtons: {
+    color: 'white',
+    backgroundColor: 'blue',
+    margin: '2%',
+    height: '100px',
+    fontFamily: 'Impact',
+    maxWidth: '100%',
+    fontSize: '24px',
+  },
+  startPlaying: {color: theme.palette.common.white, fontSize: '22px'},
+  buttonIcon: {marginLeft: theme.spacing(2)},
+  [theme.breakpoints.down('sm')]: {
+    infoSection: {
+      background:
+        'linear-gradient(to right, rgba(0,0,0,.9) 70%, transparent 100%)',
+    },
+    descriptionText: {
+      maxWidth: '100%',
+      fontSize: '12px',
+    },
+    tag: {padding: theme.spacing(0.3, 1), margin: theme.spacing(1, 1, 1, 0)},
+    button: {
+      flex: 1,
+      fontSize: 13,
+      height: 'auto',
+      padding: theme.spacing(2),
+    },
+    footer: {
+      left: theme.spacing(1),
+      bottom: theme.spacing(12),
+    },
+  },
+})

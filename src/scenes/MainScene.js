@@ -18,6 +18,7 @@ export default class MainScene extends Phaser.Scene {
   create() {
     console.log("create MainScene");
     // Load scenes in parallel
+
     // this.scene.launch('BgScene');
     // this.scene.launch('FgScene');
     // this.scene.launch("TestMap");
@@ -80,5 +81,9 @@ export default class MainScene extends Phaser.Scene {
 
   update() {
     this.player.update();
+
+    // this.scene.launch("SocketHub");
+    //this.scene.launch("TestMap");
+
   }
 }

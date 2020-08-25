@@ -36,6 +36,8 @@ Game should have these qualities:
 - When ghost hits player during normal state, player loses HP
 - When ghost hits player in power-up state, ghost is eaten
 
+edit: - players do not collide with one another
+
 ## POC
 
 - Socket connection, 4 people can join/unjoin room
@@ -43,6 +45,7 @@ Game should have these qualities:
 
 # Stretch Goals
 
+- p2p collision?
 - more maps
 - team games
 - voice chat
