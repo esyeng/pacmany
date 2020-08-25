@@ -1,0 +1,84 @@
+{
+    "anims": [
+        {
+            "key": "pacman_right",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "pacman_c",
+                    "frame": "p_right_1"
+                },
+                {
+                    "key": "pacman_c",
+                    "frame": "p_right_2"
+                },
+                {
+                    "key": "pacman_c",
+                    "frame": "p_right_3"
+                }
+            ]
+        },
+        {
+            "key": "pacman_left",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "pacman_c",
+                    "frame": "p_left_1"
+                },
+                {
+                    "key": "pacman_c",
+                    "frame": "p_left_2"
+                },
+                {
+                    "key": "pacman_c",
+                    "frame": "p_left_3"
+                }
+            ]
+        },
+        {
+            "key": "pacman_down",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "pacman_c",
+                    "frame": "p_down_1"
+                },
+                {
+                    "key": "pacman_c",
+                    "frame": "p_down_2"
+                },
+                {
+                    "key": "pacman_c",
+                    "frame": "p_down_3"
+                }
+            ]
+        },
+        {
+            "key": "pacman_up",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "pacman_c",
+                    "frame": "p_up_1"
+                },
+                {
+                    "key": "pacman_c",
+                    "frame": "p_up_2"
+                },
+                {
+                    "key": "pacman_c",
+                    "frame": "p_up_3"
+                }
+            ]
+        }
+    ]
+}
