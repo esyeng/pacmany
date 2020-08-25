@@ -6,18 +6,20 @@ export default class TestMap extends Phaser.Scene {
   }
 
   preload() {
-
-    this.load.image("tiles", "assets/maps/pacman/map.png");
+    this.load.image("tiles", "../../public/assets/maps/pacman/map.png");
     //this.load.image("tiles", "assets/maps/pacman/map.png");
     //this.load.tilemapTiledJSON("map", "assets/maps/pacman/map_nik_test1.json");
-    this.load.tilemapTiledJSON("map", "assets/maps/pacman/map_nik_test5.json");
-///master diff
-//     this.load.image("tiles", "../../public/assets/maps/pacman/map.png");
-//     this.load.tilemapTiledJSON(
-//       "map",
-//       "../../public/assets/maps/pacman/map_nik_test1.json"
-//     );
-// master diff
+    this.load.tilemapTiledJSON(
+      "map",
+      "../../public/assets/maps/pacman/map_nik_test5.json"
+    );
+    ///master diff
+    //     this.load.image("tiles", "../../public/assets/maps/pacman/map.png");
+    //     this.load.tilemapTiledJSON(
+    //       "map",
+    //       "../../public/assets/maps/pacman/map_nik_test1.json"
+    //     );
+    // master diff
     //this.load.tilemapTiledJSON("map", "assets/maps/pacman/map.json");
   }
 
