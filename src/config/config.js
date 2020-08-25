@@ -1,8 +1,10 @@
-export default {
+import TestMap from "../scenes/TestMap";
+
+export const config = {
   type: Phaser.AUTO,
-  parent: "Canvas",
-  width: 1000, // Game width in pixels
-  height: 1000, // Game height in pixels // it was 800 from Emre
+  parent: "phaser",
+  width: 1000,
+  height: 1000,
   physics: {
     // Optional: specify physics engine and configuration
     default: "arcade", // A simple and performant physics engine
@@ -11,7 +13,5 @@ export default {
       debug: true,
     },
   },
-  render: {
-    pixelArt: true,
-  },
+  scene: TestMap,
 };
