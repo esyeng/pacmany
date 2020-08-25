@@ -1,12 +1,11 @@
 {
-  "name": "bloc-party",
-  "version": "1.0.0",
-  "description": "\"Web Block Brawler",
+  "name": "Pac-Many",
+  "version": "1.1.0",
+  "description": "Pac-Man with a twist",
   "main": "src/index.js",
   "scripts": {
-    "start": "webpack-dev-server",
-    "start-dev": "nodemon server",
-    "build": "webpack -w & nodemon server"
+    "build": "webpack --config webpack/prod.js ",
+    "start": "webpack-dev-server --config webpack.config.js --open"
   },
   "repository": {
     "type": "git",
@@ -16,16 +15,44 @@
   "license": "MIT",
   "homepage": "https://github.com/esyeng/bloc-party#readme",
   "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.4.4",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-react": "^7.0.0",
+    "babel-jest": "^25.5.1",
+    "babel-loader": "^8.0.5",
+    "canvas": "^2.5.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "file-loader": "^6.0.0",
+    "html-webpack-plugin": "^4.3.0",
     "nodemon": "2.0.4",
-    "raw-loader": "^0.5.1",
-    "webpack": "4.44.1",
-    "webpack-cli": "3.3.12",
-    "webpack-dev-server": "3.11.0"
+    "path": "^0.12.7",
+    "raw-loader": "^4.0.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "terser-webpack-plugin": "^3.0.6",
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.14",
+    "webpack-merge": "^4.2.1"
   },
   "dependencies": {
     "express": "4.17.1",
     "fsevents": "^2.1.3",
-    "phaser": "3.24.1",
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "babel-core": "^6.26.3",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "classnames": "^2.2.6",
+    "css-loader": "^3.2.0",
+    "phaser": "^3.17.0",
+    "react-redux": "^7.0.2",
+    "react-router-dom": "^5.2.0",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
+    "style-loader": "^1.0.0",
     "socket.io": "2.3.0",
     "socket.io-client": "2.3.0"
   }
