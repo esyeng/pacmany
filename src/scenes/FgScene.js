@@ -103,34 +103,6 @@ export default class FgScene extends Phaser.Scene {
   // delta: time elapsed (ms) since last update() call. 16.666 ms @ 60fps
   update(time, delta) {
     this.player.update(this.cursors);
-    // this.socket = io("http://localhost:8080");
-    // this.socket.on("connect", (socket) => {
-    //   console.log("connected");
-    //   if (this.players.length < 4) {
-    //     if (this.players.length === 1) {
-    //       this.player2 = new Player(500, 500, "blue");
-    //       this.player2.port = 2;
-    //       this.player2.id = socket.id;
-    //       this.players.push(this.player2);
-    //     }
-    //   } else if (this.players.length === 2) {
-    //     this.player3 = new Player(500, 500, "black");
-    //     this.player3.port = 3;
-    //     this.player3.id = socket.id;
-    //     this.players.push(this.player3);
-    //   } else if (this.players.length === 3) {
-    //     this.player4 = new Player(500, 500, "pink");
-    //     this.player4.port = 4;
-    //     this.player4.id = socket.id;
-    //     this.players.push(this.player4);
-    //   } else {
-    //     console.log("room full");
-    //   }
-    // });
-    // this.socket.on("disconnect", (socket) => {
-    //   console.log(`Player ${this.playerA.port} has left the game`);
-    //   this.players = this.players.filter((player) => player.id !== socket.id);
-    // });
   }
 
   // Make the ground
