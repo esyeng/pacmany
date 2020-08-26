@@ -44,7 +44,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
 
   update() {
     console.log("update MissPacMan");
-    console.log("MissPacMan Location>>>", "x:", this.x, " y:", this.y);
+    //console.log("MissPacMan Location>>>", "x:", this.x, " y:", this.y);
     if (this.x < 2) this.x = 470;
     if (this.x > 486) this.x = 10;
 
