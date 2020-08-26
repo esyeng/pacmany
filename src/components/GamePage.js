@@ -1,7 +1,6 @@
 import React, { Component, useState, useEffect } from "react";
 import Phaser from "phaser";
 import { config } from "../config/config";
-import { IonPhaser, GameInstance } from "@ion-phaser/react";
 
 class GamePage extends Component {
   componentDidMount() {
