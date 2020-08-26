@@ -13,7 +13,7 @@ class Routes extends Component {
       <Router>
         <Switch>
           <Route exact path="/" component={HomePageContainer} />
-          <Route exact path="/game" component={GamePage} />
+          <Route exact path="/room/:roomCode" component={GamePage} />
         </Switch>
       </Router>
     );

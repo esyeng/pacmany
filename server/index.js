@@ -18,13 +18,13 @@ module.exports = app;
 app.use(morgan("dev"));
 
 // Serving static files
-app.use(express.static("dist"));
 app.use(express.static("public"));
+app.use(express.static("dist"));
 app.use(express.json());
 
 // app.use("/", require("./socket/index"));
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname + "/index.html"));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
 app.use((err, req, res, next) => {
@@ -36,6 +36,7 @@ app.use((err, req, res, next) => {
 /****************************
  *
  * SOCKET HUB
+ * testingtestingggg
  */
 
 require("./socket/index")(io);
