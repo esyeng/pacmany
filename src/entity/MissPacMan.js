@@ -5,6 +5,24 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     let { scene, x, y, texture, frame } = data;
     super(scene.matter.world, x, y, texture, frame);
     this.scene.add.existing(this);
+
+    const { Body, Bodies } = Phaser.Physics.Matter.Matter;
+    var playerCollider = Bodies.circle(this.x, this.y, 6, {
+      isSensor: false,
+      label: "playerCollider",
+    });
+    var playerSensor = Bodies.circle(this.x, this.y, 10, {
+      isSensor: true,
+      label: "playerSensor",
+    });
+    const compoundBody = Body.create({
+      parts: [playerCollider, playerSensor],
+      frictionAir: 0.35,
+    });
+    this.setExistingBody(compoundBody);
+    this.setFixedRotation();
+
+    this.CreatePickupCollisions(playerCollider);
   }
 
   static preload(scene) {
@@ -27,8 +45,8 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   update() {
     console.log("update MissPacMan");
     console.log("MissPacMan Location>>>", "x:", this.x, " y:", this.y);
-    if (this.x < 0) this.x = 470;
-    if (this.x > 488) this.x = 10;
+    if (this.x < 2) this.x = 470;
+    if (this.x > 486) this.x = 10;
 
     //this.anims.play("pacman_right", true);
 
@@ -50,18 +68,38 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
 
     //console.log("vx:", this.velocity.x, " vy:", this.velocity.y);
     if (this.velocity.x > 0) {
-      console.log("RIGHT>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
+      //console.log("RIGHT>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
       this.anims.play("pacman_right", true);
     } else if (this.velocity.x < 0) {
-      console.log("LEFT>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
+      //console.log("LEFT>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
       this.anims.play("pacman_left", true);
     }
     if (this.velocity.y < 0) {
-      console.log("UP>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
+      //console.log("UP>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
       this.anims.play("pacman_up", true);
     } else if (this.velocity.y > 0.1) {
-      console.log("DOWN>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
+      //console.log("DOWN>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
       this.anims.play("pacman_down", true);
     }
   } // end of updates
+
+  CreatePickupCollisions(playerCollider) {
+    this.scene.matterCollision.addOnCollideStart({
+      objectA: [playerCollider],
+      callback: (other) => {
+        if (other.gameObjectB && other.gameObjectB.pickup)
+          other.gameObjectB.pickup();
+      },
+      context: this.scene,
+    });
+
+    this.scene.matterCollision.addOnCollideActive({
+      objectA: [playerCollider],
+      callback: (other) => {
+        if (other.gameObjectB && other.gameObjectB.pickup)
+          other.gameObjectB.pickup();
+      },
+      context: this.scene,
+    });
+  }
 }
