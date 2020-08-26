@@ -1,5 +1,6 @@
 import "phaser";
 import MissPacMan from "../entity/MissPacMan.js";
+import Ghost from "../entity/Ghost.js";
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
@@ -7,8 +8,9 @@ export default class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    console.log("MissPacMan: ", MissPacMan);
+    //console.log("MissPacMan: ", MissPacMan);
     MissPacMan.preload(this);
+    Ghost.preload(this);
     this.load.image("tiles", "/assets/maps/pacman/map.png");
     //this.load.image("tiles", "assets/maps/pacman/map.png");
     //this.load.tilemapTiledJSON("map", "assets/maps/pacman/map_nik_test1.json");
@@ -16,10 +18,7 @@ export default class MainScene extends Phaser.Scene {
     //this.load.tilemapTiledJSON("map", "/assets/maps/pacman/map_nik_test5.json");
     //this.load.tilemapTiledJSON("map", "assets/maps/pacman/map.json");
 
-    this.load.tilemapTiledJSON(
-      "map",
-      "/assets/maps/pacman/map_nik_test7.json"
-    );
+    this.load.tilemapTiledJSON("map", "/assets/maps/pacman/map_nik_test7.json");
     this.load.atlas(
       "resources",
       "/assets/maps/pacman/res1.png",
@@ -49,6 +48,38 @@ export default class MainScene extends Phaser.Scene {
     // const layer2 = map.createStaticLayer("Tile Layer 2", tileset, 0, 0);
     // const layer3 = map.createStaticLayer("Image Layer 1", tileset, 0, 0);
 
+    this.inky = new Ghost({
+      scene: this,
+      x: 191,
+      y: 232,
+      texture: "ghosts",
+      frame: "inky",
+    });
+    this.add.existing(this.inky);
+    this.pinky = new Ghost({
+      scene: this,
+      x: 220,
+      y: 232,
+      texture: "ghosts",
+      frame: "pinky",
+    });
+    this.add.existing(this.pinky);
+    this.clyde = new Ghost({
+      scene: this,
+      x: 250,
+      y: 232,
+      texture: "ghosts",
+      frame: "clyde",
+    });
+    this.add.existing(this.clyde);
+    this.blinky = new Ghost({
+      scene: this,
+      x: 225,
+      y: 185,
+      texture: "ghosts",
+      frame: "blinky",
+    });
+    this.add.existing(this.blinky);
     // here we are creating miss pac-man
     this.player = new MissPacMan({
       scene: this,

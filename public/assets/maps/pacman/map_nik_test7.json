@@ -4852,42 +4852,6 @@
                 {
                  "gid":1879,
                  "height":16,
-                 "id":354,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"yOrigin",
-                         "type":"string",
-                         "value":"0,6"
-                        }],
-                 "rotation":0,
-                 "type":"small_dot",
-                 "visible":true,
-                 "width":16,
-                 "x":208,
-                 "y":192
-                }, 
-                {
-                 "gid":1879,
-                 "height":16,
-                 "id":355,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"yOrigin",
-                         "type":"string",
-                         "value":"0,6"
-                        }],
-                 "rotation":0,
-                 "type":"small_dot",
-                 "visible":true,
-                 "width":16,
-                 "x":224,
-                 "y":192
-                }, 
-                {
-                 "gid":1879,
-                 "height":16,
                  "id":356,
                  "name":"",
                  "properties":[
