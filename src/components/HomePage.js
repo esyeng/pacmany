@@ -14,6 +14,8 @@ function HomePage(props) {
   const classes = useStyles(props);
   const [open, setOpen] = React.useState(false);
   const [showButton, setButton] = React.useState(true);
+  const [openGameSettings, setOpenGameSettings] = React.useState(false);
+  const [gameCode, setGameCode] = React.useState(0);
 
   const handleOpen = (e) => {
     setOpen(true);
@@ -29,6 +31,27 @@ function HomePage(props) {
     setOpen(false);
   };
 
+  const handleOpenGameSettings = () => {
+    setOpen(false);
+    generateGameCode();
+    setOpenGameSettings(true);
+  };
+
+  const handleCloseGameSettings = () => {
+    setButton(true);
+    setOpenGameSettings(false);
+  };
+
+  const generateGameCode = () => {
+    let result = "";
+    let characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let charactersLength = characters.length;
+    for (let i = 0; i < 5; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    setGameCode(result);
+  };
   return (
     <div className={classes.gameHero}>
       <div className={classes.infoSection}>
@@ -67,13 +90,51 @@ function HomePage(props) {
         >
           <Fade in={open}>
             <div className={classes.paper}>
-              <Link to="/game">
-                <Button className={classes.modalButtons}>Start New Game</Button>
-              </Link>
-              <Button className={classes.modalButtons}>
+              <Button
+                onClick={handleOpenGameSettings}
+                className={classes.modalButtons}
+              >
+                Start New Game
+              </Button>
+              <Button
+                onClick={handleOpenGameSettings}
+                className={classes.modalButtons}
+              >
                 Join Existing Game
               </Button>
               <Button className={classes.modalButtons}>Play on your own</Button>
+            </div>
+          </Fade>
+        </Modal>
+      </div>
+
+      <div>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={classes.modal}
+          open={openGameSettings}
+          onClose={handleCloseGameSettings}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={openGameSettings}>
+            <div className={classes.paper}>
+              <form className={classes.form}>
+                <label htmlFor="name">
+                  Your Game Code is <strong>{gameCode}</strong>
+                </label>
+                <div>
+                  <label htmlFor="name">Please Enter Player Name...</label>
+                  <input type="text" name="name" placeholder="Enter Name" />
+                </div>
+                <Link to={`/room/${gameCode}`}>
+                  <Button>Continue to Game...</Button>
+                </Link>
+              </form>
             </div>
           </Fade>
         </Modal>

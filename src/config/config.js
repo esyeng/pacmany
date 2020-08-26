@@ -6,7 +6,7 @@ export const config = {
   width: 448, // Game width in pixels
   height: 500, // Game height in pixels // it was 800 from Emre
   type: Phaser.AUTO,
-  parent: "Canvas",
+  parent: "divId",
   scene: MainScene,
   scale: {
     zoom: 1.5,
@@ -24,10 +24,14 @@ export const config = {
       gravity: { y: 0 },
     },
   },
-
-  // render: {
-  //   pixelArt: true,
-  // },
+  render: {
+    antialias: false,
+    pixelArt: true,
+    roundPixels: true,
+  },
+  dom: {
+    createContainer: true,
+  },
   plugins: {
     scene: [
       {
