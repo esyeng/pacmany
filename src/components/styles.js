@@ -80,12 +80,21 @@ export default (theme) => ({
     justifyContent: "center",
     flexGrow: 2,
     margin: "1em",
-    width: "500px",
+    width: "400px",
+    height: "300px",
     backgroundColor: "white",
     padding: "2%",
     border: "2px solid black",
     borderRadius: "20px",
     boxShadow: "#333333 2px 2px 2px 2px",
+  },
+  inputField: {
+    border: "1px solid black",
+    padding: "10px",
+    margin: "2%",
+  },
+  gameCodeHeader: {
+    fontSize: "30px",
   },
   modalButtons: {
     color: "white",
@@ -110,7 +119,7 @@ export default (theme) => ({
     tag: { padding: theme.spacing(0.3, 1), margin: theme.spacing(1, 1, 1, 0) },
     button: {
       flex: 1,
-      fontSize: 13,
+      fontSize: "12px",
       height: "auto",
       padding: theme.spacing(2),
     },
