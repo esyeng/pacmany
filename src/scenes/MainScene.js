@@ -9,19 +9,23 @@ export default class MainScene extends Phaser.Scene {
   preload() {
     console.log("MissPacMan: ", MissPacMan);
     MissPacMan.preload(this);
-    this.load.image("tiles", "../../public/assets/maps/pacman/map.png");
+    this.load.image("tiles", "/assets/maps/pacman/map.png");
     //this.load.image("tiles", "assets/maps/pacman/map.png");
     //this.load.tilemapTiledJSON("map", "assets/maps/pacman/map_nik_test1.json");
+
+    //this.load.tilemapTiledJSON("map", "/assets/maps/pacman/map_nik_test5.json");
+    //this.load.tilemapTiledJSON("map", "assets/maps/pacman/map.json");
+
     this.load.tilemapTiledJSON(
       "map",
-      "../../public/assets/maps/pacman/map_nik_test7.json"
+      "/assets/maps/pacman/map_nik_test7.json"
     );
     this.load.atlas(
       "resources",
-      "../../public/assets/maps/pacman/res1.png",
-      "../../public/assets/maps/pacman/res1_atlas.json"
+      "/assets/maps/pacman/res1.png",
+      "/assets/maps/pacman/res1_atlas.json"
     );
-    this.load.audio("pickup", "../../public/assets/audio/pickup.mp3");
+    this.load.audio("pickup", "/assets/audio/pickup.mp3");
     //this.load.tilemapTiledJSON("map", "assets/maps/pacman/map.json");//
   }
 
@@ -29,8 +33,6 @@ export default class MainScene extends Phaser.Scene {
     console.log("create MainScene");
     // Load scenes in parallel
 
-    // this.scene.launch('BgScene');
-    // this.scene.launch('FgScene');
     // this.scene.launch("TestMap");
     // Background
     const map = this.make.tilemap({ key: "map" });

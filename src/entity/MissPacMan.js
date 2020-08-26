@@ -28,13 +28,13 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   static preload(scene) {
     scene.load.atlas(
       "pacman_c",
-      "../../public/assets/maps/pacman/pacman_c.png",
-      "../../public/assets/maps/pacman/pacman_c_atlas.json"
+      "/assets/maps/pacman/pacman_c.png",
+      "/assets/maps/pacman/pacman_c_atlas.json"
     );
 
     scene.load.animation(
       "pacman_c_anim",
-      "../../public/assets/maps/pacman/pacman_c_anim.json"
+      "/assets/maps/pacman/pacman_c_anim.json"
     );
   }
 
