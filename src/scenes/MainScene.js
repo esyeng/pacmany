@@ -12,8 +12,21 @@ export default class MainScene extends Phaser.Scene {
     this.load.image("tiles", "/assets/maps/pacman/map.png");
     //this.load.image("tiles", "assets/maps/pacman/map.png");
     //this.load.tilemapTiledJSON("map", "assets/maps/pacman/map_nik_test1.json");
-    this.load.tilemapTiledJSON("map", "/assets/maps/pacman/map_nik_test5.json");
+
+    //this.load.tilemapTiledJSON("map", "/assets/maps/pacman/map_nik_test5.json");
     //this.load.tilemapTiledJSON("map", "assets/maps/pacman/map.json");
+
+    this.load.tilemapTiledJSON(
+      "map",
+      "/assets/maps/pacman/map_nik_test7.json"
+    );
+    this.load.atlas(
+      "resources",
+      "/assets/maps/pacman/res1.png",
+      "/assets/maps/pacman/res1_atlas.json"
+    );
+    this.load.audio("pickup", "/assets/audio/pickup.mp3");
+    //this.load.tilemapTiledJSON("map", "assets/maps/pacman/map.json");//
   }
 
   create() {
@@ -23,6 +36,8 @@ export default class MainScene extends Phaser.Scene {
     // this.scene.launch("TestMap");
     // Background
     const map = this.make.tilemap({ key: "map" });
+
+    this.map = map;
     //const tileset = map.addTilesetImage("layout", "tiles", 32, 32, 0, 0);
     const tileset1 = map.addTilesetImage("maze", "tiles", 16, 16, 0, 0);
     const layer1 = map.createStaticLayer("Tile Layer 1", tileset1, 0, 0);
@@ -37,8 +52,8 @@ export default class MainScene extends Phaser.Scene {
     // here we are creating miss pac-man
     this.player = new MissPacMan({
       scene: this,
-      x: 25,
-      y: 25,
+      x: 223,
+      y: 374,
       texture: "pacman_c",
       frame: "p_right_1",
     });
@@ -54,27 +69,51 @@ export default class MainScene extends Phaser.Scene {
     this.add.existing(this.player);
     // this.add.existing(this.player2);
 
-    const { Body, Bodies } = Phaser.Physics.Matter.Matter;
-    var playerCollider = Bodies.circle(this.player.x, this.player.y, 6, {
-      isSensor: false,
-      label: "playerCollider",
-    });
-    var playerSensor = Bodies.circle(this.player.x, this.player.y, 10, {
-      isSensor: true,
-      label: "playerSensor",
-    });
-    const compoundBody = Body.create({
-      parts: [playerCollider, playerSensor],
-      frictionAir: 0.35,
-    });
-    this.player.setExistingBody(compoundBody);
-    this.player.setFixedRotation();
-
     this.player.inputKeys = this.input.keyboard.addKeys({
       up: Phaser.Input.Keyboard.KeyCodes.W,
       down: Phaser.Input.Keyboard.KeyCodes.S,
       left: Phaser.Input.Keyboard.KeyCodes.A,
       right: Phaser.Input.Keyboard.KeyCodes.D,
+    });
+
+    this.addResources();
+  }
+
+  addResources() {
+    const resources = this.map.getObjectLayer("Object Layer 1");
+    resources.objects.forEach((resource) => {
+      //console.log("resource type>>", resource);
+      let resItem = new Phaser.Physics.Matter.Sprite(
+        this.matter.world,
+        resource.x,
+        resource.y,
+        "resources",
+        resource.type
+      );
+
+      let yOrigin = resource.properties.find((p) => p.name == "yOrigin").value;
+      resItem.x += resItem.width / 2;
+      resItem.y -= resItem.height / 2;
+      //resItem.y = resItem.y + resItem.height * (yOrigin - 0.5);
+      resItem.setStatic(true);
+      //resItem.setOrigin(0.5, yOrigin);
+
+      this.add.existing(resItem);
+      const { Bodies } = Phaser.Physics.Matter.Matter;
+      var circleCollider = Bodies.circle(resItem.x, resItem.y, 3, {
+        isSensor: false,
+        label: "collider",
+      });
+      resItem.setExistingBody(circleCollider);
+      resItem.setFrictionAir(1);
+      resItem.sound = this.sound.add("pickup");
+      resItem.pickup = function () {
+        this.destroy();
+        this.sound.play();
+        console.log(this);
+        console.log("pickup");
+        return true;
+      };
     });
   }
 
