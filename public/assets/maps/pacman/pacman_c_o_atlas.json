@@ -1,0 +1,164 @@
+{
+    "frames": [
+        {
+            "filename": "po_up_1",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 1,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "po_up_2",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 18,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "po_up_3",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 1,
+                "y": 18
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "po_right_1",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 18,
+                "y": 18
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "po_right_2",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 35,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "po_right_3",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 35,
+                "y": 18
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "po_left_1",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 1,
+                "y": 35
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "po_left_2",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 18,
+                "y": 35
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "po_left_3",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 35,
+                "y": 35
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "po_down_1",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 52,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "po_down_2",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 52,
+                "y": 18
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "po_down_3",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 52,
+                "y": 35
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        }
+    ],
+    "meta": {
+        "description": "Atlas generado con Atlas Packer Gamma V2",
+        "web": "https://gammafp.github.io/atlas-packer-phaser/"
+    }
+}

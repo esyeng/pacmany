@@ -1,0 +1,84 @@
+{
+    "anims": [
+        {
+            "key": "pg_down",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "pacman_c_g",
+                    "frame": "pg_down_1"
+                },
+                {
+                    "key": "pacman_c_g",
+                    "frame": "pg_down_2"
+                },
+                {
+                    "key": "pacman_c_g",
+                    "frame": "pg_down_3"
+                }
+            ]
+        },
+        {
+            "key": "pg_left",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "pacman_c_g",
+                    "frame": "pg_left_1"
+                },
+                {
+                    "key": "pacman_c_g",
+                    "frame": "pg_left_2"
+                },
+                {
+                    "key": "pacman_c_g",
+                    "frame": "pg_left_3"
+                }
+            ]
+        },
+        {
+            "key": "pg_right",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "pacman_c_g",
+                    "frame": "pg_right_1"
+                },
+                {
+                    "key": "pacman_c_g",
+                    "frame": "pg_right_2"
+                },
+                {
+                    "key": "pacman_c_g",
+                    "frame": "pg_right_3"
+                }
+            ]
+        },
+        {
+            "key": "pg_up",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "pacman_c_g",
+                    "frame": "pg_up_1"
+                },
+                {
+                    "key": "pacman_c_g",
+                    "frame": "pg_up_2"
+                },
+                {
+                    "key": "pacman_c_g",
+                    "frame": "pg_up_3"
+                }
+            ]
+        }
+    ]
+}
