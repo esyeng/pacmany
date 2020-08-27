@@ -5,7 +5,9 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     let { scene, x, y, texture, frame } = data;
     super(scene.matter.world, x, y, texture, frame);
     this.scene.add.existing(this);
-
+    this.name = "player";
+    this.health = 1;
+    this._position = new Phaser.Math.Vector2(this.x, this.y);
     this.inputKeys = scene.input.keyboard.addKeys({
       up: Phaser.Input.Keyboard.KeyCodes.W,
       down: Phaser.Input.Keyboard.KeyCodes.S,
@@ -24,6 +26,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
       label: "playerCollider",
     });
     playerCollider.collisionFilter = {
+      category: redCategory,
       mask: defaultCategory | greenCategory,
     };
     // var playerSensor = Bodies.circle(this.x, this.y, 10, {
@@ -37,7 +40,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     this.setExistingBody(compoundBody);
     this.setFixedRotation();
 
-    //this.CreatePickupCollisions(playerCollider);
+    this.CreatePickupCollisions(playerCollider);
   }
 
   static preload(scene) {
@@ -56,6 +59,20 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   get velocity() {
     return this.body.velocity;
   }
+
+  get dead() {
+    return this.health <= 0;
+  }
+
+  get position() {
+    this._position.set(this.x, this.y);
+    return this._position;
+  }
+
+  hit = () => {
+    this.health--;
+    console.log("PC hit");
+  };
 
   update(scene) {
     console.log("update MissPacMan");

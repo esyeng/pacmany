@@ -5,24 +5,44 @@ export default class Ghost extends Phaser.Physics.Matter.Sprite {
     let { scene, x, y, texture, frame } = data;
     super(scene.matter.world, x, y, texture, frame);
     this.scene.add.existing(this);
+    this.health = 1;
+    this._position = new Phaser.Math.Vector2(this.x, this.y);
 
-    // const { Body, Bodies } = Phaser.Physics.Matter.Matter;
-    // var playerCollider = Bodies.circle(this.x, this.y, 6, {
-    //   isSensor: false,
-    //   label: "playerCollider",
-    // });
-    // var playerSensor = Bodies.circle(this.x, this.y, 10, {
-    //   isSensor: true,
-    //   label: "playerSensor",
-    // });
-    // const compoundBody = Body.create({
-    //   parts: [playerCollider, playerSensor],
-    //   frictionAir: 0.35,
-    // });
-    // this.setExistingBody(compoundBody);
-    // this.setFixedRotation();
+    var defaultCategory = 0x0001;
+    var redCategory = 0x0002;
+    var greenCategory = 0x0004;
+    var blueCategory = 0x0008;
 
-    // this.CreatePickupCollisions(playerCollider);
+    const { Body, Bodies } = Phaser.Physics.Matter.Matter;
+    var ghostCollider = Bodies.circle(this.x, this.y, 6, {
+      isSensor: false,
+      label: "ghostCollider",
+    });
+    var ghostSensor = Bodies.circle(this.x, this.y, 80, {
+      isSensor: true,
+      label: "ghostSensor",
+    });
+
+    const compoundBody = Body.create({
+      parts: [ghostCollider, ghostSensor],
+      frictionAir: 0.35,
+    });
+    compoundBody.collisionFilter = {
+      category: blueCategory,
+      mask: defaultCategory | redCategory,
+    };
+    this.setExistingBody(compoundBody);
+    this.setFixedRotation();
+    this.scene.matterCollision.addOnCollideStart({
+      objectA: [ghostSensor],
+      callback: (other) => {
+        if (other.gameObjectB && other.gameObjectB.name == "player") {
+          this.attacking = other.gameObjectB;
+          //console.log("callback attack");
+        }
+      },
+      context: this.scene,
+    });
   }
 
   static preload(scene) {
@@ -42,64 +62,50 @@ export default class Ghost extends Phaser.Physics.Matter.Sprite {
     return this.body.velocity;
   }
 
+  get dead() {
+    return this.health <= 0;
+  }
+
+  get position() {
+    this._position.set(this.x, this.y);
+    return this._position;
+  }
+
+  hit = () => {
+    this.health--;
+    console.log("G hit");
+  };
+
+  attack = (target) => {
+    if (target.dead || this.dead) {
+      clearInterval(this.attacktimer);
+      return;
+    }
+    target.hit();
+  };
+
   update() {
-    console.log("update Ghost");
-    //console.log("MissPacMan Location>>>", "x:", this.x, " y:", this.y);
+    //console.log("update Ghost", this.attacking);
+
     if (this.x < 2) this.x = 470;
     if (this.x > 486) this.x = 10;
 
-    //this.anims.play("pacman_right", true);
-
-    // const speed = 2.5;
-    // let playerVelocity = new Phaser.Math.Vector2();
-    // if (this.inputKeys.left.isDown) {
-    //   playerVelocity.x = -1;
-    // } else if (this.inputKeys.right.isDown) {
-    //   playerVelocity.x = 1;
-    // }
-    // if (this.inputKeys.up.isDown) {
-    //   playerVelocity.y = -1;
-    // } else if (this.inputKeys.down.isDown) {
-    //   playerVelocity.y = 1;
-    // }
-    // playerVelocity.normalize();
-    // playerVelocity.scale(speed);
-    // this.setVelocity(playerVelocity.x, playerVelocity.y);
-
-    //console.log("vx:", this.velocity.x, " vy:", this.velocity.y);
-    // if (this.velocity.x > 0) {
-    //   //console.log("RIGHT>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
-    //   this.anims.play("pacman_right", true);
-    // } else if (this.velocity.x < 0) {
-    //   //console.log("LEFT>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
-    //   this.anims.play("pacman_left", true);
-    // }
-    // if (this.velocity.y < 0) {
-    //   //console.log("UP>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
-    //   this.anims.play("pacman_up", true);
-    // } else if (this.velocity.y > 0.1) {
-    //   //console.log("DOWN>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
-    //   this.anims.play("pacman_down", true);
-    // }
+    if (this.attacking) {
+      let direction = this.attacking.position.subtract(this.position);
+      if (direction.length() > 24) {
+        let v = direction.normalize();
+        this.setVelocityX(direction.x);
+        this.setVelocityY(direction.y);
+        if (this.attacktimer) {
+          clearInterval(this.attackTimer);
+          this.attacktimer = null;
+        }
+      } else {
+        if (this.attacktimer == null) {
+          this.attacktimer = setInterval(this.attack, 500, this.attacking);
+        }
+      }
+    }
+    this.setFlipX(this.velocity.x < 0);
   } // end of updates
-
-  //   CreatePickupCollisions(playerCollider) {
-  //     this.scene.matterCollision.addOnCollideStart({
-  //       objectA: [playerCollider],
-  //       callback: (other) => {
-  //         if (other.gameObjectB && other.gameObjectB.pickup)
-  //           other.gameObjectB.pickup();
-  //       },
-  //       context: this.scene,
-  //     });
-
-  //     this.scene.matterCollision.addOnCollideActive({
-  //       objectA: [playerCollider],
-  //       callback: (other) => {
-  //         if (other.gameObjectB && other.gameObjectB.pickup)
-  //           other.gameObjectB.pickup();
-  //       },
-  //       context: this.scene,
-  //     });
-  //   }
 } // end of class

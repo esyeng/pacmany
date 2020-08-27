@@ -59,44 +59,16 @@ export function addLevelResources(scene) {
       label: "collider",
     });
     circleCollider.collisionFilter = {
-      category: redCategory,
+      category: greenCategory,
+      mask: defaultCategory | redCategory,
     };
     resItem.setExistingBody(circleCollider);
     resItem.setFrictionAir(1);
     resItem.sound = scene.sound.add("pickup");
     resItem.pickup = function () {
-      scene.destroy();
-      scene.sound.play();
+      this.destroy();
+      this.sound.play();
       return true;
     };
   });
 }
-
-// import "phaser";
-
-// export default class Level extends Phaser.Scene {
-//   constructor() {
-//     super("Level");
-//   }
-
-//   preload(scene) {
-//     scene.load.image("tiles", "/assets/maps/pacman/map.png");
-//     //scene.load.image("tiles", "assets/maps/pacman/map.png");
-//     //scene.load.tilemapTiledJSON("map", "assets/maps/pacman/map_nik_test1.json");
-
-//     //scene.load.tilemapTiledJSON("map", "/assets/maps/pacman/map_nik_test5.json");
-//     //scene.load.tilemapTiledJSON("map", "assets/maps/pacman/map.json");
-
-//     scene.load.tilemapTiledJSON(
-//       "map",
-//       "/assets/maps/pacman/map_nik_test7.json"
-//     );
-//     scene.load.atlas(
-//       "resources",
-//       "/assets/maps/pacman/res1.png",
-//       "/assets/maps/pacman/res1_atlas.json"
-//     );
-//     scene.load.audio("pickup", "/assets/audio/pickup.mp3");
-//     //this.load.tilemapTiledJSON("map", "assets/maps/pacman/map.json");//
-//   }
-// }
