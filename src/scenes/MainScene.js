@@ -1,4 +1,5 @@
 import "phaser";
+import { baseLevelPreload } from "./Level.js";
 import MissPacMan from "../entity/MissPacMan.js";
 import Ghost from "../entity/Ghost.js";
 
@@ -8,31 +9,16 @@ export default class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    //console.log("MissPacMan: ", MissPacMan);
+    console.log("P-MainScene version >>> 5 <<<");
+    baseLevelPreload(this);
     MissPacMan.preload(this);
     Ghost.preload(this);
-    this.load.image("tiles", "/assets/maps/pacman/map.png");
-    //this.load.image("tiles", "assets/maps/pacman/map.png");
-    //this.load.tilemapTiledJSON("map", "assets/maps/pacman/map_nik_test1.json");
-
-    //this.load.tilemapTiledJSON("map", "/assets/maps/pacman/map_nik_test5.json");
-    //this.load.tilemapTiledJSON("map", "assets/maps/pacman/map.json");
-
-    this.load.tilemapTiledJSON("map", "/assets/maps/pacman/map_nik_test7.json");
-    this.load.atlas(
-      "resources",
-      "/assets/maps/pacman/res1.png",
-      "/assets/maps/pacman/res1_atlas.json"
-    );
-    this.load.audio("pickup", "/assets/audio/pickup.mp3");
-    //this.load.tilemapTiledJSON("map", "assets/maps/pacman/map.json");//
   }
 
   create() {
-    console.log("create MainScene");
+    console.log("C-MainScene version >>> 5 <<<");
     // Load scenes in parallel
 
-    // this.scene.launch("TestMap");
     // Background
     const map = this.make.tilemap({ key: "map" });
 
@@ -44,9 +30,12 @@ export default class MainScene extends Phaser.Scene {
     const layer2 = map.createStaticLayer("Tile Layer 2", tileset2, 0, 0);
     layer2.setCollisionByProperty({ collides: true });
     this.matter.world.convertTilemapLayer(layer2);
-    //this.matter.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-    // const layer2 = map.createStaticLayer("Tile Layer 2", tileset, 0, 0);
-    // const layer3 = map.createStaticLayer("Image Layer 1", tileset, 0, 0);
+
+    console.log("map created>>>");
+
+    this.addResources();
+
+    console.log("resources created>>>");
 
     this.inky = new Ghost({
       scene: this,
@@ -80,6 +69,9 @@ export default class MainScene extends Phaser.Scene {
       frame: "blinky",
     });
     this.add.existing(this.blinky);
+
+    console.log("ghost created>>>");
+
     // here we are creating miss pac-man
     this.player = new MissPacMan({
       scene: this,
@@ -88,6 +80,8 @@ export default class MainScene extends Phaser.Scene {
       texture: "pacman_c",
       frame: "p_right_1",
     });
+
+    console.log("MissPacMan created>>>");
 
     // this.player2 = new Phaser.Physics.Matter.Sprite(
     //   this.matter.world,
@@ -106,11 +100,14 @@ export default class MainScene extends Phaser.Scene {
       left: Phaser.Input.Keyboard.KeyCodes.A,
       right: Phaser.Input.Keyboard.KeyCodes.D,
     });
-
-    this.addResources();
   }
 
   addResources() {
+    var defaultCategory = 0x0001;
+    var redCategory = 0x0002;
+    var greenCategory = 0x0004;
+    var blueCategory = 0x0008;
+
     const resources = this.map.getObjectLayer("Object Layer 1");
     resources.objects.forEach((resource) => {
       //console.log("resource type>>", resource);
@@ -134,7 +131,20 @@ export default class MainScene extends Phaser.Scene {
       var circleCollider = Bodies.circle(resItem.x, resItem.y, 3, {
         isSensor: false,
         label: "collider",
+        // collisionFilter = {
+        //   'group': -1,
+        //   'category': 3,
+        //   'mask': 0,
+        // },
       });
+      // circleCollider.collisionFilter = {
+      //   group: -1,
+      //   category: 3,
+      //   mask: 0,
+      // };
+      circleCollider.collisionFilter = {
+        category: redCategory,
+      };
       resItem.setExistingBody(circleCollider);
       resItem.setFrictionAir(1);
       resItem.sound = this.sound.add("pickup");

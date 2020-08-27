@@ -6,23 +6,41 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     super(scene.matter.world, x, y, texture, frame);
     this.scene.add.existing(this);
 
+    var defaultCategory = 0x0001;
+    var redCategory = 0x0002;
+    var greenCategory = 0x0004;
+    var blueCategory = 0x0008;
+
     const { Body, Bodies } = Phaser.Physics.Matter.Matter;
     var playerCollider = Bodies.circle(this.x, this.y, 6, {
       isSensor: false,
       label: "playerCollider",
+      //   collisionFilter = {
+      //     'group': -1,
+      //     'category': 2,
+      //     'mask': 0,
+      //   },
     });
-    var playerSensor = Bodies.circle(this.x, this.y, 10, {
-      isSensor: true,
-      label: "playerSensor",
-    });
+    // playerCollider.collisionFilter = {
+    //   group: -1,
+    //   category: 2,
+    //   mask: 0,
+    // };
+    playerCollider.collisionFilter = {
+      mask: defaultCategory | greenCategory,
+    };
+    // var playerSensor = Bodies.circle(this.x, this.y, 10, {
+    //   isSensor: true,
+    //   label: "playerSensor",
+    // });
     const compoundBody = Body.create({
-      parts: [playerCollider, playerSensor],
+      parts: [playerCollider], //playerSensor],
       frictionAir: 0.35,
     });
     this.setExistingBody(compoundBody);
     this.setFixedRotation();
-
-    this.CreatePickupCollisions(playerCollider);
+    console.log(this.body);
+    //this.CreatePickupCollisions(playerCollider);
   }
 
   static preload(scene) {
