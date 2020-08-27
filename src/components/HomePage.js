@@ -73,6 +73,16 @@ function HomePage(props) {
           backgroundImage: `url(https://www.hivplusmag.com/sites/default/files/2017/10/20/pac-man-x750.jpg)`,
         }}
       />
+      <Link to="game">
+        <Button
+          style={{ backgroundColor: "black" }}
+          className={classnames(classes.button, classes.startPlaying)}
+          onClick={handleOpen}
+        >
+          TEST
+          <ArrowRightAlt className={classes.buttonIcon} />
+        </Button>
+      </Link>
       <div className={classes.gameActions}>
         <Button
           className={classnames(classes.button, classes.startPlaying)}
@@ -110,7 +120,11 @@ function HomePage(props) {
               >
                 Join Existing Game
               </Button>
-              <Button className={classes.modalButtons}>Play on your own</Button>
+              <Link to="/room/6454">
+                <Button className={classes.modalButtons}>
+                  Play on your own
+                </Button>
+              </Link>
             </div>
           </Fade>
         </Modal>
