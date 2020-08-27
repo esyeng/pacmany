@@ -6,7 +6,7 @@ export const config = {
   width: 448, // Game width in pixels
   height: 500, // Game height in pixels // it was 800 from Emre
   type: Phaser.AUTO,
-  parent: "divId",
+  parent: "phaser-container",
   scene: MainScene,
   scale: {
     zoom: 1.5,
