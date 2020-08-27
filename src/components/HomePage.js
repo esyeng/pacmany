@@ -7,7 +7,7 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
-
+export let hash = "";
 const useStyles = makeStyles(styles);
 
 function HomePage(props) {
@@ -58,6 +58,7 @@ function HomePage(props) {
     for (let i = 0; i < 5; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
+    hash = result;
     setGameCode(result);
   };
   return (
