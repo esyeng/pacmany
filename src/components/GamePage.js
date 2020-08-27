@@ -1,10 +1,13 @@
 import React, { Component, useState, useEffect } from "react";
 import Phaser from "phaser";
 import { config } from "../config/config";
+import io from "socket.io-client";
+const socket = io("http://localhost:8080");
 
 class GamePage extends Component {
   componentDidMount() {
-    const game = new Phaser.Game(config); // how is game rendered? looks like it isn't loading here
+    // console.log("In GamePage CDM");
+    const game = new Phaser.Game(config);
   }
   render() {
     return <div style={{ color: "white" }}></div>;

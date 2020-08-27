@@ -1,7 +1,8 @@
 import "phaser";
 import MissPacMan from "../entity/MissPacMan.js";
 import Ghost from "../entity/Ghost.js";
-
+const socket = io("http://localhost:8080");
+const message = "hANDWRITTED HARDCODED STRING MESSAGE from MainScene.js";
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super("MainScene");
@@ -9,6 +10,7 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     //console.log("MissPacMan: ", MissPacMan);
+    // console.log("READY FOR SOCKETS>>");
     MissPacMan.preload(this);
     Ghost.preload(this);
     this.load.image("tiles", "/assets/maps/pacman/map.png");
@@ -29,7 +31,13 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    console.log("create MainScene");
+    // console.log("create MainScene>>>>>>");
+    this.socket = io("http://localhost:8080");
+
+    this.socket.on("connect", function () {
+      // console.log("Connected in mainsCene!");
+      socket.emit("message", message);
+    });
     // Load scenes in parallel
 
     // this.scene.launch("TestMap");
@@ -141,8 +149,8 @@ export default class MainScene extends Phaser.Scene {
       resItem.pickup = function () {
         this.destroy();
         this.sound.play();
-        console.log(this);
-        console.log("pickup");
+        // console.log(this);
+        // console.log("pickup");
         return true;
       };
     });

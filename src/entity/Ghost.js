@@ -43,7 +43,7 @@ export default class Ghost extends Phaser.Physics.Matter.Sprite {
   }
 
   update() {
-    console.log("update Ghost");
+    // console.log("update Ghost");
     //console.log("MissPacMan Location>>>", "x:", this.x, " y:", this.y);
     if (this.x < 2) this.x = 470;
     if (this.x > 486) this.x = 10;

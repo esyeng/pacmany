@@ -5,7 +5,10 @@ module.exports = (io) => {
   players,
     roomCount,
     io.on("connection", (socket) => {
-      console.log("connected", socket.id);
+      // console.log("connected", socket.id);
+      socket.on("message", (message) => {
+        console.log("message received in socket-index.js", message);
+      });
       socket.on("gameload", () => {
         io.broadcast.emit("currentPlayers", players);
       });
@@ -44,7 +47,7 @@ module.exports = (io) => {
             players.push(player4);
             roomCount++;
           case roomCount === 4:
-            console.log("Sorry, this room is PACed");
+            // console.log("Sorry, this room is PACed");
             return "Sorry, this room is PACed";
         }
         players[roomCount] = {
@@ -54,9 +57,9 @@ module.exports = (io) => {
         };
       });
       socket.on("disconnect", () => {
-        console.log("User left: " + socket.id);
+        // console.log("User left: " + socket.id);
         if (!players.length) {
-          console.log(`guest ${socket.id} disconnected`);
+          // console.log(`guest ${socket.id} disconnected`);
           io.emit("disconnect", socket.id);
         } else {
           players = players.filter((player) => player.id !== socket.id);
