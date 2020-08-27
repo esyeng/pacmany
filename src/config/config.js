@@ -1,5 +1,4 @@
 import MainScene from "../scenes/MainScene";
-import TestMap from "../scenes/TestMap";
 import PhaserMatterCollisionPlugin from "phaser-matter-collision-plugin/src";
 
 export const config = {
