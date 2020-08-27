@@ -6,6 +6,13 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     super(scene.matter.world, x, y, texture, frame);
     this.scene.add.existing(this);
 
+    this.inputKeys = scene.input.keyboard.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.W,
+      down: Phaser.Input.Keyboard.KeyCodes.S,
+      left: Phaser.Input.Keyboard.KeyCodes.A,
+      right: Phaser.Input.Keyboard.KeyCodes.D,
+    });
+
     var defaultCategory = 0x0001;
     var redCategory = 0x0002;
     var greenCategory = 0x0004;
@@ -15,17 +22,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     var playerCollider = Bodies.circle(this.x, this.y, 6, {
       isSensor: false,
       label: "playerCollider",
-      //   collisionFilter = {
-      //     'group': -1,
-      //     'category': 2,
-      //     'mask': 0,
-      //   },
     });
-    // playerCollider.collisionFilter = {
-    //   group: -1,
-    //   category: 2,
-    //   mask: 0,
-    // };
     playerCollider.collisionFilter = {
       mask: defaultCategory | greenCategory,
     };
@@ -39,7 +36,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     });
     this.setExistingBody(compoundBody);
     this.setFixedRotation();
-    console.log(this.body);
+
     //this.CreatePickupCollisions(playerCollider);
   }
 
@@ -60,7 +57,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     return this.body.velocity;
   }
 
-  update() {
+  update(scene) {
     console.log("update MissPacMan");
     //console.log("MissPacMan Location>>>", "x:", this.x, " y:", this.y);
     if (this.x < 2) this.x = 470;
@@ -80,6 +77,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     } else if (this.inputKeys.down.isDown) {
       playerVelocity.y = 1;
     }
+
     playerVelocity.normalize();
     playerVelocity.scale(speed);
     this.setVelocity(playerVelocity.x, playerVelocity.y);
