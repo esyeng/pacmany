@@ -44,9 +44,6 @@ export const LeftSideBar = (props) => {
   const { players, roomCode } = props;
   const classes = useStyles();
   const theme = useTheme();
-
-  console.log(players, roomCode);
-
   return (
     <div>
       {+props.roomCode === 0 ? (
