@@ -16,6 +16,7 @@ function HomePage(props) {
   const [showButton, setButton] = React.useState(true);
   const [openGameSettings, setOpenGameSettings] = React.useState(false);
   const [gameCode, setGameCode] = React.useState(0);
+  const [openJoinGameSettings, setJoinGameSettings] = React.useState(false);
 
   const handleOpen = (e) => {
     setOpen(true);
@@ -40,6 +41,13 @@ function HomePage(props) {
   const handleCloseGameSettings = () => {
     setButton(true);
     setOpenGameSettings(false);
+    setJoinGameSettings(false);
+  };
+
+  const handleOpenJoinGameSettings = () => {
+    setOpen(false);
+    setOpenGameSettings(true);
+    setJoinGameSettings(true);
   };
 
   const generateGameCode = () => {
@@ -65,6 +73,16 @@ function HomePage(props) {
           backgroundImage: `url(https://www.hivplusmag.com/sites/default/files/2017/10/20/pac-man-x750.jpg)`,
         }}
       />
+      <Link to="game">
+        <Button
+          style={{ backgroundColor: "black" }}
+          className={classnames(classes.button, classes.startPlaying)}
+          onClick={handleOpen}
+        >
+          TEST
+          <ArrowRightAlt className={classes.buttonIcon} />
+        </Button>
+      </Link>
       <div className={classes.gameActions}>
         <Button
           className={classnames(classes.button, classes.startPlaying)}
@@ -97,12 +115,16 @@ function HomePage(props) {
                 Start New Game
               </Button>
               <Button
-                onClick={handleOpenGameSettings}
+                onClick={handleOpenJoinGameSettings}
                 className={classes.modalButtons}
               >
                 Join Existing Game
               </Button>
-              <Button className={classes.modalButtons}>Play on your own</Button>
+              <Link to="/room/6454">
+                <Button className={classes.modalButtons}>
+                  Play on your own
+                </Button>
+              </Link>
             </div>
           </Fade>
         </Modal>
@@ -124,15 +146,41 @@ function HomePage(props) {
           <Fade in={openGameSettings}>
             <div className={classes.paper}>
               <form className={classes.form}>
-                <label htmlFor="name">
-                  Your Game Code is <strong>{gameCode}</strong>
-                </label>
+                {openJoinGameSettings ? (
+                  <div>
+                    <label>
+                      <strong>Code: </strong>
+                    </label>
+                    <input
+                      className={classes.inputField}
+                      type="text"
+                      name="name"
+                      placeholder="Enter Game Code"
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <span className={classes.gameCodeHeader}>
+                      Your Game Code is{" "}
+                    </span>
+                    <strong>{gameCode}</strong>
+                  </div>
+                )}
                 <div>
-                  <label htmlFor="name">Please Enter Player Name...</label>
-                  <input type="text" name="name" placeholder="Enter Name" />
+                  <label>
+                    <strong>Name: </strong>
+                  </label>
+                  <input
+                    className={classes.inputField}
+                    type="text"
+                    name="name"
+                    placeholder="Enter Player Name"
+                  />
                 </div>
                 <Link to={`/room/${gameCode}`}>
-                  <Button>Continue to Game...</Button>
+                  <button className={classes.button}>
+                    Continue to Game...
+                  </button>
                 </Link>
               </form>
             </div>

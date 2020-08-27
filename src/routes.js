@@ -14,6 +14,7 @@ class Routes extends Component {
         <Switch>
           <Route exact path="/" component={HomePageContainer} />
           <Route exact path="/room/:roomCode" component={GamePage} />
+          <Route exact path="/game" component={GamePage} />
         </Switch>
       </Router>
     );
