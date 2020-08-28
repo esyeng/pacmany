@@ -6,24 +6,34 @@ import { RightSideBar } from "./RightSideBar";
 import { Navbar } from "./Navbar";
 import socket from "../scenes/SocketHub";
 import { Button, withStyles } from "@material-ui/core";
+import styles from "./styles";
 
-const classes = useStyles(props);
 class Canvas extends Component {
   constructor(props) {
     super(props);
-    this.listenForJoin = this.listenForJoin.bind(this);
+    // this.listenForJoin = this.listenForJoin.bind(this);
     this.state = {
       ready: false,
       gameStarted: false,
       gameInProgress: false,
       gameEnded: false,
-      roomKey: this.props.gameCode,
+      roomKey: this.props.roomKey,
       name: this.props.name,
       players: {},
       playerCount: 0,
     };
   }
 
+  generateGameCode() {
+    let result = "";
+    let characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let charactersLength = characters.length;
+    for (let i = 0; i < 5; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    this.setState({ roomKey: result });
+  }
   createGame(roomKey = this.state.roomKey, players = this.state.players) {
     let name = this.state.name;
     this.setState({ playerCount: playerCount++ });
@@ -102,7 +112,7 @@ class Canvas extends Component {
 
           <div>
             <RightSideBar
-              players={players}
+              players={this.state.players}
               goBack={this.props.history.goBack}
             />
           </div>
