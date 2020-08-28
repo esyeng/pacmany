@@ -7,6 +7,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     this.scene.add.existing(this);
     this.name = "player";
     this.health = 1;
+    this.score = 0;
     this._position = new Phaser.Math.Vector2(this.x, this.y);
     this.inputKeys = scene.input.keyboard.addKeys({
       up: Phaser.Input.Keyboard.KeyCodes.W,
@@ -75,8 +76,9 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   };
 
   update(scene) {
-    console.log("update MissPacMan");
+    console.log("update MissPacMan", this.score);
     //console.log("MissPacMan Location>>>", "x:", this.x, " y:", this.y);
+
     if (this.x < 2) this.x = 470;
     if (this.x > 486) this.x = 10;
 
@@ -122,6 +124,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
       callback: (other) => {
         if (other.gameObjectB && other.gameObjectB.pickup)
           other.gameObjectB.pickup();
+        this.score++;
       },
       context: this.scene,
     });
