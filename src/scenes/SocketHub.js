@@ -4,7 +4,7 @@ import createClientSocket from "socket.io-client";
 
 const socket = io("http://localhost:8080/");
 
-socket.on("connect", (socket) => {
+socket.on("connection", (socket) => {
   console.log("YEEEEEEEG");
 });
 

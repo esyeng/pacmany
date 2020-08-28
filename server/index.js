@@ -1,7 +1,5 @@
 // /**********************
-//  *
-//  * SERVER GLOBAL VARS
-//  */
+
 const path = require("path");
 const PORT = 8080;
 const express = require("express");
@@ -9,20 +7,18 @@ const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 const morgan = require("morgan");
+const bodyParser = require("body-parser");
 module.exports = app;
 
 let players = [];
-
+let thisRoom = "";
 // /**********************************************
-//  * EXPRESS ROUTER
-//  */
-// Logging middleware
 app.use(morgan("dev"));
-
-// // Serving static files
 app.use(express.static("public"));
 app.use(express.static("dist"));
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // app.use("/", require("./socket/index"));
 app.get("*", (req, res) => {
@@ -52,26 +48,3 @@ server.listen(PORT, async () => {
     console.error(err);
   }
 });
-
-// io.on("connection", function (socket) {
-//   console.log("A user connected: " + socket.id);
-
-//   players.push(socket.id);
-
-//   if (players.length) {
-//     console.log("players Array", players);
-//   }
-//   if (players.length === 1) {
-//     console.log("players Array", players);
-//     io.emit("isPlayerA");
-//   }
-
-//   socket.on("disconnect", function () {
-//     console.log("A user disconnected: " + socket.id);
-//     players = players.filter((player) => player !== socket.id);
-//   });
-// });
-
-// server.listen(8080, function () {
-//   console.log("Server started, EMRE!");
-// });

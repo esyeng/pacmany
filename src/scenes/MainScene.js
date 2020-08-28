@@ -5,6 +5,9 @@ import Ghost from "../entity/Ghost.js";
 import { hash } from "../components/HomePage";
 import socket from "./SocketHub";
 let players = {};
+let userName = prompt("Your Name, please");
+let roomName = prompt("room name");
+let ID = "";
 
 const message = "hANDWRITTED HARDCODED STRING MESSAGE from MainScene.js";
 let counter = 0;
@@ -24,7 +27,7 @@ export default class MainScene extends Phaser.Scene {
   create() {
     console.log("socket>>", socket);
     console.log("hash>>>>>>", hash);
-    socket.emit("joinRoom", hash);
+    socket.emit("join room", { userName, roomName });
 
     // Load scenes in parallel
 
