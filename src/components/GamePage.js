@@ -22,6 +22,11 @@ class Canvas extends Component {
       players: {},
       playerCount: 0,
     };
+    this.generateGameCode = this.generateGameCode.bind(this);
+    this.createGame = this.createGame.bind(this);
+    this.joinGame = this.joinGame.bind(this);
+    this.startGame = this.startGame.bind(this);
+    this.getGameStarted = this.getGameStarted.bind(this);
   }
 
   generateGameCode() {
@@ -77,6 +82,11 @@ class Canvas extends Component {
     const game = new Phaser.Game(config);
   }
 
+  getGameStarted() {
+    if (!this.gameStarted) {
+      this.setState({ gameStarted: true });
+    }
+  }
   render() {
     const { classes } = this.props;
     return (
@@ -84,9 +94,12 @@ class Canvas extends Component {
         <Navbar />
         <div style={{ display: "flex", flexDirection: "row" }}>
           <div>
-            <LeftSideBar players={players} roomCode={this.state.roomKey} />
+            <LeftSideBar
+              players={this.state.players}
+              roomCode={this.state.roomKey}
+            />
           </div>
-          {this.gameStarted ? (
+          {this.state.gameStarted ? (
             <div
               id="phaser-container"
               style={{
@@ -99,14 +112,6 @@ class Canvas extends Component {
           ) : (
             <div>
               <h3>{`Waiting for game to start. Players: ${this.state.playerCount}`}</h3>
-
-              <Button
-                style={{ backgroundColor: "black" }}
-                className={classnames(classes.button, classes.startPlaying)}
-                onClick={this.startGame()}
-              >
-                All in!
-              </Button>
             </div>
           )}
 
@@ -114,6 +119,9 @@ class Canvas extends Component {
             <RightSideBar
               players={this.state.players}
               goBack={this.props.history.goBack}
+              gameStarted={this.state.gameStarted}
+              getGameStarted={this.getGameStarted}
+              // startGame={this.startGame}
             />
           </div>
         </div>

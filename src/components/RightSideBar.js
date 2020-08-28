@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const RightSideBar = (props) => {
+  const gameStarted = props.gameStarted;
   const classes = useStyles();
   const theme = useTheme();
   return (
@@ -62,7 +63,10 @@ export const RightSideBar = (props) => {
           </Button>
         </CardContent>
       </Card>
-      <Button id="allInButton">All In?</Button>
+
+      <Button disabled={props.gameStarted() ? true : false} id="allInButton">
+        All In?
+      </Button>
     </div>
   );
 };
