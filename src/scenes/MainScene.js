@@ -7,6 +7,7 @@ import socket from "./SocketHub";
 let players = {};
 let userName = prompt("Your Name, please");
 let roomName = prompt("room name");
+let chat = prompt("your message to other players, please");
 let ID = "";
 
 const message = "hANDWRITTED HARDCODED STRING MESSAGE from MainScene.js";
@@ -25,10 +26,16 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    console.log("socket>>", socket);
-    console.log("hash>>>>>>", hash);
     socket.emit("join room", { userName, roomName });
-
+    socket.on("send data", (data) => {
+      ID = data.id;
+      console.log("my ID: " + ID);
+    });
+    socket.emit("chat message", chat);
+    socket.on("chat message", function (data) {
+      console.log(data.data + ":" + data.name);
+      console.log(data);
+    });
     // Load scenes in parallel
 
     // Background
@@ -43,11 +50,7 @@ export default class MainScene extends Phaser.Scene {
     layer2.setCollisionByProperty({ collides: true });
     this.matter.world.convertTilemapLayer(layer2);
 
-    console.log("map created>>>");
-
     this.addResources();
-
-    console.log("resources created>>>");
 
     this.inky = new Ghost({
       scene: this,
@@ -82,8 +85,6 @@ export default class MainScene extends Phaser.Scene {
     });
     this.add.existing(this.blinky);
 
-    console.log("ghost created>>>");
-
     // here we are creating miss pac-man
     this.player = new MissPacMan({
       scene: this,
@@ -92,8 +93,6 @@ export default class MainScene extends Phaser.Scene {
       texture: "pacman_c",
       frame: "p_right_1",
     });
-
-    console.log("MissPacMan created>>>");
 
     // this.player2 = new Phaser.Physics.Matter.Sprite(
     //   this.matter.world,

@@ -11,7 +11,7 @@ const bodyParser = require("body-parser");
 module.exports = app;
 
 let players = [];
-let thisRoom = "";
+
 // /**********************************************
 app.use(morgan("dev"));
 app.use(express.static("public"));
