@@ -120,7 +120,7 @@ function HomePage(props) {
               >
                 Join Existing Game
               </Button>
-              <Link to="/room/6454">
+              <Link to={`/room/${gameCode}`}>
                 <Button className={classes.modalButtons}>
                   Play on your own
                 </Button>
