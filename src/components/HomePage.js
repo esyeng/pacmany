@@ -10,6 +10,8 @@ import Fade from "@material-ui/core/Fade";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
 import socket from "../scenes/SocketHub.js";
+let userName = prompt("Your Name, please");
+let roomName = prompt("room name");
 
 class HomePage extends Component {
   constructor(props) {
@@ -19,16 +21,19 @@ class HomePage extends Component {
       openModal: false,
       showStartButton: true,
       openGameSettings: false,
-      gameCode: 0,
+      gameCode: roomName,
       openJoinGameSettings: false,
+      name: "",
     };
 
     this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.handleNameEntry = this.handleNameEntry.bind(this);
     this.handleOpenGameSettings = this.handleOpenGameSettings.bind(this);
     this.handleCloseGameSettings = this.handleCloseGameSettings.bind(this);
     this.generateGameCode = this.generateGameCode.bind(this);
     this.listen = this.listen.bind(this);
+    this.createGame = this.createGame.bind(this);
   }
 
   componentDidMount() {
@@ -64,11 +69,28 @@ class HomePage extends Component {
     }
   }
 
+  handleNameEntry(e) {
+    this.setState({
+      [e.target.name]: [e.target.name.value],
+    });
+  }
+
   handleCloseGameSettings() {
     this.setState({
       openModal: true,
       openGameSettings: false,
       openJoinGameSettings: false,
+    });
+  }
+
+  createGame(roomKey = this.state.gameCode, players = this.state.players) {
+    let name = this.state.name;
+    this.setState({ playerCount: playerCount++ });
+    socket.emit("createRoom", roomKey, name);
+    socket.on("newPlayers", function (players) {
+      console.log(players);
+      // socket.to(roomKey).emit({ players: players });
+      this.setState({ players: players });
     });
   }
 
@@ -86,18 +108,21 @@ class HomePage extends Component {
   }
 
   listen() {
-    socket.on("wrongRoom", (roomId) => {
-      alert(`Game room: ${roomId} does not exist`);
-    });
-    socket.on("gameInProgress", (roomId) => {
-      alert(`Sorry, the game at ${roomId} already started. Where were you?`);
-      window.location.reload(false);
-    });
-    socket.on("returnToLobby", () => {
-      this.setState({ gameEnded: true });
-    });
-    socket.on("gameStarted", () => {
-      this.setState({ waitingForPlayers: false });
+    // socket.on("wrongRoom", (roomId) => {
+    //   alert(`Game room: ${roomId} does not exist`);
+    // });
+    // socket.on("gameInProgress", (roomId) => {
+    //   alert(`Sorry, the game at ${roomId} already started. Where were you?`);
+    //   window.location.reload(false);
+    // });
+    // socket.on("returnToLobby", () => {
+    //   this.setState({ gameEnded: true });
+    // });
+    // socket.on("gameStarted", () => {
+    //   this.setState({ waitingForPlayers: false });
+    // });
+    socket.on("readyToStart", function () {
+      startGame();
     });
   }
 
@@ -162,7 +187,7 @@ class HomePage extends Component {
                 </Button>
                 <Button
                   name="joinGame"
-                  onClick={this.handleOpenGameSettings}
+                  onClick={this.createGame}
                   className={classes.modalButtons}
                 >
                   Join Existing Game
@@ -222,6 +247,7 @@ class HomePage extends Component {
                       type="text"
                       name="name"
                       placeholder="Enter Player Name"
+                      onChange={this.handleNameEntry}
                     />
                   </div>
                   <Link to={`/room/${this.state.gameCode}`}>

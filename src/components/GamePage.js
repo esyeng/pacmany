@@ -19,7 +19,7 @@ class Canvas extends Component {
       gameEnded: false,
       roomKey: this.props.roomKey,
       name: this.props.name,
-      players: {},
+      players: [],
       playerCount: 0,
     };
     this.generateGameCode = this.generateGameCode.bind(this);
@@ -39,15 +39,15 @@ class Canvas extends Component {
     }
     this.setState({ roomKey: result });
   }
-  createGame(roomKey = this.state.roomKey, players = this.state.players) {
-    let name = this.state.name;
-    this.setState({ playerCount: playerCount++ });
-    socket.emit("createRoom", roomKey, name);
-    socket.on("newPlayers", function (players) {
-      socket.to(roomKey).emit({ players: players });
-      this.setState({ players: players });
-    });
-  }
+  // createGame(roomKey = this.state.roomKey, players = this.state.players) {
+  //   let name = this.state.name;
+  //   this.setState({ playerCount: playerCount++ });
+  //   socket.emit("createRoom", roomKey, name);
+  //   socket.on("newPlayers", function (players) {
+  //     socket.to(roomKey).emit({ players: players });
+  //     this.setState({ players: players });
+  //   });
+  // }
 
   // listenForJoin() {
   //   let newPlayers = { ...this.state.players };
@@ -99,28 +99,21 @@ class Canvas extends Component {
               roomCode={this.state.roomKey}
             />
           </div>
-          {this.state.gameStarted ? (
-            <div
-              id="phaser-container"
-              style={{
-                width: "1024px",
-                height: "768px",
-                textAlign: "center",
-                justifyContent: "center",
-              }}
-            ></div>
-          ) : (
-            <div>
-              <h3>{`Waiting for game to start. Players: ${this.state.playerCount}`}</h3>
-            </div>
-          )}
+          <div
+            id={this.state.gameStarted ? "phaser-container" : "temp"}
+            style={{
+              width: "1024px",
+              height: "768px",
+              textAlign: "center",
+              justifyContent: "center",
+            }}
+          ></div>
 
           <div>
             <RightSideBar
               players={this.state.players}
               goBack={this.props.history.goBack}
-              gameStarted={this.state.gameStarted}
-              getGameStarted={this.getGameStarted}
+              startGame={this.startGame}
               // startGame={this.startGame}
             />
           </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -38,9 +38,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const RightSideBar = (props) => {
+  const [allIn, setAllIn] = useState(false);
   const gameStarted = props.gameStarted;
   const classes = useStyles();
   const theme = useTheme();
+
+  const handleAllInClick = () => {
+    setAllIn(true);
+    props.startGame();
+  };
   return (
     <div>
       <Card className={classes.root}>
@@ -64,7 +70,7 @@ export const RightSideBar = (props) => {
         </CardContent>
       </Card>
 
-      <Button disabled={props.gameStarted() ? true : false} id="allInButton">
+      <Button id="allInButton" onClick={handleAllInClick}>
         All In?
       </Button>
     </div>

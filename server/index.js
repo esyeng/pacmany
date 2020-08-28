@@ -9,7 +9,11 @@ const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 const morgan = require("morgan");
+const bodyParser = require("body-parser");
 const rooms = {};
+let userName = "";
+let users = [];
+
 module.exports = app;
 
 /**********************************************
@@ -22,6 +26,8 @@ app.use(morgan("dev"));
 app.use(express.static("public"));
 app.use(express.static("dist"));
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // app.use("/", require("./socket/index"));
 app.get("*", (req, res) => {
@@ -39,21 +45,26 @@ app.use((err, req, res, next) => {
  * SOCKET HUB
  * testingtestingggg
  *
- *
- * socket.join(room.id, () => {
-        room.players[socket.id] = {
-          rotation: 0,
-          x: 0,
-          y: 0,
-          name: name,
-          playerId: socket.id,
-          playerNumber: room.numberOfPlayers,
-          score: 0
-        };
-        x125, y233
-x320,  y233
-x223, y89
  */
+
+// function joinUser(socketId, userName, roomName) {
+//   const user = {
+//     socketId,
+//     userName,
+//     roomName,
+//   };
+//   users.push(user);
+//   return user;
+// }
+
+// function removeUser(id) {
+//   const getID = users.socketID === id;
+//   const index = user.findIndex(getID);
+//   if (index !== -1) {
+//     return user.splice(index, 1)[0];
+//   }
+// }
+// ;
 
 const joinRoom = (socket, room, name) => {
   console.log(`room is active: ${room.started}`);
@@ -78,7 +89,11 @@ const joinRoom = (socket, room, name) => {
         );
       });
       socket.emit("newPlayers", room.players);
+    } else {
+      alert("room full");
     }
+  } else {
+    alert("game in progress");
   }
 };
 
@@ -110,18 +125,19 @@ io.on("connection", function (socket) {
     let room = new Room(roomKey);
     rooms[room] = room;
     joinRoom(socket, room, name);
+    socket.emit("readyToStart");
   });
 
-  socket.on("joinRoom", function (roomKey, name) {
-    const room = rooms[roomKey];
-    if (room) {
-      // socket.emit("playerJoin")
-      joinRoom(socket, room, name);
-    } else {
-      console.log(`Room ${roomKey} not found`);
-      socket.emit("wrongRoom", roomKey);
-    }
-  });
+  // socket.on("joinRoom", function (roomKey, name) {
+  //   const room = rooms[roomKey];
+  //   if (room) {
+  //     // socket.emit("playerJoin")
+  //     joinRoom(socket, room, name);
+  //   } else {
+  //     console.log(`Room ${roomKey} not found`);
+  //     socket.emit("wrongRoom", roomKey);
+  //   }
+  // });
   socket.on("disconnect", function () {
     console.log("A user disconnected: " + socket.id);
     io.emit("disconnect", socket.id);
