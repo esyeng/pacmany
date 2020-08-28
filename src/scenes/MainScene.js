@@ -19,7 +19,12 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    console.log("C-MainScene version >>> 11 <<<");
+    console.log("C-MainScene version >>> 18 <<<");
+
+    var defaultCategory = 0x0001;
+    var redCategory = 0x0002;
+    var greenCategory = 0x0004;
+    var blueCategory = 0x0008;
 
     baseLevelCreate(this);
 
@@ -49,6 +54,7 @@ export default class MainScene extends Phaser.Scene {
       frame: "clyde",
     });
     this.add.existing(this.clyde);
+
     this.blinky = new Ghost({
       scene: this,
       x: 225,
@@ -71,5 +77,9 @@ export default class MainScene extends Phaser.Scene {
 
   update() {
     this.player.update();
+    this.blinky.update();
+    // this.pinky.update();
+    // this.clyde.update();
+    // this.inky.update();
   }
 }
