@@ -1,13 +1,3 @@
-import React from "react";
-import { Button, makeStyles } from "@material-ui/core";
-import ArrowRightAlt from "@material-ui/icons/ArrowRightAlt";
-import styles from "./styles";
-import Modal from "@material-ui/core/Modal";
-import Backdrop from "@material-ui/core/Backdrop";
-import Fade from "@material-ui/core/Fade";
-import classnames from "classnames";
-import { Link } from "react-router-dom";
-
 const useStyles = makeStyles(styles);
 
 function HomePage(props) {
@@ -34,7 +24,7 @@ function HomePage(props) {
 
   const handleOpenGameSettings = () => {
     setOpen(false);
-    generateGameCode();
+    // generateGameCode();
     setOpenGameSettings(true);
   };
 
@@ -48,17 +38,6 @@ function HomePage(props) {
     setOpen(false);
     setOpenGameSettings(true);
     setJoinGameSettings(true);
-  };
-
-  const generateGameCode = () => {
-    let result = "";
-    let characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let charactersLength = characters.length;
-    for (let i = 0; i < 5; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    setGameCode(result);
   };
 
   return (
@@ -191,6 +170,39 @@ function HomePage(props) {
     </div>
   );
 }
-console.log(HomePage);
 
 export default HomePage;
+
+// socket game logic notes, unused
+
+// -- mongoose - import and create db.js with env var
+// -- create new schema with mongoose
+
+// this.socket = io("http://localhost:8080");
+// this.socket.on("connect", (socket) => {
+// console.log("connected");
+// if (this.players.length < 4) {
+// if (this.players.length === 1) {
+// this.player2 = new Player(500, 500, "blue");
+// this.player2.port = 2;
+// this.player2.id = socket.id;
+// this.players.push(this.player2);
+// }
+// } else if (this.players.length === 2) {
+// this.player3 = new Player(500, 500, "black");
+// this.player3.port = 3;
+// this.player3.id = socket.id;
+// this.players.push(this.player3);
+// } else if (this.players.length === 3) {
+// this.player4 = new Player(500, 500, "pink");
+// this.player4.port = 4;
+// this.player4.id = socket.id;
+// this.players.push(this.player4);
+// } else {
+// console.log("room full");
+// }
+// });
+// this.socket.on("disconnect", (socket) => {
+// console.log(`Player ${this.playerA.port} has left the game`);
+// this.players = this.players.filter((player) => player.id !== socket.id);
+// });

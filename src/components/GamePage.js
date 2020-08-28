@@ -1,43 +1,62 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component } from "react";
 import Phaser from "phaser";
 import { config } from "../config/config";
 import { LeftSideBar } from "./LeftSideBar";
 import { RightSideBar } from "./RightSideBar";
 import { Navbar } from "./Navbar";
+import socket from "../scenes/SocketHub";
 
-const players = [
-  {
-    id: 1,
-    userName: "missPac",
-    score: "1000",
-    health: "100",
-  },
-  {
-    id: 2,
-    userName: "pac-wizard20",
-    score: "900",
-    health: "90",
-  },
-  {
-    id: 3,
-    userName: "pacPro2000",
-    score: "500",
-    health: "50",
-  },
-  {
-    id: 4,
-    userName: "jenG",
-    score: "859",
-    health: "65",
-  },
-];
-
-class GamePage extends Component {
+class Canvas extends Component {
   constructor(props) {
     super(props);
+    this.listen = this.listen.bind(this);
+    this.state = {
+      ready: false,
+      gameStarted: false,
+      gameInProgress: false,
+      gameEnded: false,
+      roomKey: this.props.roomKey,
+      name: this.props.name,
+      players: {},
+    };
   }
-  componentDidMount() {
-    const game = new Phaser.Game(config);
+
+  createGame(roomKey = this.state.roomKey, players = this.state.players) {
+    let name = this.state.name;
+    socket.emit("createRoom", roomKey, name);
+    socket.on("newPlayers", function (players) {
+      socket.to(roomKey).emit({ players: players });
+      this.setState({ players: players });
+    });
+  }
+
+  listenForJoin() {
+    let newPlayers = { ...this.state.players };
+    socket.on("playerJoin", function (player) {
+      newPlayers[player] = player;
+      this.setState({ players: newPlayers });
+      socket.emit("newPlayers", this.state.players);
+    });
+  }
+
+  joinGame() {
+    let roomKey = this.state.roomKey;
+    let name = this.state.name;
+    socket.emit("joinRoom", roomKey, name);
+    socket.on("newPlayers", function (players) {
+      socket.to(roomKey).emit({ players: players });
+      this.setState({ players: players });
+    });
+    socket.roomId = roomKey;
+  }
+
+  startGame() {
+    let room = this.state.roomKey;
+    this.setState({
+      gameStarted: true,
+      gameInProgress: true,
+    });
+    socket.emit("startGame", room);
   }
 
   render() {
@@ -72,4 +91,4 @@ class GamePage extends Component {
   }
 }
 
-export default GamePage;
+export default Canvas;

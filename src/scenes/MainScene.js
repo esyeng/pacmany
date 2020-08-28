@@ -24,12 +24,11 @@ export default class MainScene extends Phaser.Scene {
      * sockets --> room initialization
      */
 
-    socket.on("connect", function () {
-      gameKey = createGameKey();
-      console.log("Connected!");
-      console.log(`MAINSCENE ---> ${gameKey}`);
-      socket.emit("joinRoom", gameKey);
-    });
+    // socket.on("connect", function () {
+    //   console.log("Connected!");
+    //   console.log(`MAINSCENE ---> ${gameKey}`);
+    //   socket.emit("joinRoom", gameKey);
+    // });
 
     var defaultCategory = 0x0001;
     var redCategory = 0x0002;

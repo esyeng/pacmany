@@ -1,8 +1,7 @@
 import io from "socket.io-client";
-import createClientSocket from "socket.io-client";
 // import {players, roomCount} from "../../server/socket/index";
 
-export function generateGameKey() {
+export function createGameKey() {
   let key = "";
   let characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -15,8 +14,6 @@ export function generateGameKey() {
 
 const socket = io("http://localhost:8080/");
 
-socket.on("connect", (socket) => {
-  socket.emit("joinRoom", socket);
-});
+socket.on("connect", (socket) => {});
 
 export default socket;
