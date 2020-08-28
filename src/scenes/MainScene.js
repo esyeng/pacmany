@@ -6,7 +6,8 @@ import {
 } from "./Level.js";
 import MissPacMan from "../entity/MissPacMan.js";
 import Ghost from "../entity/Ghost.js";
-
+import socket, { createGameKey } from "./SocketHub";
+export let gameKey;
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super("MainScene");
@@ -19,7 +20,16 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    console.log("C-MainScene version >>> 18 <<<");
+    /**
+     * sockets --> room initialization
+     */
+
+    socket.on("connect", function () {
+      gameKey = createGameKey();
+      console.log("Connected!");
+      console.log(`MAINSCENE ---> ${gameKey}`);
+      socket.emit("joinRoom", gameKey);
+    });
 
     var defaultCategory = 0x0001;
     var redCategory = 0x0002;

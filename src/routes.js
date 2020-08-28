@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import HomePageContainer from "./components/HomePageContainer";
 import GamePage from "./components/GamePage";
-
+import { gameKey } from "./scenes/MainScene";
 /**
  * COMPONENT
  */
@@ -14,7 +14,7 @@ class Routes extends Component {
         <Router>
           <Switch>
             <Route exact path="/" component={HomePageContainer} />
-            <Route exact path="/room/:roomCode" component={GamePage} />
+            <Route exact path={`/room/:${gameKey}`} component={GamePage} />
             <Route exact path="/game" component={GamePage} />
           </Switch>
         </Router>

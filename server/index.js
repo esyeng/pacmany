@@ -39,7 +39,7 @@ app.use((err, req, res, next) => {
  * testingtestingggg
  */
 
-require("./socket/index")(io);
+// require("./socket/index")(io);
 
 server.listen(PORT, async () => {
   try {
@@ -49,4 +49,16 @@ server.listen(PORT, async () => {
   } catch (err) {
     console.error(err);
   }
+});
+let players = [];
+
+io.on("connection", function (socket) {
+  console.log("a new client has connected", socket.id);
+  socket.on("joinRoom", function (room) {
+    console.log(`User number ${socket.id} entered the room ${room}`);
+    console.log(players);
+  });
+  socket.on("disconnect", function () {
+    console.log("A user disconnected: " + socket.id);
+  });
 });
