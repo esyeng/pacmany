@@ -5,24 +5,28 @@ import { LeftSideBar } from "./LeftSideBar";
 import { RightSideBar } from "./RightSideBar";
 import { Navbar } from "./Navbar";
 import socket from "../scenes/SocketHub";
+import { Button, withStyles } from "@material-ui/core";
 
+const classes = useStyles(props);
 class Canvas extends Component {
   constructor(props) {
     super(props);
-    this.listen = this.listen.bind(this);
+    this.listenForJoin = this.listenForJoin.bind(this);
     this.state = {
       ready: false,
       gameStarted: false,
       gameInProgress: false,
       gameEnded: false,
-      roomKey: this.props.roomKey,
+      roomKey: this.props.gameCode,
       name: this.props.name,
       players: {},
+      playerCount: 0,
     };
   }
 
   createGame(roomKey = this.state.roomKey, players = this.state.players) {
     let name = this.state.name;
+    this.setState({ playerCount: playerCount++ });
     socket.emit("createRoom", roomKey, name);
     socket.on("newPlayers", function (players) {
       socket.to(roomKey).emit({ players: players });
@@ -30,19 +34,22 @@ class Canvas extends Component {
     });
   }
 
-  listenForJoin() {
-    let newPlayers = { ...this.state.players };
-    socket.on("playerJoin", function (player) {
-      newPlayers[player] = player;
-      this.setState({ players: newPlayers });
-      socket.emit("newPlayers", this.state.players);
-    });
-  }
+  // listenForJoin() {
+  //   let newPlayers = { ...this.state.players };
+  //   socket.on("playerJoin", function (player) {
+  //     newPlayers[player] = player;
+  //     this.setState({ players: newPlayers });
+  //     this.setState({playerCount: playerCount++})
+  //     socket.emit("newPlayers", this.state.players);
+  //     console.log()
+  //   });
+  // }
 
   joinGame() {
     let roomKey = this.state.roomKey;
     let name = this.state.name;
     socket.emit("joinRoom", roomKey, name);
+    this.setState({ playerCount: playerCount++ });
     socket.on("newPlayers", function (players) {
       socket.to(roomKey).emit({ players: players });
       this.setState({ players: players });
@@ -57,28 +64,42 @@ class Canvas extends Component {
       gameInProgress: true,
     });
     socket.emit("startGame", room);
+    const game = new Phaser.Game(config);
   }
 
   render() {
+    const { classes } = this.props;
     return (
       <div>
         <Navbar />
         <div style={{ display: "flex", flexDirection: "row" }}>
           <div>
-            <LeftSideBar
-              players={players}
-              roomCode={this.props.match.params.roomCode}
-            />
+            <LeftSideBar players={players} roomCode={this.state.roomKey} />
           </div>
-          <div
-            id="phaser-container"
-            style={{
-              width: "1024px",
-              height: "768px",
-              textAlign: "center",
-              justifyContent: "center",
-            }}
-          ></div>
+          {this.gameStarted ? (
+            <div
+              id="phaser-container"
+              style={{
+                width: "1024px",
+                height: "768px",
+                textAlign: "center",
+                justifyContent: "center",
+              }}
+            ></div>
+          ) : (
+            <div>
+              <h3>{`Waiting for game to start. Players: ${this.state.playerCount}`}</h3>
+
+              <Button
+                style={{ backgroundColor: "black" }}
+                className={classnames(classes.button, classes.startPlaying)}
+                onClick={this.startGame()}
+              >
+                All in!
+              </Button>
+            </div>
+          )}
+
           <div>
             <RightSideBar
               players={players}
@@ -91,4 +112,4 @@ class Canvas extends Component {
   }
 }
 
-export default Canvas;
+export default withStyles(styles)(Canvas);

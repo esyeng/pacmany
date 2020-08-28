@@ -61,14 +61,23 @@ const joinRoom = (socket, room, name) => {
     if (!room.playerCount > 4) {
       room.sockets.push(socket);
       room.playerCount++;
-      socket.join(room.key, function() {
-        room.playerCount === 0 ? room.
+      socket.join(room.key, function () {
         room.players[socket.id] = {
           x: 125,
           y: 233,
-          rotation: 0
-        }
-      })
+          rotation: 0,
+          name: name,
+          score: 0,
+          playerId: socket.id,
+          playerNumber: room.playerCount,
+        };
+        console.log(
+          socket.id,
+          `Player ${room.players[socket.id].playerNumber} entered the room`,
+          room.id
+        );
+      });
+      socket.emit("newPlayers", room.players);
     }
   }
 };
@@ -103,11 +112,18 @@ io.on("connection", function (socket) {
     joinRoom(socket, room, name);
   });
 
-  socket.on("joinRoom", function (room) {
-    console.log(`User number ${socket.id} entered the room ${room}`);
-    console.log(players);
+  socket.on("joinRoom", function (roomKey, name) {
+    const room = rooms[roomKey];
+    if (room) {
+      // socket.emit("playerJoin")
+      joinRoom(socket, room, name);
+    } else {
+      console.log(`Room ${roomKey} not found`);
+      socket.emit("wrongRoom", roomKey);
+    }
   });
   socket.on("disconnect", function () {
     console.log("A user disconnected: " + socket.id);
+    io.emit("disconnect", socket.id);
   });
 });
