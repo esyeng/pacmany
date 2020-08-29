@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
-import { Navbar } from "./components/Navbar";
 import HomePageContainer from "./components/HomePageContainer";
-import Canvas from "./components/GamePage";
+import GamePage from "./components/GamePage";
+
 /**
  * COMPONENT
  */
@@ -13,8 +13,8 @@ class Routes extends Component {
         <Router>
           <Switch>
             <Route exact path="/" component={HomePageContainer} />
-            <Route exact path="/room/:roomCode" component={Canvas} />
-            <Route exact path="/game" component={Canvas} />
+            <Route exact path="/room/:roomCode" component={GamePage} />
+            <Route exact path="/game" component={GamePage} />
           </Switch>
         </Router>
       </div>

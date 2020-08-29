@@ -46,57 +46,6 @@ app.use((err, req, res, next) => {
  * testingtestingggg
  *
  */
-
-// function joinUser(socketId, userName, roomName) {
-//   const user = {
-//     socketId,
-//     userName,
-//     roomName,
-//   };
-//   users.push(user);
-//   return user;
-// }
-
-// function removeUser(id) {
-//   const getID = users.socketID === id;
-//   const index = user.findIndex(getID);
-//   if (index !== -1) {
-//     return user.splice(index, 1)[0];
-//   }
-// }
-// ;
-
-const joinRoom = (socket, room, name) => {
-  console.log(`room is active: ${room.started}`);
-  if (!room.started) {
-    if (!room.playerCount > 4) {
-      room.sockets.push(socket);
-      room.playerCount++;
-      socket.join(room.key, function () {
-        room.players[socket.id] = {
-          x: 125,
-          y: 233,
-          rotation: 0,
-          name: name,
-          score: 0,
-          playerId: socket.id,
-          playerNumber: room.playerCount,
-        };
-        console.log(
-          socket.id,
-          `Player ${room.players[socket.id].playerNumber} entered the room`,
-          room.id
-        );
-      });
-      socket.emit("newPlayers", room.players);
-    } else {
-      alert("room full");
-    }
-  } else {
-    alert("game in progress");
-  }
-};
-
 class Room {
   constructor(roomKey) {
     this.key = roomKey;
@@ -107,37 +56,67 @@ class Room {
   }
 }
 
+function joinUser(socketId, roomKey, userName) {
+  const room = rooms[roomKey];
+  const user = {
+    socketId,
+    userName,
+    roomName,
+  };
+  users.push(user);
+  console.log(room.players);
+  room.players.push(user);
+  console.log(`Look at this fuckin user ==> ${user}`);
+  return user;
+}
+
+// function removeUser(id) {
+//   const getID = users.socketID === id;
+//   const index = user.findIndex(getID);
+//   if (index !== -1) {
+//     return user.splice(index, 1)[0];
+//   }
+// }
+// ;
+
+const joinRoom = (socket, key, playerName) => {
+  console.log(`room is: ${key}`);
+  // if (!room.playerCount > 4) {
+  joinUser(socket.id, key, playerName);
+  socket.emit("newPlayers", room.players);
+  // } else {
+  //   alert("room full");
+  // }
+};
+
 server.listen(PORT, async () => {
   try {
-    // await client.connect();
-    // collection = client.db("pacmany").collection("players");
     console.log(`Insert coin to play on port: ${PORT}`);
   } catch (err) {
     console.error(err);
   }
 });
-let players = [];
 
 io.on("connection", function (socket) {
   console.log("a new client has connected", socket.id);
 
   socket.on("createRoom", function (roomKey, name) {
-    let room = new Room(roomKey);
+    console.log("I heard you're trying to make a room");
+    room = new Room(roomKey);
     rooms[room] = room;
-    joinRoom(socket, room, name);
-    socket.emit("readyToStart");
+    joinRoom(socket, room.key, name);
   });
 
-  // socket.on("joinRoom", function (roomKey, name) {
-  //   const room = rooms[roomKey];
-  //   if (room) {
-  //     // socket.emit("playerJoin")
-  //     joinRoom(socket, room, name);
-  //   } else {
-  //     console.log(`Room ${roomKey} not found`);
-  //     socket.emit("wrongRoom", roomKey);
-  //   }
-  // });
+  socket.on("joinRoom", function (roomKey, name) {
+    const room = rooms[roomKey];
+    if (room) {
+      console.log(`player ${name} joining room ${roomKey}`);
+      joinRoom(socket, room.key, name);
+    } else {
+      console.log(`Room ${roomKey} not found`);
+      socket.emit("wrongRoom", roomKey);
+    }
+  });
   socket.on("disconnect", function () {
     console.log("A user disconnected: " + socket.id);
     io.emit("disconnect", socket.id);

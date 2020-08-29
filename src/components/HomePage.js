@@ -10,8 +10,7 @@ import Fade from "@material-ui/core/Fade";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
 import socket from "../scenes/SocketHub.js";
-let userName = prompt("Your Name, please");
-let roomName = prompt("room name");
+import CreateRoom, { newKey } from "./CreateRoom";
 
 class HomePage extends Component {
   constructor(props) {
@@ -21,23 +20,23 @@ class HomePage extends Component {
       openModal: false,
       showStartButton: true,
       openGameSettings: false,
-      gameCode: roomName,
+      gameCode: "",
       openJoinGameSettings: false,
-      name: "",
+      username: "",
     };
 
     this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
-    this.handleNameEntry = this.handleNameEntry.bind(this);
+    // this.handleNameEntry = this.handleNameEntry.bind(this);
     this.handleOpenGameSettings = this.handleOpenGameSettings.bind(this);
     this.handleCloseGameSettings = this.handleCloseGameSettings.bind(this);
-    this.generateGameCode = this.generateGameCode.bind(this);
-    this.listen = this.listen.bind(this);
-    this.createGame = this.createGame.bind(this);
+    // this.listen = this.listen.bind(this);
+    this.enterKey = this.enterKey.bind(this);
+    this.joinGame = this.joinGame.bind(this);
   }
 
   componentDidMount() {
-    this.listen();
+    // this.listen();
   }
 
   handleOpenModal() {
@@ -59,21 +58,18 @@ class HomePage extends Component {
       openModal: false,
       openGameSettings: true,
     });
-
     if (e.target.name === "joinGame") {
       this.setState({
         openJoinGameSettings: true,
       });
-    } else {
-      this.generateGameCode();
     }
   }
 
-  handleNameEntry(e) {
-    this.setState({
-      [e.target.name]: [e.target.name.value],
-    });
-  }
+  // handleNameEntry(e) {
+  //   this.setState({
+  //     [e.target.name]: [e.target.name.value],
+  //   });
+  // }
 
   handleCloseGameSettings() {
     this.setState({
@@ -83,52 +79,40 @@ class HomePage extends Component {
     });
   }
 
-  createGame(roomKey = this.state.gameCode, players = this.state.players) {
+  enterKey(e) {
+    this.setState({
+      gameCode: e.target.value,
+    });
+  }
+
+  joinGame() {
+    let gameCode = this.state.gameCode;
     let name = this.state.name;
+    socket.emit("joinRoom", gameCode, name);
     this.setState({ playerCount: playerCount++ });
-    socket.emit("createRoom", roomKey, name);
     socket.on("newPlayers", function (players) {
-      console.log(players);
-      // socket.to(roomKey).emit({ players: players });
       this.setState({ players: players });
     });
+    socket.roomId = roomKey;
   }
-
-  generateGameCode() {
-    let result = "";
-    let characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let charactersLength = characters.length;
-    for (let i = 0; i < 5; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    this.setState({
-      gameCode: result,
-    });
-  }
-
-  listen() {
-    // socket.on("wrongRoom", (roomId) => {
-    //   alert(`Game room: ${roomId} does not exist`);
-    // });
-    // socket.on("gameInProgress", (roomId) => {
-    //   alert(`Sorry, the game at ${roomId} already started. Where were you?`);
-    //   window.location.reload(false);
-    // });
-    // socket.on("returnToLobby", () => {
-    //   this.setState({ gameEnded: true });
-    // });
-    // socket.on("gameStarted", () => {
-    //   this.setState({ waitingForPlayers: false });
-    // });
-    socket.on("readyToStart", function () {
-      startGame();
-    });
-  }
+  // listen() {
+  //   socket.on("wrongRoom", (roomId) => {
+  //     alert(`Game room: ${roomId} does not exist`);
+  //   });
+  //   socket.on("gameInProgress", (roomId) => {
+  //     alert(`Sorry, the game at ${roomId} already started. Where were you?`);
+  //     window.location.reload(false);
+  //   });
+  //   socket.on("returnToLobby", () => {
+  //     this.setState({ gameEnded: true });
+  //   });
+  //   socket.on("gameStarted", () => {
+  //     this.setState({ waitingForPlayers: false });
+  //   });
+  // }
 
   render() {
     const { classes } = this.props;
-
     return (
       <div className={classes.gameHero}>
         <div className={classes.infoSection}>
@@ -187,7 +171,7 @@ class HomePage extends Component {
                 </Button>
                 <Button
                   name="joinGame"
-                  onClick={this.createGame}
+                  onClick={this.handleOpenGameSettings}
                   className={classes.modalButtons}
                 >
                   Join Existing Game
@@ -221,35 +205,22 @@ class HomePage extends Component {
                   {this.state.openJoinGameSettings ? (
                     <div>
                       <label>
-                        <strong>Code: </strong>
+                        <strong>Room Key: </strong>
                       </label>
                       <input
                         className={classes.inputField}
                         type="text"
                         name="name"
                         placeholder="Enter Game Code"
+                        onChange={this.enterKey}
                       />
                     </div>
                   ) : (
                     <div>
-                      <span className={classes.gameCodeHeader}>
-                        Your Game Code is{" "}
-                      </span>
-                      <strong>{this.state.gameCode}</strong>
+                      <CreateRoom />
                     </div>
                   )}
-                  <div>
-                    <label>
-                      <strong>Name: </strong>
-                    </label>
-                    <input
-                      className={classes.inputField}
-                      type="text"
-                      name="name"
-                      placeholder="Enter Player Name"
-                      onChange={this.handleNameEntry}
-                    />
-                  </div>
+
                   <Link to={`/room/${this.state.gameCode}`}>
                     <button className={classes.button}>
                       {this.state.openJoinGameSettings
@@ -266,7 +237,6 @@ class HomePage extends Component {
     );
   }
 }
-console.log(HomePage);
 
 HomePage.propTypes = {
   classes: PropTypes.object.isRequired,
