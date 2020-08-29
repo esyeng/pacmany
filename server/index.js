@@ -56,19 +56,21 @@ class Room {
   }
 }
 
-function joinUser(socketId, roomKey, userName) {
-  const room = rooms[roomKey];
-  const user = {
-    socketId,
-    userName,
-    roomName,
-  };
-  users.push(user);
-  console.log(room.players);
-  room.players.push(user);
-  console.log(`Look at this fuckin user ==> ${user}`);
-  return user;
-}
+// function joinUser(socketId, roomKey, userName) {
+//   const room = rooms[roomKey];
+//   console.log(socketId);
+//   console.log(userName);
+//   const user = {
+//     socketId,
+//     userName,
+//     roomKey,
+//   };
+//   users.push(user);
+//   console.log(room.players);
+//   room.players.push(user);
+//   console.log(`Look at this fuckin user ==> ${user}`);
+//   return user;
+// }
 
 // function removeUser(id) {
 //   const getID = users.socketID === id;
@@ -79,10 +81,10 @@ function joinUser(socketId, roomKey, userName) {
 // }
 // ;
 
-const joinRoom = (socket, key, playerName) => {
-  console.log(`room is: ${key}`);
+const joinRoom = (socket, room, playerName) => {
+  console.log(`room is: ${(room, room.key)}`);
   // if (!room.playerCount > 4) {
-  joinUser(socket.id, key, playerName);
+
   socket.emit("newPlayers", room.players);
   // } else {
   //   alert("room full");
@@ -100,18 +102,20 @@ server.listen(PORT, async () => {
 io.on("connection", function (socket) {
   console.log("a new client has connected", socket.id);
 
-  socket.on("createRoom", function (roomKey, name) {
+  socket.on("createRoom", function (roomKey) {
     console.log("I heard you're trying to make a room");
     room = new Room(roomKey);
+
     rooms[room] = room;
-    joinRoom(socket, room.key, name);
+    console.log(rooms);
+    joinRoom(socket, room);
   });
 
-  socket.on("joinRoom", function (roomKey, name) {
+  socket.on("joinRoom", function (roomKey) {
     const room = rooms[roomKey];
     if (room) {
-      console.log(`player ${name} joining room ${roomKey}`);
-      joinRoom(socket, room.key, name);
+      console.log(`player ${socket.id} joining room ${roomKey}`);
+      joinRoom(socket, room.key);
     } else {
       console.log(`Room ${roomKey} not found`);
       socket.emit("wrongRoom", roomKey);

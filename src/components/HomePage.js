@@ -201,8 +201,8 @@ class HomePage extends Component {
           >
             <Fade in={this.state.openGameSettings}>
               <div className={classes.paper}>
-                <form className={classes.form}>
-                  {this.state.openJoinGameSettings ? (
+                {this.state.openJoinGameSettings ? (
+                  <form className={classes.form}>
                     <div>
                       <label>
                         <strong>Room Key: </strong>
@@ -215,20 +215,19 @@ class HomePage extends Component {
                         onChange={this.enterKey}
                       />
                     </div>
-                  ) : (
-                    <div>
-                      <CreateRoom />
-                    </div>
-                  )}
-
-                  <Link to={`/room/${this.state.gameCode}`}>
-                    <button className={classes.button}>
-                      {this.state.openJoinGameSettings
-                        ? "Continue to Game..."
-                        : "Create Game"}
-                    </button>
-                  </Link>
-                </form>
+                  </form>
+                ) : (
+                  <div>
+                    <CreateRoom />
+                  </div>
+                )}
+                <Link to={`/room/${this.state.gameCode}`}>
+                  <button className={classes.button}>
+                    {this.state.openJoinGameSettings
+                      ? "Continue to Game..."
+                      : "Create Game"}
+                  </button>
+                </Link>
               </div>
             </Fade>
           </Modal>

@@ -238,9 +238,7 @@ generateGameCode() {
     for (let i = 0; i < 5; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
-    this.setState({
-      gameCode: result,
-    });
+    return result
   }
 
 import React, { Component } from "react";
