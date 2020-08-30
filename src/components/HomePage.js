@@ -19,23 +19,20 @@ class HomePage extends Component {
       openModal: false,
       showStartButton: true,
       openGameSettings: false,
-      gameCode: "",
+      gameCode: 0,
       openJoinGameSettings: false,
-      username: "",
     };
 
     this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
-    // this.handleNameEntry = this.handleNameEntry.bind(this);
     this.handleOpenGameSettings = this.handleOpenGameSettings.bind(this);
     this.handleCloseGameSettings = this.handleCloseGameSettings.bind(this);
-    // this.listen = this.listen.bind(this);
-    this.enterKey = this.enterKey.bind(this);
-    this.joinGame = this.joinGame.bind(this);
+    this.generateGameCode = this.generateGameCode.bind(this);
+    this.listen = this.listen.bind(this);
   }
 
   componentDidMount() {
-    // this.listen();
+    this.listen();
   }
 
   handleOpenModal() {
@@ -57,18 +54,15 @@ class HomePage extends Component {
       openModal: false,
       openGameSettings: true,
     });
+
     if (e.target.name === "joinGame") {
       this.setState({
         openJoinGameSettings: true,
       });
+    } else {
+      this.generateGameCode();
     }
   }
-
-  // handleNameEntry(e) {
-  //   this.setState({
-  //     [e.target.name]: [e.target.name.value],
-  //   });
-  // }
 
   handleCloseGameSettings() {
     this.setState({
@@ -78,40 +72,38 @@ class HomePage extends Component {
     });
   }
 
-  enterKey(e) {
+  generateGameCode() {
+    let result = "";
+    let characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let charactersLength = characters.length;
+    for (let i = 0; i < 5; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
     this.setState({
-      gameCode: e.target.value,
+      gameCode: result,
     });
   }
 
-  joinGame() {
-    let gameCode = this.state.gameCode;
-    let name = this.state.name;
-    socket.emit("joinRoom", gameCode, name);
-    this.setState({ playerCount: playerCount++ });
-    socket.on("newPlayers", function (players) {
-      this.setState({ players: players });
+  listen() {
+    socket.on("wrongRoom", (roomId) => {
+      alert(`Game room: ${roomId} does not exist`);
     });
-    socket.roomId = roomKey;
+    socket.on("gameInProgress", (roomId) => {
+      alert(`Sorry, the game at ${roomId} already started. Where were you?`);
+      window.location.reload(false);
+    });
+    socket.on("returnToLobby", () => {
+      this.setState({ gameEnded: true });
+    });
+    socket.on("gameStarted", () => {
+      this.setState({ waitingForPlayers: false });
+    });
   }
-  // listen() {
-  //   socket.on("wrongRoom", (roomId) => {
-  //     alert(`Game room: ${roomId} does not exist`);
-  //   });
-  //   socket.on("gameInProgress", (roomId) => {
-  //     alert(`Sorry, the game at ${roomId} already started. Where were you?`);
-  //     window.location.reload(false);
-  //   });
-  //   socket.on("returnToLobby", () => {
-  //     this.setState({ gameEnded: true });
-  //   });
-  //   socket.on("gameStarted", () => {
-  //     this.setState({ waitingForPlayers: false });
-  //   });
-  // }
 
   render() {
     const { classes } = this.props;
+
     return (
       <div className={classes.gameHero}>
         <div className={classes.infoSection}>
@@ -175,7 +167,7 @@ class HomePage extends Component {
                 >
                   Join Existing Game
                 </Button>
-                <Link to={`/game`}>
+                <Link to={`/room/${this.state.gameCode}`}>
                   <Button className={classes.modalButtons}>
                     Play on your own
                   </Button>
@@ -200,33 +192,46 @@ class HomePage extends Component {
           >
             <Fade in={this.state.openGameSettings}>
               <div className={classes.paper}>
-                {this.state.openJoinGameSettings ? (
-                  <form className={classes.form}>
+                <form className={classes.form}>
+                  {this.state.openJoinGameSettings ? (
                     <div>
                       <label>
-                        <strong>Room Key: </strong>
+                        <strong>Code: </strong>
                       </label>
                       <input
                         className={classes.inputField}
                         type="text"
                         name="name"
                         placeholder="Enter Game Code"
-                        onChange={this.enterKey}
                       />
                     </div>
-                  </form>
-                ) : (
+                  ) : (
+                    <div>
+                      <span className={classes.gameCodeHeader}>
+                        Your Game Code is{" "}
+                      </span>
+                      <strong>{this.state.gameCode}</strong>
+                    </div>
+                  )}
                   <div>
-                    <CreateRoom />
+                    <label>
+                      <strong>Name: </strong>
+                    </label>
+                    <input
+                      className={classes.inputField}
+                      type="text"
+                      name="name"
+                      placeholder="Enter Player Name"
+                    />
                   </div>
-                )}
-                <Link to={`/${this.state.gameCode}`}>
-                  <button className={classes.button}>
-                    {this.state.openJoinGameSettings
-                      ? "Continue to Game..."
-                      : "Create Game"}
-                  </button>
-                </Link>
+                  <Link to={`/room/${this.state.gameCode}`}>
+                    <button className={classes.button}>
+                      {this.state.openJoinGameSettings
+                        ? "Continue to Game..."
+                        : "Create Game"}
+                    </button>
+                  </Link>
+                </form>
               </div>
             </Fade>
           </Modal>
