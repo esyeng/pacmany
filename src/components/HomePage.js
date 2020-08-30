@@ -126,6 +126,15 @@ class HomePage extends Component {
             <ArrowRightAlt className={classes.buttonIcon} />
           </Button>
         </Link>
+        <Link to="demo">
+          <Button
+            style={{ backgroundColor: "black" }}
+            className={classnames(classes.button, classes.startPlaying)}
+          >
+            DEMO
+            <ArrowRightAlt className={classes.buttonIcon} />
+          </Button>
+        </Link>
         <div className={classes.gameActions}>
           <Button
             className={classnames(classes.button, classes.startPlaying)}

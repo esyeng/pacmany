@@ -25,6 +25,14 @@ class Canvas extends Component {
     this.startGame = this.startGame.bind(this);
   }
 
+  componentDidMount() {
+    socket.emit("getData");
+    socket.on("dataSent", function (data) {
+      this.players.push(data);
+      this.playerCount++;
+    });
+  }
+
   startGame() {
     let room = this.state.roomKey;
     this.setState({
@@ -46,12 +54,12 @@ class Canvas extends Component {
       <div>
         <Navbar />
         <div style={{ display: "flex", flexDirection: "row" }}>
-          <div>
+          {/* <div>
             <LeftSideBar
               players={this.state.players}
               roomCode={this.state.roomKey}
             />
-          </div>
+          </div> */}
           <div
             id="phaser-container"
             style={{
@@ -67,7 +75,6 @@ class Canvas extends Component {
               players={this.state.players}
               goBack={this.props.history.goBack}
               startGame={this.startGame}
-              // startGame={this.startGame}
             />
           </div>
         </div>

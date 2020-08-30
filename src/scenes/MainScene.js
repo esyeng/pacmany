@@ -6,13 +6,13 @@ import {
 } from "./Level.js";
 import MissPacMan from "../entity/MissPacMan.js";
 import Ghost from "../entity/Ghost.js";
-import socket, { createGameKey } from "./SocketHub";
 import socket from "./SocketHub";
-let players = {};
-let userName = prompt("Your Name, please");
-let roomName = prompt("room name");
-let chat = prompt("your message to other players, please");
-let ID = "";
+const players = [{ id: 1 }, { id: 2 }]; // test
+// let players = [];
+// let userName = prompt("Your Name, please");
+// let roomName = prompt("room name");
+// let chat = prompt("your message to other players, please");
+// let ID = "";
 
 const message = "hANDWRITTED HARDCODED STRING MESSAGE from MainScene.js";
 let counter = 0;
@@ -32,17 +32,54 @@ export default class MainScene extends Phaser.Scene {
     /**
      * sockets --> room initialization
      */
-    socket.emit("join room", { userName, roomName });
+    // socket.emit("join room", { userName, roomName });
     socket.on("send data", (data) => {
       ID = data.id;
       console.log("my ID: " + ID);
     });
-    socket.emit("chat message", chat);
-    socket.on("chat message", function (data) {
-      console.log(data.data + ":" + data.name);
-      console.log(data);
-    });
+    // socket.emit("chat message", chat);
+    // socket.on("startGame", function () {
+    //   socket.emit("get players");
+    //   socket.on("send players", function (users) {
+    //     players = [...users];
+    //   });
+    // });
 
+    // if (players.length > 1) {
+    //   let num = players.length;
+    //   players.forEach(player, (num) => {
+    //     if (num === 2) {
+    //       this.two = new MissPacMan({
+    //         scene: this,
+    //         x: 245,
+    //         y: 374,
+    //         texture: "pacman_c",
+    //         frame: "p_right_1",
+    //       });
+    //       this.add.existing(this.two);
+    //     }
+    //     if (num === 3) {
+    //       this.three = new MissPacMan({
+    //         scene: this,
+    //         x: 210,
+    //         y: 374,
+    //         texture: "pacman_c",
+    //         frame: "p_right_1",
+    //       });
+    //       this.add.existing(this.three);
+    //     }
+    //     if (num === 4) {
+    //       this.four = new MissPacMan({
+    //         scene: this,
+    //         x: 230,
+    //         y: 374,
+    //         texture: "pacman_c",
+    //         frame: "p_right_1",
+    //       });
+    //       this.add.existing(this.four);
+    //     }
+    //   });
+    // }
     var defaultCategory = 0x0001;
     var redCategory = 0x0002;
     var greenCategory = 0x0004;
@@ -100,6 +137,7 @@ export default class MainScene extends Phaser.Scene {
   update() {
     this.player.update();
     this.blinky.update();
+    // this.two.update();
     // this.pinky.update();
     // this.clyde.update();
     // this.inky.update();

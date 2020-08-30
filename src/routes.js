@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
 import HomePageContainer from "./components/HomePageContainer";
 import GamePage from "./components/GamePage";
-
+import Demo from "./components/Demo";
 /**
  * COMPONENT
  */
@@ -13,6 +13,7 @@ class Routes extends Component {
         <Router>
           <Switch>
             <Route exact path="/" component={HomePageContainer} />
+            <Route exact path="/demo" component={Demo} />
             <Route exact path="/room/:roomCode" component={GamePage} />
             <Route exact path="/game" component={GamePage} />
           </Switch>
