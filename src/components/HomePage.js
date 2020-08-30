@@ -10,7 +10,6 @@ import Fade from "@material-ui/core/Fade";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
 import socket from "../scenes/SocketHub.js";
-import CreateRoom, { newKey } from "./CreateRoom";
 
 class HomePage extends Component {
   constructor(props) {
@@ -176,7 +175,7 @@ class HomePage extends Component {
                 >
                   Join Existing Game
                 </Button>
-                <Link to={`/room/${this.state.gameCode}`}>
+                <Link to={`/game`}>
                   <Button className={classes.modalButtons}>
                     Play on your own
                   </Button>
@@ -221,7 +220,7 @@ class HomePage extends Component {
                     <CreateRoom />
                   </div>
                 )}
-                <Link to={`/room/${this.state.gameCode}`}>
+                <Link to={`/${this.state.gameCode}`}>
                   <button className={classes.button}>
                     {this.state.openJoinGameSettings
                       ? "Continue to Game..."

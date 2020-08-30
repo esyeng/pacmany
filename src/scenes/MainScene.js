@@ -7,7 +7,16 @@ import {
 import MissPacMan from "../entity/MissPacMan.js";
 import Ghost from "../entity/Ghost.js";
 import socket, { createGameKey } from "./SocketHub";
-export let gameKey;
+import socket from "./SocketHub";
+let players = {};
+let userName = prompt("Your Name, please");
+let roomName = prompt("room name");
+let chat = prompt("your message to other players, please");
+let ID = "";
+
+const message = "hANDWRITTED HARDCODED STRING MESSAGE from MainScene.js";
+let counter = 0;
+
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super("MainScene");
@@ -23,12 +32,16 @@ export default class MainScene extends Phaser.Scene {
     /**
      * sockets --> room initialization
      */
-
-    // socket.on("connect", function () {
-    //   console.log("Connected!");
-    //   console.log(`MAINSCENE ---> ${gameKey}`);
-    //   socket.emit("joinRoom", gameKey);
-    // });
+    socket.emit("join room", { userName, roomName });
+    socket.on("send data", (data) => {
+      ID = data.id;
+      console.log("my ID: " + ID);
+    });
+    socket.emit("chat message", chat);
+    socket.on("chat message", function (data) {
+      console.log(data.data + ":" + data.name);
+      console.log(data);
+    });
 
     var defaultCategory = 0x0001;
     var redCategory = 0x0002;

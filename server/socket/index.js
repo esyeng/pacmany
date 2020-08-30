@@ -1,67 +1,81 @@
-// let players = [];
-// let roomCount = 0;
+let players = [];
+let roomCount = 0;
+let userName = "";
+let users = [];
+let thisRoom = "";
+function joinUser(socketId, userName, roomName) {
+  const user = {
+    socketId,
+    userName,
+    roomName,
+  };
+  users.push(user);
+  return user;
+}
 
-// module.exports = (io) => {
-//   players,
-//     roomCount,
-//     io.on("connection", (socket) => {
-//       console.log("connected", socket.id);
-//       socket.on("gameload", () => {
-//         io.broadcast.emit("currentPlayers", players);
-//       });
-//       socket.on("joinRoom", (socket) => {
-//         console.log(`User number ${socket.id} entered the game`);
-//         switch (socket) {
-//           case roomCount === 0:
-//             const player1 = {
-//               port: 1,
-//               id: socket.id,
-//             };
-//             socket.broadcast.emit("newPlayer", player1);
-//             players.push(player1);
-//             roomCount++;
-//           case roomCount === 1:
-//             const player2 = {
-//               port: 2,
-//               id: socket.id,
-//             };
-//             socket.broadcast.emit("newPlayer", player2);
-//             players.push(player2);
-//             roomCount++;
-//           case roomCount === 2:
-//             const player3 = {
-//               port: 3,
-//               id: socket.id,
-//             };
-//             socket.broadcast.emit("newPlayer", player3);
-//             players.push(player3);
-//           case roomCount === 3:
-//             const player4 = {
-//               port: 4,
-//               id: socket.id,
-//             };
-//             socket.broadcast.emit("newPlayer", player4);
-//             players.push(player4);
-//             roomCount++;
-//           case roomCount === 4:
-//             console.log("Sorry, this room is PACed");
-//             return "Sorry, this room is PACed";
-//         }
-//         players[roomCount] = {
-//           rotation: 0,
-//           x: Math.floor(Math.random() * 700) + 50,
-//           y: Math.floor(Math.random() * 500) + 50,
-//         };
-//       });
-//       socket.on("disconnect", () => {
-//         console.log("User left: " + socket.id);
-//         if (!players.length) {
-//           console.log(`guest ${socket.id} disconnected`);
-//           io.emit("disconnect", socket.id);
-//         } else {
-//           players = players.filter((player) => player.id !== socket.id);
-//           io.emit("disconnect", socket.id);
-//         }
-//       });
-//     });
-// };
+// function removeUser(id) {
+//   const getID = users.socketID === id;
+//   const index = users.indexOf(getID);
+//   if (index !== -1) {
+//     return user.splice(index, 1)[0];
+//   }
+// }
+function getName(id) {
+  const arr = users.filter((obj) => obj.socketID === id);
+  if (arr) {
+    return arr[0].userName;
+  }
+}
+
+module.exports = (io) => {
+  io.on("connection", function (socket) {
+    console.log("A user connected: " + socket.id);
+
+    socket.on("join room", function (data) {
+      console.log("in room server");
+      let newUser = joinUser(socket.id, data.userName, data.roomName);
+      socket.emit("send data", {
+        id: socket.id,
+        userName: newUser.userName,
+        roomName: newUser.roomName,
+      });
+      thisRoom = newUser.roomName;
+      console.log(newUser);
+      console.log("Total users :", users);
+      socket.join(newUser.roomName);
+    });
+
+    socket.on("chat message", function (data) {
+      const name = getName(data.id);
+      io.to(thisRoom).emit("chat message", { data: data, name: name });
+      // io.to(thisRoom).emit("chat message", { data: data, id: socket.id });
+      io.to(thisRoom).emit("chat message", { data: data, id: socket.id });
+    });
+
+    socket.on("subscribe", function (data) {
+      console.log("subscription in index.js-sockets-server-side");
+      const room_data = JSON.parse(data);
+      userName = room_data.userName;
+      const roomName = room_data.roomName;
+
+      socket.join(`${roomName}`);
+      console.log(`userName : ${userName} joined Room Name : ${roomName}`);
+      io.to(`${roomName}`).emit("newUserToGameRoom", userName);
+    });
+
+    socket.on("unsubscribe", function (data) {
+      console.log("un-subscribe sockets-server-side");
+      const room_data = JSON.parse(data);
+      userName = room_data.userName;
+      const roomName = room_data.roomName;
+
+      console.log(`userName : ${userName} left Room Name : ${roomName}`);
+      socket.broadcast.to(`${roomName}`).emit("userLeftGameRoom", userName);
+      socket.leave(`${roomName}`);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("one of the sockets disconnected");
+    });
+  });
+};

@@ -29,7 +29,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// app.use("/", require("./socket/index"));
+app.use("/", require("./socket/index"));
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
@@ -46,83 +46,3 @@ app.use((err, req, res, next) => {
  * testingtestingggg
  *
  */
-class Room {
-  constructor(roomKey) {
-    this.key = roomKey;
-    this.playerCount = 0;
-    this.sockets = [];
-    this.players = {};
-    this.started = false;
-  }
-}
-
-// function joinUser(socketId, roomKey, userName) {
-//   const room = rooms[roomKey];
-//   console.log(socketId);
-//   console.log(userName);
-//   const user = {
-//     socketId,
-//     userName,
-//     roomKey,
-//   };
-//   users.push(user);
-//   console.log(room.players);
-//   room.players.push(user);
-//   console.log(`Look at this fuckin user ==> ${user}`);
-//   return user;
-// }
-
-// function removeUser(id) {
-//   const getID = users.socketID === id;
-//   const index = user.findIndex(getID);
-//   if (index !== -1) {
-//     return user.splice(index, 1)[0];
-//   }
-// }
-// ;
-
-const joinRoom = (socket, room, playerName) => {
-  console.log(`room is: ${(room, room.key)}`);
-  // if (!room.playerCount > 4) {
-
-  socket.emit("newPlayers", room.players);
-  // } else {
-  //   alert("room full");
-  // }
-};
-
-server.listen(PORT, async () => {
-  try {
-    console.log(`Insert coin to play on port: ${PORT}`);
-  } catch (err) {
-    console.error(err);
-  }
-});
-
-io.on("connection", function (socket) {
-  console.log("a new client has connected", socket.id);
-
-  socket.on("createRoom", function (roomKey) {
-    console.log("I heard you're trying to make a room");
-    room = new Room(roomKey);
-
-    rooms[room] = room;
-    console.log(rooms);
-    joinRoom(socket, room);
-  });
-
-  socket.on("joinRoom", function (roomKey) {
-    const room = rooms[roomKey];
-    if (room) {
-      console.log(`player ${socket.id} joining room ${roomKey}`);
-      joinRoom(socket, room.key);
-    } else {
-      console.log(`Room ${roomKey} not found`);
-      socket.emit("wrongRoom", roomKey);
-    }
-  });
-  socket.on("disconnect", function () {
-    console.log("A user disconnected: " + socket.id);
-    io.emit("disconnect", socket.id);
-  });
-});
