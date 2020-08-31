@@ -4,8 +4,8 @@ import createClientSocket from "socket.io-client";
 
 const socket = io("http://localhost:8080/");
 
-socket.on("connection", (socket) => {
-  console.log("YEEEEEEEG");
+socket.on("connect", (socket) => {
+  socket.emit("joinRoom", socket);
 });
 
 export default socket;

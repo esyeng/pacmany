@@ -62,13 +62,6 @@ export default class Ghost extends Phaser.Physics.Matter.Sprite {
     return this.body.velocity;
   }
 
-
-  update() {
-    // console.log("update Ghost");
-    //console.log("MissPacMan Location>>>", "x:", this.x, " y:", this.y);
-    if (this.x < 2) this.x = 470;
-    if (this.x > 486) this.x = 10;
-
   get dead() {
     return this.health <= 0;
   }
@@ -77,7 +70,6 @@ export default class Ghost extends Phaser.Physics.Matter.Sprite {
     this._position.set(this.x, this.y);
     return this._position;
   }
-
 
   hit = () => {
     this.health--;

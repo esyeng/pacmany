@@ -61,10 +61,6 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     return this.body.velocity;
   }
 
-
-  update() {
-    // console.log("update MissPacMan");
-
   get dead() {
     return this.health <= 0;
   }
@@ -80,7 +76,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   };
 
   update(scene) {
-
+    console.log("update MissPacMan", this.score);
     //console.log("MissPacMan Location>>>", "x:", this.x, " y:", this.y);
 
     if (this.x < 2) this.x = 470;
