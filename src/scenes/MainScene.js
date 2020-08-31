@@ -6,6 +6,16 @@ import {
 } from "./Level.js";
 import MissPacMan from "../entity/MissPacMan.js";
 import Ghost from "../entity/Ghost.js";
+import socket from "./SocketHub";
+const players = [{ id: 1 }, { id: 2 }]; // test
+// let players = [];
+// let userName = prompt("Your Name, please");
+// let roomName = prompt("room name");
+// let chat = prompt("your message to other players, please");
+// let ID = "";
+
+const message = "hANDWRITTED HARDCODED STRING MESSAGE from MainScene.js";
+let counter = 0;
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
@@ -19,7 +29,22 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    console.log("C-MainScene version >>> 18 <<<");
+    /**
+     * sockets --> room initialization
+     */
+    // socket.emit("join room", { userName, roomName });
+    socket.on("send data", (data) => {
+      ID = data.id;
+      console.log("my ID: " + ID);
+    });
+
+    // socket.emit("chat message", chat);
+    // socket.on("startGame", function () {
+    //   socket.emit("get players");
+    //   socket.on("send players", function (users) {
+    //     players = [...users];
+    //   });
+    // });
 
     var defaultCategory = 0x0001;
     var redCategory = 0x0002;
@@ -78,6 +103,7 @@ export default class MainScene extends Phaser.Scene {
   update() {
     this.player.update();
     this.blinky.update();
+    // this.two.update();
     // this.pinky.update();
     // this.clyde.update();
     // this.inky.update();

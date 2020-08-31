@@ -5,6 +5,14 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 
+const players = [
+  {
+    id: 1,
+    userName: "missPac",
+    score: "1000",
+    health: "100",
+  },
+];
 const pacmanImages = [
   "https://www.mapleprimes.com/view.aspx?sf=95737/279328/pacman.jpg",
   "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS5ndsOlRu4gM81pI6QGupkpKh0glBDW0ywHw&usqp=CAU",
@@ -41,7 +49,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const LeftSideBar = (props) => {
-  const { players, roomCode } = props;
+  const roomCode = props.roomCode;
+  //const players = props.players || [];
   const classes = useStyles();
   const theme = useTheme();
   return (
@@ -68,32 +77,36 @@ export const LeftSideBar = (props) => {
         </Card>
       ) : (
         <div>
-          {players.map((player) => {
-            return (
-              <Card className={classes.root}>
-                <div className={classes.details}>
-                  <CardContent className={classes.content}>
-                    <Typography component="h5" variant="h5">
-                      Player {player.id}
-                    </Typography>
-                    <Typography variant="subtitle1" color="textSecondary">
-                      @{player.userName}
-                    </Typography>
-                    <Typography variant="subtitle1" color="textSecondary">
-                      Score: {player.score}
-                    </Typography>
-                    <Typography variant="subtitle1" color="textSecondary">
-                      Health: {player.health}
-                    </Typography>
-                  </CardContent>
-                </div>
-                <CardMedia
-                  className={classes.cover}
-                  image={pacmanImages[player.id - 1]}
-                />
-              </Card>
-            );
-          })}
+          {players ? (
+            players.map((player) => {
+              return (
+                <Card className={classes.root}>
+                  <div className={classes.details}>
+                    <CardContent className={classes.content}>
+                      <Typography component="h5" variant="h5">
+                        Player {player.id}
+                      </Typography>
+                      <Typography variant="subtitle1" color="textSecondary">
+                        @{player.userName}
+                      </Typography>
+                      <Typography variant="subtitle1" color="textSecondary">
+                        Score: {player.score}
+                      </Typography>
+                      <Typography variant="subtitle1" color="textSecondary">
+                        Health: {player.health}
+                      </Typography>
+                    </CardContent>
+                  </div>
+                  <CardMedia
+                    className={classes.cover}
+                    image={pacmanImages[player.id - 1]}
+                  />
+                </Card>
+              );
+            })
+          ) : (
+            <div style={{ color: "white" }}>No Players </div>
+          )}
         </div>
       )}
     </div>

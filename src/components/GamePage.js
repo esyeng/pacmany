@@ -1,56 +1,65 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component } from "react";
 import Phaser from "phaser";
 import { config } from "../config/config";
 import { LeftSideBar } from "./LeftSideBar";
 import { RightSideBar } from "./RightSideBar";
 import { Navbar } from "./Navbar";
+import socket from "../scenes/SocketHub";
+import { Button, withStyles } from "@material-ui/core";
+import styles from "./styles";
 
-const players = [
-  {
-    id: 1,
-    userName: "missPac",
-    score: "1000",
-    health: "100",
-  },
-  {
-    id: 2,
-    userName: "pac-wizard20",
-    score: "900",
-    health: "90",
-  },
-  {
-    id: 3,
-    userName: "pacPro2000",
-    score: "500",
-    health: "50",
-  },
-  {
-    id: 4,
-    userName: "jenG",
-    score: "859",
-    health: "65",
-  },
-];
-
-class GamePage extends Component {
+class Canvas extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      ready: false,
+      gameStarted: false,
+      gameInProgress: false,
+      gameEnded: false,
+      roomKey: this.props.match.params,
+      name: this.props.name,
+      players: [],
+      playerCount: 0,
+    };
+    this.getGameStarted = this.getGameStarted.bind(this);
+    this.startGame = this.startGame.bind(this);
   }
+
   componentDidMount() {
+    socket.emit("getData");
+    socket.on("dataSent", function (data) {
+      this.players.push(data);
+      this.playerCount++;
+    });
+  }
+
+  startGame() {
+    let room = this.state.roomKey;
+    this.setState({
+      gameStarted: true,
+      gameInProgress: true,
+    });
+    socket.emit("startGame", room);
     const game = new Phaser.Game(config);
   }
 
+  getGameStarted() {
+    if (!this.gameStarted) {
+      this.setState({ gameStarted: true });
+    }
+  }
   render() {
+    const { classes } = this.props;
     return (
       <div>
         <Navbar />
         <div style={{ display: "flex", flexDirection: "row" }}>
-          <div>
+          {/* <div>
             <LeftSideBar
-              players={players}
-              roomCode={this.props.match.params.roomCode}
+              players={this.state.players}
+              roomCode={this.state.roomKey}
             />
-          </div>
+          </div> */}
           <div
             id="phaser-container"
             style={{
@@ -60,10 +69,12 @@ class GamePage extends Component {
               justifyContent: "center",
             }}
           ></div>
+
           <div>
             <RightSideBar
-              players={players}
+              players={this.state.players}
               goBack={this.props.history.goBack}
+              startGame={this.startGame}
             />
           </div>
         </div>
@@ -72,4 +83,4 @@ class GamePage extends Component {
   }
 }
 
-export default GamePage;
+export default withStyles(styles)(Canvas);

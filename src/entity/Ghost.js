@@ -73,7 +73,7 @@ export default class Ghost extends Phaser.Physics.Matter.Sprite {
 
   hit = () => {
     this.health--;
-    console.log("G hit");
+    // console.log("G hit");
   };
 
   attack = (target) => {

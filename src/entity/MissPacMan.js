@@ -72,7 +72,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
 
   hit = () => {
     this.health--;
-    console.log("PC hit");
+    // console.log("PC hit");
   };
 
   update(scene) {
