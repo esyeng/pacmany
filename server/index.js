@@ -1,7 +1,5 @@
-/**********************
- *
- * SERVER GLOBAL VARS
- */
+// /**********************
+
 const path = require("path");
 const PORT = 8080;
 const express = require("express");
@@ -13,13 +11,10 @@ const bodyParser = require("body-parser");
 
 module.exports = app;
 
-/**********************************************
- * EXPRESS ROUTER
- */
-// Logging middleware
-app.use(morgan("dev"));
+let players = [];
 
-// Serving static files
+// /**********************************************
+app.use(morgan("dev"));
 app.use(express.static("public"));
 app.use(express.static("dist"));
 app.use(express.json());

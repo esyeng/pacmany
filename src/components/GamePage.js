@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import Phaser from "phaser";
 import { config } from "../config/config";
+
+import io from "socket.io-client";
+const socket = io("http://localhost:8080");
+
 import { LeftSideBar } from "./LeftSideBar";
 import { RightSideBar } from "./RightSideBar";
 import { Navbar } from "./Navbar";
@@ -8,7 +12,9 @@ import socket from "../scenes/SocketHub";
 import { Button, withStyles } from "@material-ui/core";
 import styles from "./styles";
 
-class Canvas extends Component {
+
+class GamePage extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -26,6 +32,7 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
+
     socket.emit("getData");
     socket.on("dataSent", function (data) {
       this.players.push(data);
@@ -40,7 +47,8 @@ class Canvas extends Component {
       gameInProgress: true,
     });
     socket.emit("startGame", room);
-    const game = new Phaser.Game(config);
+
+
   }
 
   getGameStarted() {
