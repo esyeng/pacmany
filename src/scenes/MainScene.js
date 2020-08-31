@@ -37,6 +37,7 @@ export default class MainScene extends Phaser.Scene {
       ID = data.id;
       console.log("my ID: " + ID);
     });
+
     // socket.emit("chat message", chat);
     // socket.on("startGame", function () {
     //   socket.emit("get players");
@@ -45,41 +46,6 @@ export default class MainScene extends Phaser.Scene {
     //   });
     // });
 
-    // if (players.length > 1) {
-    //   let num = players.length;
-    //   players.forEach(player, (num) => {
-    //     if (num === 2) {
-    //       this.two = new MissPacMan({
-    //         scene: this,
-    //         x: 245,
-    //         y: 374,
-    //         texture: "pacman_c",
-    //         frame: "p_right_1",
-    //       });
-    //       this.add.existing(this.two);
-    //     }
-    //     if (num === 3) {
-    //       this.three = new MissPacMan({
-    //         scene: this,
-    //         x: 210,
-    //         y: 374,
-    //         texture: "pacman_c",
-    //         frame: "p_right_1",
-    //       });
-    //       this.add.existing(this.three);
-    //     }
-    //     if (num === 4) {
-    //       this.four = new MissPacMan({
-    //         scene: this,
-    //         x: 230,
-    //         y: 374,
-    //         texture: "pacman_c",
-    //         frame: "p_right_1",
-    //       });
-    //       this.add.existing(this.four);
-    //     }
-    //   });
-    // }
     var defaultCategory = 0x0001;
     var redCategory = 0x0002;
     var greenCategory = 0x0004;

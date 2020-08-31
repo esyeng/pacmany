@@ -61,7 +61,7 @@ server.listen(PORT, async () => {
   }
 });
 
-let players = [];
+let players = {};
 let roomCount = 0;
 let userName = "";
 let users = [];
@@ -150,11 +150,35 @@ io.on("connection", function (socket) {
 
   socket.on("disconnect", () => {
     console.log("one of the sockets disconnected");
+    delete players[socket.id];
+    io.emit("disconnect", socket.id);
   });
 
   // GAME LOGIC
 
-  socket.on("get players", function () {
-    socket.broadcast.emit("send players", users);
-  });
+  /****
+   *
+   *
+   players[socket.id] = {
+     rotation: 0,
+     x: Math.floor(Math.random() * 700) + 50,
+     y: Math.floor(Math.random() * 500) + 50,
+     playerId: socket.id,
+    };
+    // send the players object to the new player
+    socket.emit("currentPlayers", players);
+    // update all other players of the new player
+    socket.broadcast.emit("newPlayer", players[socket.id]);
+    socket.on("get players", function () {
+      socket.broadcast.emit("send players", users);
+    });
+
+    socket.on("playerMovement", function (movementData) {
+      players[socket.id].x = movementData.x;
+      players[socket.id].y = movementData.y;
+      players[socket.id].rotation = movementData.rotation;
+      // emit a message to all players about the player that moved
+      socket.broadcast.emit("playerMoved", players[socket.id]);
+    });
+    */
 });
