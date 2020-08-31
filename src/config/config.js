@@ -19,7 +19,7 @@ export const config = {
     // },dss
     default: "matter",
     matter: {
-      debug: true,
+      debug: false,
       gravity: { y: 0 },
     },
   },

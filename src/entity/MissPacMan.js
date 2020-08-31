@@ -55,8 +55,6 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
       "pacman_c_anim",
       "/assets/maps/pacman/pacman_c_anim.json"
     );
-
-    scene.load.sound("win", "/assets/audio/win.mp3");
   }
 
   get velocity() {
@@ -82,7 +80,6 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     //console.log("MissPacMan Location>>>", "x:", this.x, " y:", this.y);
     if (this.score >= 584) {
       window.location.reload();
-      this.sound.play("win");
       alert("Somebody won!");
     }
     if (this.x < 2) this.x = 470;
