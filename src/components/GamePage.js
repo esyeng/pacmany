@@ -1,10 +1,6 @@
 import React, { Component, useState, useEffect } from "react";
 import Phaser from "phaser";
 import { config } from "../config/config";
-
-import io from "socket.io-client";
-const socket = io("http://localhost:8080");
-
 import { LeftSideBar } from "./LeftSideBar";
 import { RightSideBar } from "./RightSideBar";
 import { Navbar } from "./Navbar";
@@ -36,13 +32,11 @@ const players = [
   },
 ];
 
-
 class GamePage extends Component {
   constructor(props) {
     super(props);
   }
   componentDidMount() {
-
     const game = new Phaser.Game(config);
   }
 
