@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Button, withStyles } from "@material-ui/core";
 import PropTypes from "prop-types";
-
 import ArrowRightAlt from "@material-ui/icons/ArrowRightAlt";
 import styles from "./styles";
 import Modal from "@material-ui/core/Modal";
@@ -9,7 +8,10 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
-import socket from "../scenes/SocketHub.js";
+import io from "socket.io-client";
+import Client from "../client";
+// import startGame from "../startGame";
+import game from "../config/config";
 
 class HomePage extends Component {
   constructor(props) {
@@ -19,20 +21,29 @@ class HomePage extends Component {
       openModal: false,
       showStartButton: true,
       openGameSettings: false,
-      gameCode: 0,
+      roomName: 0,
       openJoinGameSettings: false,
+      players: [],
+      playerCount: 0,
     };
 
     this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleOpenGameSettings = this.handleOpenGameSettings.bind(this);
     this.handleCloseGameSettings = this.handleCloseGameSettings.bind(this);
-    this.generateGameCode = this.generateGameCode.bind(this);
-    this.listen = this.listen.bind(this);
+    this.generateRoomName = this.generateRoomName.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.joinGame = this.joinGame.bind(this);
+    this.addNewPlayer = this.addNewPlayer.bind(this);
   }
 
-  componentDidMount() {
-    this.listen();
+  addNewPlayer() {
+    console.log("in add new player");
+    console.log("game in add new player: ", game);
+    // game.state.add("Game", Game);
+    // game.state.start("Game");
+
+    // game.stage.disableVisibilityChange = true;
   }
 
   handleOpenModal() {
@@ -49,7 +60,14 @@ class HomePage extends Component {
     });
   }
 
+  handleInputChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  }
+
   handleOpenGameSettings(e) {
+    console.log(e.target);
     this.setState({
       openModal: false,
       openGameSettings: true,
@@ -60,7 +78,7 @@ class HomePage extends Component {
         openJoinGameSettings: true,
       });
     } else {
-      this.generateGameCode();
+      this.generateRoomName();
     }
   }
 
@@ -72,7 +90,7 @@ class HomePage extends Component {
     });
   }
 
-  generateGameCode() {
+  generateRoomName() {
     let result = "";
     let characters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -81,24 +99,28 @@ class HomePage extends Component {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     this.setState({
-      gameCode: result,
+      roomName: result,
     });
   }
 
-  listen() {
-    socket.on("wrongRoom", (roomId) => {
-      alert(`Game room: ${roomId} does not exist`);
+  joinGame() {
+    console.log("in join game");
+    let data = {
+      id: 0,
+      userName: this.state.userName,
+      roomName: this.state.roomName,
+    };
+    console.log(this.state.userName);
+    socket.emit("join room", data);
+    socket.on("send data", (data) => {
+      players.push(data);
+      playerCount++;
     });
-    socket.on("gameInProgress", (roomId) => {
-      alert(`Sorry, the game at ${roomId} already started. Where were you?`);
-      window.location.reload(false);
+    console.log(players);
+    socket.on("show players", function (users) {
+      players = [...users];
     });
-    socket.on("returnToLobby", () => {
-      this.setState({ gameEnded: true });
-    });
-    socket.on("gameStarted", () => {
-      this.setState({ waitingForPlayers: false });
-    });
+    this.setState({ players: players });
   }
 
   render() {
@@ -121,6 +143,7 @@ class HomePage extends Component {
           <Button
             style={{ backgroundColor: "black" }}
             className={classnames(classes.button, classes.startPlaying)}
+            onClick={this.addNewPlayer}
           >
             TEST
             <ArrowRightAlt className={classes.buttonIcon} />
@@ -169,14 +192,14 @@ class HomePage extends Component {
                 >
                   Start New Game
                 </Button>
-                <Button
+                <button
                   name="joinGame"
                   onClick={this.handleOpenGameSettings}
                   className={classes.modalButtons}
                 >
                   Join Existing Game
-                </Button>
-                <Link to={`/room/${this.state.gameCode}`}>
+                </button>
+                <Link to={`/room/${this.state.roomName}`}>
                   <Button className={classes.modalButtons}>
                     Play on your own
                   </Button>
@@ -201,7 +224,7 @@ class HomePage extends Component {
           >
             <Fade in={this.state.openGameSettings}>
               <div className={classes.paper}>
-                <form className={classes.form}>
+                <form onSubmit={this.joinGame} className={classes.form}>
                   {this.state.openJoinGameSettings ? (
                     <div>
                       <label>
@@ -210,16 +233,17 @@ class HomePage extends Component {
                       <input
                         className={classes.inputField}
                         type="text"
-                        name="name"
+                        name="roomName"
+                        onChange={this.handleInputChange}
                         placeholder="Enter Game Code"
                       />
                     </div>
                   ) : (
                     <div>
-                      <span className={classes.gameCodeHeader}>
+                      <span className={classes.roomNameHeader}>
                         Your Game Code is{" "}
                       </span>
-                      <strong>{this.state.gameCode}</strong>
+                      <strong>{this.state.roomName}</strong>
                     </div>
                   )}
                   <div>
@@ -229,11 +253,12 @@ class HomePage extends Component {
                     <input
                       className={classes.inputField}
                       type="text"
-                      name="name"
+                      name="userName"
+                      onChange={this.handleInputChange}
                       placeholder="Enter Player Name"
                     />
                   </div>
-                  <Link to={`/room/${this.state.gameCode}`}>
+                  <Link to={`/room/${this.state.roomName}`}>
                     <button className={classes.button}>
                       {this.state.openJoinGameSettings
                         ? "Continue to Game..."

@@ -3,6 +3,8 @@ import "phaser";
 export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   constructor(data) {
     let { scene, x, y, texture, frame } = data;
+
+    console.log("scene: ", scene);
     super(scene.matter.world, x, y, texture, frame);
     this.scene.add.existing(this);
     this.name = "player";

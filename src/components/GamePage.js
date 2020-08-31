@@ -26,8 +26,11 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
+    const game = new Phaser.Game(config);
+
     socket.emit("getData");
     socket.on("dataSent", function (data) {
+      console.log("players: ", this.players);
       this.players.push(data);
       this.playerCount++;
     });
@@ -39,8 +42,7 @@ class Canvas extends Component {
       gameStarted: true,
       gameInProgress: true,
     });
-    socket.emit("startGame", room);
-    const game = new Phaser.Game(config);
+    // const game = new Phaser.Game(config);
   }
 
   getGameStarted() {
@@ -69,7 +71,6 @@ class Canvas extends Component {
               justifyContent: "center",
             }}
           ></div>
-
           <div>
             <RightSideBar
               players={this.state.players}
