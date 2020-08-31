@@ -1,67 +1,81 @@
 import React, { Component, useState, useEffect } from "react";
 import Phaser from "phaser";
 import { config } from "../config/config";
+
 import io from "socket.io-client";
 const socket = io("http://localhost:8080");
 
+import { LeftSideBar } from "./LeftSideBar";
+import { RightSideBar } from "./RightSideBar";
+import { Navbar } from "./Navbar";
+
+const players = [
+  {
+    id: 1,
+    userName: "missPac",
+    score: "1000",
+    health: "100",
+  },
+  {
+    id: 2,
+    userName: "pac-wizard20",
+    score: "900",
+    health: "90",
+  },
+  {
+    id: 3,
+    userName: "pacPro2000",
+    score: "500",
+    health: "50",
+  },
+  {
+    id: 4,
+    userName: "jenG",
+    score: "859",
+    health: "65",
+  },
+];
+
+
 class GamePage extends Component {
+  constructor(props) {
+    super(props);
+  }
   componentDidMount() {
-    // console.log("In GamePage CDM");
+
     const game = new Phaser.Game(config);
   }
+
   render() {
-    return <div style={{ color: "white" }}></div>;
+    return (
+      <div>
+        <Navbar />
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <div>
+            <LeftSideBar
+              players={players}
+              roomCode={this.props.match.params.roomCode}
+            />
+          </div>
+          <div
+            id="phaser-container"
+            style={{
+              width: "1024px",
+              height: "768px",
+              textAlign: "center",
+              justifyContent: "center",
+            }}
+          ></div>
+          <div>
+            <RightSideBar
+              players={players}
+              goBack={this.props.history.goBack}
+            />
+          </div>
+        </div>
+      </div>
+    );
   }
 }
-
-// export default function GamePage() {
-//   const [game, setGame] = useState("");
-//   const [initialize, setInitialize] = useState(false);
-
-//   useEffect(() => {
-//     if (initialize) {
-//       setGame(new Phaser.Game(config));
-//     }
-//   }, [initialize]);
-//   return (
-// <div>
-//   <div style={{ border: "2px solid black" }}>high scores</div>
-//   <div
-//     style={{
-//       width: "1000px",
-//       height: "1000px",
-//       border: "2px solid black",
-//     }}
-//   >
-//     <IonPhaser game={game} initialize={true} />
-//   </div>
-//   <div style={{ border: "2px solid black" }}>chat room</div>
-//   <div className=" ">
-//     <a href="#1" className="bttn">
-//       Destroy
-//     </a>
-//   </div>
-// </div>
-
-//     <div
-//       style={{
-//         width: "200px",
-//         height: "200px",
-//         border: "2px solid black",
-//         display: "flex",
-//         flexDirection: "row",
-//       }}
-//     >
-//       <div className="flex">
-//         <a href="#1" className="bttn" onClick={() => setInitialize(true)}>
-//           Initialize
-//         </a>
-//       </div>
-//       <button>hi</button>
-//       <IonPhaser game={game} initialize={initialize} />
-//       <div>button</div>
-//     </div>
-//   );
-// }
 
 export default GamePage;

@@ -1,5 +1,9 @@
 import "phaser";
-import { baseLevelPreload } from "./Level.js";
+import {
+  baseLevelPreload,
+  baseLevelCreate,
+  addLevelResources,
+} from "./Level.js";
 import MissPacMan from "../entity/MissPacMan.js";
 import Ghost from "../entity/Ghost.js";
 import { hash } from "../components/HomePage";
@@ -19,13 +23,14 @@ export default class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    // console.log("P-MainScene version >>> 5 <<<");
+
     baseLevelPreload(this);
     MissPacMan.preload(this);
     Ghost.preload(this);
   }
 
   create() {
+
     socket.emit("join room", { userName, roomName });
     socket.on("send data", (data) => {
       ID = data.id;
@@ -52,6 +57,19 @@ export default class MainScene extends Phaser.Scene {
 
     this.addResources();
 
+
+    console.log("C-MainScene version >>> 18 <<<");
+
+    var defaultCategory = 0x0001;
+    var redCategory = 0x0002;
+    var greenCategory = 0x0004;
+    var blueCategory = 0x0008;
+
+    baseLevelCreate(this);
+
+    addLevelResources(this);
+
+
     this.inky = new Ghost({
       scene: this,
       x: 191,
@@ -76,6 +94,7 @@ export default class MainScene extends Phaser.Scene {
       frame: "clyde",
     });
     this.add.existing(this.clyde);
+
     this.blinky = new Ghost({
       scene: this,
       x: 225,
@@ -93,6 +112,7 @@ export default class MainScene extends Phaser.Scene {
       texture: "pacman_c",
       frame: "p_right_1",
     });
+
 
     // this.player2 = new Phaser.Physics.Matter.Sprite(
     //   this.matter.world,
@@ -169,10 +189,15 @@ export default class MainScene extends Phaser.Scene {
     });
   }
 
+    this.add.existing(this.player);
+  } // end of create
+
+
   update() {
     this.player.update();
-
-    // this.scene.launch("SocketHub");
-    //this.scene.launch("TestMap");
+    this.blinky.update();
+    // this.pinky.update();
+    // this.clyde.update();
+    // this.inky.update();
   }
 }
