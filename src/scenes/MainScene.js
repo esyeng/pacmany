@@ -68,28 +68,26 @@ export default class MainScene extends Phaser.Scene {
     });
     this.add.existing(this.blinky);
 
-    console.log("CLIENT: ", Client.Client.askNewPlayer);
-
     Client.Client.askNewPlayer();
   }
 
   update() {
-    console.log("SOCKET", this);
-    // if (this.player0) {
-    //   this.player0.update(this);
-    // }
+    let id = Client.Client.socket.id;
+    if (this.player0 && this.player0.sId === id) {
+      this.player0.update(this);
+    }
 
-    // if (this.player1) {
-    //   this.player1.update(this);
-    // }
+    if (this.player1 && this.player1.sId === id) {
+      this.player1.update(this);
+    }
 
-    // if (this.player2) {
-    //   this.player2.update(this);
-    // }
+    if (this.player2 && this.player2.sId === id) {
+      this.player2.update(this);
+    }
 
-    // if (this.player3) {
-    //   this.player3.update(this);
-    // }
+    if (this.player3 && this.player3.sId === id) {
+      this.player3.update(this);
+    }
 
     //ghost update
     this.blinky.update();
@@ -99,23 +97,17 @@ export default class MainScene extends Phaser.Scene {
     Client.Client.sendClick(pointer.worldX, pointer.worldY);
   };
 
-  addNewPlayer(id, x, y) {
+  addNewPlayer(id, x, y, sId) {
     console.log("main scene add new player: ", this);
     this[`player${id}`] = new MissPacMan({
       scene: this,
       x: x,
       y: y,
       id: id,
+      sId: sId,
       texture: "pacman_c",
       frame: "p_right_1",
     });
-
-    // this.inputKeys = scene.input.keyboard.addKeys({
-    //   up: Phaser.Input.Keyboard.KeyCodes.W,
-    //   down: Phaser.Input.Keyboard.KeyCodes.S,
-    //   left: Phaser.Input.Keyboard.KeyCodes.A,
-    //   right: Phaser.Input.Keyboard.KeyCodes.D,
-    // });
 
     console.log("this is new player; ", this[`player${id}`]);
     this.add.existing(this[`player${id}`]);

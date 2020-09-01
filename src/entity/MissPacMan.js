@@ -1,22 +1,25 @@
 import "phaser";
+var Client = require("../client");
 
 export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   constructor(data) {
-    let { scene, x, y, id, texture, frame } = data;
+    let { scene, x, y, id, sId, texture, frame } = data;
 
-    super(scene.matter.world, x, y, id, texture, frame);
+    super(scene.matter.world, x, y, id, sId, texture, frame);
     this.scene.add.existing(this);
     this.name = `player${id}`;
     this.health = 1;
     this.score = 0;
+    this.id = id;
+    this.sId = sId;
 
     this._position = new Phaser.Math.Vector2(this.x, this.y);
-    // this.inputKeys = scene.input.keyboard.addKeys({
-    //   up: Phaser.Input.Keyboard.KeyCodes.W,
-    //   down: Phaser.Input.Keyboard.KeyCodes.S,
-    //   left: Phaser.Input.Keyboard.KeyCodes.A,
-    //   right: Phaser.Input.Keyboard.KeyCodes.D,
-    // });
+    this.inputKeys = scene.input.keyboard.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.W,
+      down: Phaser.Input.Keyboard.KeyCodes.S,
+      left: Phaser.Input.Keyboard.KeyCodes.A,
+      right: Phaser.Input.Keyboard.KeyCodes.D,
+    });
 
     var defaultCategory = 0x0001;
     var redCategory = 0x0002;
@@ -83,32 +86,17 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     if (this.x < 2) this.x = 470;
     if (this.x > 486) this.x = 10;
 
-    // emit player movement
-    var x = this.x;
-    var y = this.y;
-    if (
-      this.oldPosition &&
-      (x !== this.oldPosition.x || y !== this.oldPosition.y)
-    ) {
-      this.socket.emit("playerMovement", { id, x: this.x, y: this.y });
-    }
-
-    // save old position data
-    this.oldPosition = {
-      x: this.x,
-      y: this.y,
-    };
-
     const speed = 2.5;
     let playerVelocity = new Phaser.Math.Vector2();
-    if (scene.inputKeys.left.isDown) {
+    if (this.inputKeys.left.isDown) {
       playerVelocity.x = -1;
-    } else if (scene.inputKeys.right.isDown) {
+      movePlayer();
+    } else if (this.inputKeys.right.isDown) {
       playerVelocity.x = 1;
     }
-    if (scene.inputKeys.up.isDown) {
+    if (this.inputKeys.up.isDown) {
       playerVelocity.y = -1;
-    } else if (scene.inputKeys.down.isDown) {
+    } else if (this.inputKeys.down.isDown) {
       playerVelocity.y = 1;
     }
 
@@ -133,6 +121,9 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     }
   } // end of updates
 
+  movePlayer() {
+    Client.Client.playerMoved(this.x, this.y, this.id);
+  }
   CreatePickupCollisions(playerCollider) {
     this.scene.matterCollision.addOnCollideStart({
       objectA: [playerCollider],

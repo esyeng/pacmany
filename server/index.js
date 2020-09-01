@@ -14,7 +14,7 @@ const server = require("http").Server(app);
 const io = require("socket.io").listen(server);
 
 module.exports = app;
-var players = {};
+var players = [];
 
 /**********************************************
  * EXPRESS ROUTER
@@ -62,12 +62,12 @@ io.on("connection", function (socket) {
       id: server.lastPlayerID++,
       x: server.startCoordinates[server.lastPlayerID - 1][0],
       y: server.startCoordinates[server.lastPlayerID - 1][1],
+      sId: "",
     };
 
     console.log("sending new player info: ", socket.player);
 
     socket.emit("allplayers", getAllPlayers());
-    socket.broadcast.emit("newplayer", socket.player);
 
     // socket.on("playerMovement", function (movementData) {
     //   players[id].x = movementData.x;
@@ -77,12 +77,13 @@ io.on("connection", function (socket) {
     //   socket.broadcast.emit("playerMoved", players[id]);
     // });
 
-    // socket.on("click", function (data) {
-    //   console.log("click to " + data.x + ", " + data.y);
-    //   socket.player.x = data.x;
-    //   socket.player.y = data.y;
-    //   io.emit("move", socket.player);
-    // });
+    socket.on("playerMoved", function (data) {
+      console.log("player moved data: ", data);
+      // console.log("moved to " + data.x + ", " + data.y + "player id: ", data.id);
+      // socket.player.x = data.x;
+      // socket.player.y = data.y;
+      // io.emit("move", socket.player);
+    });
   });
 
   socket.on("test", function () {
@@ -100,7 +101,10 @@ function getAllPlayers() {
     );
 
     var player = io.sockets.connected[socketID].player;
-    if (player) players[player.id] = player;
+    if (player) {
+      player.sId = io.sockets.connected[socketID].id;
+      players.push(player);
+    }
   });
   console.log("in get all players: ", players);
 
