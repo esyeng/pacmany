@@ -42,7 +42,6 @@ class HomePage extends Component {
     console.log("game in add new player: ", game);
     // game.state.add("Game", Game);
     // game.state.start("Game");
-
     // game.stage.disableVisibilityChange = true;
   }
 

@@ -2,7 +2,7 @@ import io from "socket.io-client";
 // import { game } from "../src/components/HomePage";
 import game from "./startGame";
 
-console.log("game: ", game);
+console.log("window main scene: ", window.MainScene);
 var Client = {};
 Client.socket = io.connect();
 
@@ -18,19 +18,28 @@ Client.askNewPlayer = function () {
   Client.socket.emit("newplayer");
 };
 
+Client.sendClick = function (x, y) {
+  Client.socket.emit("click", { x: x, y: y });
+};
+
 Client.socket.on("newplayer", function (data) {
+  console.log("GOT NEW PLAYER");
   console.log(
     "*************response from server after new playr is emmitted: ",
     data
   );
-  game.scene.keys.MainScene.addNewPlayer(data.id, data.x, data.y);
+  window.MainScene.addNewPlayer(data.id, data.x, data.y);
 });
 
 Client.socket.on("allplayers", function (data) {
-  console.log("temp: ", game.scene.keys.MainScene.addNewPlayer);
+  console.log("socket emitted all players");
   for (var i = 0; i < data.length; i++) {
-    game.scene.keys.MainScene.addNewPlayer(data[i].id, data[i].x, data[i].y);
+    window.MainScene.addNewPlayer(data[i].id, data[i].x, data[i].y);
   }
+
+  Client.socket.on("move", function (data) {
+    window.MainScene.movePlayer(data.id, data.x, data.y);
+  });
 });
 
 export { Client };

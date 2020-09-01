@@ -9,153 +9,125 @@ import Ghost from "../entity/Ghost.js";
 
 var Client = require("../client");
 
-// export default class MainScene extends Phaser.Scene {
-//   constructor() {
-//     super("MainScene");
-//   }
+export default class MainScene extends Phaser.Scene {
+  constructor() {
+    super("MainScene");
+    if (window) {
+      window.MainScene = this;
+    }
+  }
 
-//   preload() {
-//     baseLevelPreload(game);
-//     MissPacMan.preload(game);
-//     Ghost.preload(game);
-//   }
+  preload() {
+    baseLevelPreload(this);
+    MissPacMan.preload(this);
+    Ghost.preload(this);
+  }
 
-//   create() {
-//     console.log("game IN MAIN SCENE: ", game);
-//     var defaultCategory = 0x0001;
-//     var redCategory = 0x0002;
-//     var greenCategory = 0x0004;
-//     var blueCategory = 0x0008;
+  create() {
+    console.log("this IN MAIN SCENE: ", this);
+    var defaultCategory = 0x0001;
+    var redCategory = 0x0002;
+    var greenCategory = 0x0004;
+    var blueCategory = 0x0008;
 
-//     baseLevelCreate(game);
+    baseLevelCreate(this);
 
-//     addLevelResources(game);
+    addLevelResources(this);
 
-//     game.inky = new Ghost({
-//       scene: game,
-//       x: 191,
-//       y: 232,
-//       texture: "ghosts",
-//       frame: "inky",
-//     });
-//     game.add.existing(game.inky);
-//     game.pinky = new Ghost({
-//       scene: game,
-//       x: 220,
-//       y: 232,
-//       texture: "ghosts",
-//       frame: "pinky",
-//     });
-//     game.add.existing(game.pinky);
-//     game.clyde = new Ghost({
-//       scene: game,
-//       x: 250,
-//       y: 232,
-//       texture: "ghosts",
-//       frame: "clyde",
-//     });
-//     game.add.existing(game.clyde);
+    this.inky = new Ghost({
+      scene: this,
+      x: 191,
+      y: 232,
+      texture: "ghosts",
+      frame: "inky",
+    });
+    this.add.existing(this.inky);
+    this.pinky = new Ghost({
+      scene: this,
+      x: 220,
+      y: 232,
+      texture: "ghosts",
+      frame: "pinky",
+    });
+    this.add.existing(this.pinky);
+    this.clyde = new Ghost({
+      scene: this,
+      x: 250,
+      y: 232,
+      texture: "ghosts",
+      frame: "clyde",
+    });
+    this.add.existing(this.clyde);
 
-//     game.blinky = new Ghost({
-//       scene: game,
-//       x: 225,
-//       y: 185,
-//       texture: "ghosts",
-//       frame: "blinky",
-//     });
-//     game.add.existing(game.blinky);
+    this.blinky = new Ghost({
+      scene: this,
+      x: 225,
+      y: 185,
+      texture: "ghosts",
+      frame: "blinky",
+    });
+    this.add.existing(this.blinky);
 
-//     console.log("CLIENT: ", Client.Client.askNewPlayer);
+    console.log("CLIENT: ", Client.Client.askNewPlayer);
 
-//     Client.Client.askNewPlayer();
+    Client.Client.askNewPlayer();
+  }
 
-//     // here we are creating miss pac-man
-//     // game.player = new MissPacMan({
-//     //   scene: game,
-//     //   x: 223,
-//     //   y: 374,
-//     //   texture: "pacman_c",
-//     //   frame: "p_right_1",
-//     // });
-//     // game.add.existing(game.player);
-//   } // end of create
+  update() {
+    console.log("SOCKET", this);
+    // if (this.player0) {
+    //   this.player0.update(this);
+    // }
 
-//   update() {
-//     // game.player.update();
-//     game.blinky.update();
-//     // game.two.update();
-//     // game.pinky.update();
-//     // game.clyde.update();
-//     // game.inky.update();
-//   }
+    // if (this.player1) {
+    //   this.player1.update(this);
+    // }
 
-//   addNewPlayer(id, x, y) {
-//   console.log("main scene add new player: ", game);
-//   game[`player${id}`] = new MissPacMan({
-//     scene: game,
-//     x: x,
-//     y: y,
-//     texture: "pacman_c",
-//     frame: "p_right_1",
-//   });
+    // if (this.player2) {
+    //   this.player2.update(this);
+    // }
 
-//   console.log("game is new player; ", game[`player${id}`]);
-//   game.add.existing(game[`player${id}`]);
-// }
-// }
+    // if (this.player3) {
+    //   this.player3.update(this);
+    // }
 
-import game from "../startGame";
+    //ghost update
+    this.blinky.update();
+  }
 
-var MainScene = {};
+  getCoordinates = function (layer, pointer) {
+    Client.Client.sendClick(pointer.worldX, pointer.worldY);
+  };
 
-// MainScene.init = function () {
-//   game.stage.disableVisibilityChange = true;
-// };
+  addNewPlayer(id, x, y) {
+    console.log("main scene add new player: ", this);
+    this[`player${id}`] = new MissPacMan({
+      scene: this,
+      x: x,
+      y: y,
+      id: id,
+      texture: "pacman_c",
+      frame: "p_right_1",
+    });
 
-MainScene.preload = function () {
-  baseLevelPreload(game);
-  MissPacMan.preload(game);
-  Ghost.preload(game);
-};
+    // this.inputKeys = scene.input.keyboard.addKeys({
+    //   up: Phaser.Input.Keyboard.KeyCodes.W,
+    //   down: Phaser.Input.Keyboard.KeyCodes.S,
+    //   left: Phaser.Input.Keyboard.KeyCodes.A,
+    //   right: Phaser.Input.Keyboard.KeyCodes.D,
+    // });
 
-MainScene.create = function () {
-  console.log("game IN MAIN SCENE: ", game);
+    console.log("this is new player; ", this[`player${id}`]);
+    this.add.existing(this[`player${id}`]);
+    console.log(this);
+  }
 
-  baseLevelCreate(game);
-
-  addLevelResources(game);
-
-  game.blinky = new Ghost({
-    scene: game,
-    x: 225,
-    y: 185,
-    texture: "ghosts",
-    frame: "blinky",
-  });
-
-  game.add.existing(game.blinky);
-
-  console.log("CLIENT: ", Client.Client.askNewPlayer);
-
-  Client.Client.askNewPlayer();
-};
-
-MainScene.update = function () {
-  game.blinky.update();
-};
-
-MainScene.addNewPlayer = function (id, x, y) {
-  console.log("main scene add new player: ", game);
-  game[`player${id}`] = new MissPacMan({
-    scene: game,
-    x: x,
-    y: y,
-    texture: "pacman_c",
-    frame: "p_right_1",
-  });
-
-  console.log("game is new player; ", game[`player${id}`]);
-  game.add.existing(game[`player${id}`]);
-};
-
-export default MainScene;
+  movePlayer(id, x, y) {
+    var player = this.player[id];
+    var distance = Phaser.Math.distance(player.x, player.y, x, y);
+    var tween = game.add.tween(player);
+    var duration = distance * 10;
+    tween.to({ x: x, y: y }, duration);
+    tween.start();
+  }
+}

@@ -2,21 +2,21 @@ import "phaser";
 
 export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   constructor(data) {
-    let { scene, x, y, texture, frame } = data;
+    let { scene, x, y, id, texture, frame } = data;
 
-    console.log("scene: ", scene);
-    super(scene.matter.world, x, y, texture, frame);
+    super(scene.matter.world, x, y, id, texture, frame);
     this.scene.add.existing(this);
-    this.name = "player";
+    this.name = `player${id}`;
     this.health = 1;
     this.score = 0;
+
     this._position = new Phaser.Math.Vector2(this.x, this.y);
-    this.inputKeys = scene.input.keyboard.addKeys({
-      up: Phaser.Input.Keyboard.KeyCodes.W,
-      down: Phaser.Input.Keyboard.KeyCodes.S,
-      left: Phaser.Input.Keyboard.KeyCodes.A,
-      right: Phaser.Input.Keyboard.KeyCodes.D,
-    });
+    // this.inputKeys = scene.input.keyboard.addKeys({
+    //   up: Phaser.Input.Keyboard.KeyCodes.W,
+    //   down: Phaser.Input.Keyboard.KeyCodes.S,
+    //   left: Phaser.Input.Keyboard.KeyCodes.A,
+    //   right: Phaser.Input.Keyboard.KeyCodes.D,
+    // });
 
     var defaultCategory = 0x0001;
     var redCategory = 0x0002;
@@ -78,24 +78,37 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   };
 
   update(scene) {
-    console.log("update MissPacMan", this.score);
-    //console.log("MissPacMan Location>>>", "x:", this.x, " y:", this.y);
+    console.log("MissPacMan Location>>>", "x:", this.x, " y:", this.y);
 
     if (this.x < 2) this.x = 470;
     if (this.x > 486) this.x = 10;
 
-    //this.anims.play("pacman_right", true);
+    // emit player movement
+    var x = this.x;
+    var y = this.y;
+    if (
+      this.oldPosition &&
+      (x !== this.oldPosition.x || y !== this.oldPosition.y)
+    ) {
+      this.socket.emit("playerMovement", { id, x: this.x, y: this.y });
+    }
+
+    // save old position data
+    this.oldPosition = {
+      x: this.x,
+      y: this.y,
+    };
 
     const speed = 2.5;
     let playerVelocity = new Phaser.Math.Vector2();
-    if (this.inputKeys.left.isDown) {
+    if (scene.inputKeys.left.isDown) {
       playerVelocity.x = -1;
-    } else if (this.inputKeys.right.isDown) {
+    } else if (scene.inputKeys.right.isDown) {
       playerVelocity.x = 1;
     }
-    if (this.inputKeys.up.isDown) {
+    if (scene.inputKeys.up.isDown) {
       playerVelocity.y = -1;
-    } else if (this.inputKeys.down.isDown) {
+    } else if (scene.inputKeys.down.isDown) {
       playerVelocity.y = 1;
     }
 
