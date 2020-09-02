@@ -14,7 +14,7 @@ const server = require("http").Server(app);
 const io = require("socket.io").listen(server);
 
 module.exports = app;
-var players = [];
+//var players = [];
 
 /**********************************************
  * EXPRESS ROUTER
@@ -66,7 +66,7 @@ io.on("connection", function (socket) {
     };
 
     console.log("sending new player info: ", socket.player);
-
+    socket.broadcast.emit("newplayer", socket.player);
     socket.emit("allplayers", getAllPlayers());
 
     // socket.on("playerMovement", function (movementData) {
@@ -76,29 +76,28 @@ io.on("connection", function (socket) {
     //   // emit a message to all players about the player that moved
     //   socket.broadcast.emit("playerMoved", players[id]);
     // });
-    // socket.broadcast.emit("newplayer", socket.player);
 
-    socket.on("playerMoved", function (data) {
-      let notUpdatedPlayer = players.filter((player) => player.id === data.id);
-      console.log("notUpdatedPlayer player: ", notUpdatedPlayer);
+    // socket.on("playerMoved", function (data) {
+    //   let notUpdatedPlayer = players.filter((player) => player.id === data.id);
+    //   console.log("notUpdatedPlayer player: ", notUpdatedPlayer);
 
-      console.log("players before update: ", players);
+    //   console.log("players before update: ", players);
 
-      updatePlayer(data);
-      let updatedPlayer = players.filter((player) => player.id === data.id);
+    //   updatePlayer(data);
+    //   let updatedPlayer = players.filter((player) => player.id === data.id);
 
-      console.log("updtated player: ", updatePlayer);
+    //   console.log("updtated player: ", updatePlayer);
 
-      console.log("players after update: ", players);
+    //   console.log("players after update: ", players);
 
-      console.log("socket.player: ", socket.player);
-      socket.broadcast.emit("movePlayer", socket.player);
-    });
+    //   console.log("socket.player: ", socket.player);
+    //   socket.broadcast.emit("movePlayer", socket.player);
+    // });
   });
 
-  socket.on("test", function () {
-    console.log("test received");
-  });
+  // socket.on("test", function () {
+  //   console.log("test received");
+  // });
 });
 
 function updatePlayer(data) {
@@ -110,7 +109,7 @@ function updatePlayer(data) {
       io.sockets.connected[socketID].player
     );
 
-    var player = io.sockets.connected[socketID].player;
+    let player = io.sockets.connected[socketID].player;
     if (player) {
       player.x = data.x;
       player.y = data.y;
@@ -119,18 +118,21 @@ function updatePlayer(data) {
 }
 
 function getAllPlayers() {
+  let players = [];
   Object.keys(io.sockets.connected).forEach(function (socketID) {
-    console.log(
-      "socket: ",
-      io.sockets.connected[socketID].id,
-      ": ",
-      io.sockets.connected[socketID].player
-    );
+    // console.log(
+    //   "socket: ",
+    //   io.sockets.connected[socketID].id,
+    //   ": ",
+    //   io.sockets.connected[socketID].player
+    // );
 
-    var player = io.sockets.connected[socketID].player;
+    let player = io.sockets.connected[socketID].player;
     if (player) {
       player.sId = io.sockets.connected[socketID].id;
+      //if (!players.includes(player.sId)) {
       players.push(player);
+      // }
     }
   });
   console.log("in get all players: ", players);
