@@ -128,4 +128,11 @@ export default class MainScene extends Phaser.Scene {
     window.MainScene[`player${id}`].x = x;
     window.MainScene[`player${id}`].y = y;
   }
+
+  eraseDot(x, y, id) {
+    console.log("erase dot main scene", this.map.objects[0].objects);
+    window.MainScene.resources[id].visible = "false";
+    // window.MainScene[`player${id}`].x = x;
+    // window.MainScene[`player${id}`].y = y;
+  }
 }

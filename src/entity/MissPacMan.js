@@ -117,7 +117,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   };
 
   update(scene, idx) {
-    console.log("MissPacMan update>>>", idx);
+    //console.log("MissPacMan update>>>", idx);
 
     if (this.x < 2) this.x = 470;
     if (this.x > 486) this.x = 10;
@@ -165,7 +165,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   } // end of updates
 
   movePlayer() {
-    console.log("in move player");
+    //console.log("in move player");
     Client.Client.playerMoved(this.x, this.y, this.id);
   }
 

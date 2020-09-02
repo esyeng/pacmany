@@ -19,21 +19,26 @@ Client.askNewPlayer = function () {
 };
 
 Client.playerMoved = function (x, y, id) {
-  console.log("IN client player moved");
+  // console.log("IN client player moved");
   Client.socket.emit("playerMoved", { x: x, y: y, id: id });
 };
 
+Client.dotEaten = function (x, y, id) {
+  console.log("IN client dot eaten");
+  Client.socket.emit("dotEaten", { x: x, y: y, id: id });
+};
+
 Client.socket.on("newplayer", function (data) {
-  console.log("GOT NEW PLAYER");
-  console.log(
-    "*************response from server after new playr is emmitted: ",
-    data
-  );
+  // console.log("GOT NEW PLAYER");
+  // console.log(
+  //   "*************response from server after new playr is emmitted: ",
+  //   data
+  // );
   window.MainScene.addNewPlayer(data.id, data.x, data.y, data.sId);
 });
 
 Client.socket.on("allplayers", function (data) {
-  console.log("socket emitted all players");
+  //console.log("socket emitted all players");
   for (var i = 0; i < data.length; i++) {
     window.MainScene.addNewPlayer(
       data[i].id,
@@ -44,14 +49,14 @@ Client.socket.on("allplayers", function (data) {
   }
 
   Client.socket.on("movePlayer", function (data) {
-    console.log("IN PLAYER MOVEEEEEED");
+    //console.log("IN PLAYER MOVEEEEEED");
     window.MainScene.movePlayer(data.id, data.x, data.y);
-    //window.MainScene.update(data.id, data.x, data.y);
   });
 
-  // Client.socket.on("move", function (data) {
-  //   console.log("data: ", data);
-  // });
+  Client.socket.on("dotEaten", function (data) {
+    console.log("client dot eaten");
+    window.MainScene.eraseDot(data.x, data.y, data.id);
+  });
 });
 
 export { Client };

@@ -94,6 +94,10 @@ io.on("connection", function (socket) {
       // console.log("socket.player: ", socket.player);
       socket.broadcast.emit("movePlayer", socket.player);
     });
+
+    socket.on("dotEaten", function (data) {
+      socket.broadcast.emit("dotEaten", data);
+    });
   });
 
   // socket.on("test", function () {
