@@ -15,6 +15,7 @@ const io = require("socket.io").listen(server);
 
 module.exports = app;
 //var players = [];
+let players = [];
 
 /**********************************************
  * EXPRESS ROUTER
@@ -65,7 +66,7 @@ io.on("connection", function (socket) {
       sId: "",
     };
 
-    console.log("sending new player info: ", socket.player);
+    //console.log("sending new player info: ", socket.player);
     socket.broadcast.emit("newplayer", socket.player);
     socket.emit("allplayers", getAllPlayers());
 
@@ -77,22 +78,22 @@ io.on("connection", function (socket) {
     //   socket.broadcast.emit("playerMoved", players[id]);
     // });
 
-    // socket.on("playerMoved", function (data) {
-    //   let notUpdatedPlayer = players.filter((player) => player.id === data.id);
-    //   console.log("notUpdatedPlayer player: ", notUpdatedPlayer);
+    socket.on("playerMoved", function (data) {
+      let notUpdatedPlayer = players.filter((player) => player.id === data.id);
+      // console.log("notUpdatedPlayer player: ", notUpdatedPlayer);
 
-    //   console.log("players before update: ", players);
+      // console.log("players before update: ", players);
 
-    //   updatePlayer(data);
-    //   let updatedPlayer = players.filter((player) => player.id === data.id);
+      updatePlayer(data);
+      let updatedPlayer = players.filter((player) => player.id === data.id);
 
-    //   console.log("updtated player: ", updatePlayer);
+      // console.log("updtated player: ", updatePlayer);
 
-    //   console.log("players after update: ", players);
+      // console.log("players after update: ", players);
 
-    //   console.log("socket.player: ", socket.player);
-    //   socket.broadcast.emit("movePlayer", socket.player);
-    // });
+      // console.log("socket.player: ", socket.player);
+      socket.broadcast.emit("movePlayer", socket.player);
+    });
   });
 
   // socket.on("test", function () {
@@ -102,12 +103,12 @@ io.on("connection", function (socket) {
 
 function updatePlayer(data) {
   Object.keys(io.sockets.connected).forEach(function (socketID) {
-    console.log(
-      "socket: ",
-      io.sockets.connected[socketID].id,
-      ": ",
-      io.sockets.connected[socketID].player
-    );
+    // console.log(
+    //   "socket: ",
+    //   io.sockets.connected[socketID].id,
+    //   ": ",
+    //   io.sockets.connected[socketID].player
+    // );
 
     let player = io.sockets.connected[socketID].player;
     if (player) {
@@ -118,7 +119,7 @@ function updatePlayer(data) {
 }
 
 function getAllPlayers() {
-  let players = [];
+  players = [];
   Object.keys(io.sockets.connected).forEach(function (socketID) {
     // console.log(
     //   "socket: ",
@@ -135,7 +136,7 @@ function getAllPlayers() {
       // }
     }
   });
-  console.log("in get all players: ", players);
+  // console.log("in get all players: ", players);
 
   return players;
 }

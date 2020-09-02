@@ -71,7 +71,7 @@ export default class MainScene extends Phaser.Scene {
     Client.Client.askNewPlayer();
   }
 
-  update() {
+  update(idx, x, y) {
     let id = Client.Client.socket.id;
     if (this.player0 && this.player0.sId === id) {
       this.player0.update(this);
@@ -88,6 +88,12 @@ export default class MainScene extends Phaser.Scene {
     if (this.player3 && this.player3.sId === id) {
       this.player3.update(this);
     }
+    //console.log("loggin idx and other", idx, x, y);
+    // idx = 1;
+    // if (this[`player${idx}`]) {
+    //   console.log("player !!!!!! update being called");
+    //   this[`player${idx}`].update(this, idx);
+    // }
 
     //ghost update
     this.blinky.update();
@@ -98,7 +104,7 @@ export default class MainScene extends Phaser.Scene {
   };
 
   addNewPlayer(id, x, y, sId) {
-    console.log("main scene add new player: ", this);
+    //console.log("main scene add new player: ", this);
     this[`player${id}`] = new MissPacMan({
       scene: this,
       x: x,
@@ -109,13 +115,15 @@ export default class MainScene extends Phaser.Scene {
       frame: "p_right_1",
     });
 
-    console.log("this is new player; ", this[`player${id}`]);
+    //console.log("this is new player; ", this[`player${id}`]);
     this.add.existing(this[`player${id}`]);
-    console.log(this);
+    //console.log(this);
   }
 
   movePlayer(id, x, y) {
     console.log("in move player main scene");
+    window.MainScene[`player${id}`].x = x;
+    window.MainScene[`player${id}`].y = y;
     // var player = window.MainScene[`player${id}`];
     // var distance = Phaser.Math.Distance.Between(player.x, player.y, x, y);
 
@@ -130,27 +138,32 @@ export default class MainScene extends Phaser.Scene {
     // tween.to({ x: x, y: y }, duration);
     // tween.start();
 
-    if (this.player0 && this.player0.id === id) {
-      console.log("player 0 update being called");
-      this.player0.update(this);
-    }
+    // if (this.player0 && this.player0.id === id) {
+    //   console.log("player 0 update being called");
+    //   this.player0.update(this);
+    // }
 
-    if (this.player1 && this.player1.id === id) {
-      console.log("player 1 update being called");
+    // if (this.player1 && this.player1.id === id) {
+    //   console.log("player 1 update being called");
 
-      this.player1.update(this);
-    }
+    //   this.player1.update(this);
+    // }
 
-    if (this.player2 && this.player2.id === id) {
-      console.log("player 2 update being called");
+    // if (this.player2 && this.player2.id === id) {
+    //   console.log("player 2 update being called");
 
-      this.player2.update(this);
-    }
+    //   this.player2.update(this);
+    // }
 
-    if (this.player3 && this.player3.id === id) {
-      console.log("player 3 update being called");
+    // if (this.player3 && this.player3.id === id) {
+    //   console.log("player 3 update being called");
 
-      this.player3.update(this);
+    //   this.player3.update(this);
+    // }
+
+    if (this[`player${id}`]) {
+      console.log("player !!!!!! update being called");
+      this[`player${id}`].update(this);
     }
   }
 }
