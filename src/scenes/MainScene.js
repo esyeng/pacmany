@@ -97,6 +97,10 @@ export default class MainScene extends Phaser.Scene {
 
     //ghost update
     this.blinky.update();
+
+    // for (let i = 0; i < 100; i++) {
+    //   window.MainScene.resources[i].visible = false;
+    // }
   }
 
   getCoordinates = function (layer, pointer) {
@@ -130,8 +134,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   eraseDot(x, y, id) {
-    console.log("erase dot main scene", this.map.objects[0].objects);
-    window.MainScene.resources[id].visible = "false";
+    console.log("erase dot main scene", window.MainScene.resources);
+    window.MainScene.resources[id].destroy();
     // window.MainScene[`player${id}`].x = x;
     // window.MainScene[`player${id}`].y = y;
   }
