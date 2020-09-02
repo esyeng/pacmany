@@ -71,22 +71,22 @@ export default class MainScene extends Phaser.Scene {
     Client.Client.askNewPlayer();
   }
 
-  update(idx, x, y) {
+  update() {
     let id = Client.Client.socket.id;
     if (this.player0 && this.player0.sId === id) {
-      this.player0.update(this);
+      this.player0.update(this, this.player0.id);
     }
 
     if (this.player1 && this.player1.sId === id) {
-      this.player1.update(this);
+      this.player1.update(this, this.player1.id);
     }
 
     if (this.player2 && this.player2.sId === id) {
-      this.player2.update(this);
+      this.player2.update(this, this.player2.id);
     }
 
     if (this.player3 && this.player3.sId === id) {
-      this.player3.update(this);
+      this.player3.update(this, this.player3.id);
     }
     //console.log("loggin idx and other", idx, x, y);
     // idx = 1;
@@ -105,14 +105,17 @@ export default class MainScene extends Phaser.Scene {
 
   addNewPlayer(id, x, y, sId) {
     //console.log("main scene add new player: ", this);
+
+    let textureArr = ["pacman_c", "pacman_c_g", "pacman_c_o", "pacman_c_v"];
+    let frameArr = ["p_right_1", "pg_right_1", "po_right_1", "pv_right_1"];
     this[`player${id}`] = new MissPacMan({
       scene: this,
       x: x,
       y: y,
+      texture: textureArr[id],
+      frame: frameArr[id],
       id: id,
       sId: sId,
-      texture: "pacman_c",
-      frame: "p_right_1",
     });
 
     //console.log("this is new player; ", this[`player${id}`]);
@@ -121,49 +124,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   movePlayer(id, x, y) {
-    console.log("in move player main scene");
+    //console.log("in move player main scene");
     window.MainScene[`player${id}`].x = x;
     window.MainScene[`player${id}`].y = y;
-    // var player = window.MainScene[`player${id}`];
-    // var distance = Phaser.Math.Distance.Between(player.x, player.y, x, y);
-
-    // console.log("distance: ", distance);
-    // console.log("player: ", player);
-
-    // console.log("this.add: ", this.add.tween(player));
-
-    // var tween = window.MainScene.add.tween(player);
-    // console.log("tween: ", tween);
-    // var duration = distance * 10;
-    // tween.to({ x: x, y: y }, duration);
-    // tween.start();
-
-    // if (this.player0 && this.player0.id === id) {
-    //   console.log("player 0 update being called");
-    //   this.player0.update(this);
-    // }
-
-    // if (this.player1 && this.player1.id === id) {
-    //   console.log("player 1 update being called");
-
-    //   this.player1.update(this);
-    // }
-
-    // if (this.player2 && this.player2.id === id) {
-    //   console.log("player 2 update being called");
-
-    //   this.player2.update(this);
-    // }
-
-    // if (this.player3 && this.player3.id === id) {
-    //   console.log("player 3 update being called");
-
-    //   this.player3.update(this);
-    // }
-
-    if (this[`player${id}`]) {
-      console.log("player !!!!!! update being called");
-      this[`player${id}`].update(this);
-    }
   }
 }

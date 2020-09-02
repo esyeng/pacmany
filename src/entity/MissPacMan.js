@@ -3,15 +3,17 @@ var Client = require("../client");
 
 export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   constructor(data) {
-    let { scene, x, y, id, sId, texture, frame } = data;
+    let { scene, x, y, texture, frame, id, sId } = data;
 
-    super(scene.matter.world, x, y, id, sId, texture, frame);
+    super(scene.matter.world, x, y, texture, frame, id, sId);
     this.scene.add.existing(this);
     this.name = `player${id}`;
     this.health = 1;
     this.score = 0;
     this.id = id;
     this.sId = sId;
+    // this.texture = texture;
+    // this.frame = frame;
 
     this._position = new Phaser.Math.Vector2(this.x, this.y);
     this.inputKeys = scene.input.keyboard.addKeys({
@@ -50,6 +52,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   }
 
   static preload(scene) {
+    //yellow
     scene.load.atlas(
       "pacman_c",
       "/assets/maps/pacman/pacman_c.png",
@@ -59,6 +62,39 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     scene.load.animation(
       "pacman_c_anim",
       "/assets/maps/pacman/pacman_c_anim.json"
+    );
+    //green
+    scene.load.atlas(
+      "pacman_c_g",
+      "/assets/maps/pacman/pacman_c_g.png",
+      "/assets/maps/pacman/pacman_c_g_atlas.json"
+    );
+
+    scene.load.animation(
+      "pacman_c_g_anim",
+      "/assets/maps/pacman/pacman_c_g_anim.json"
+    );
+    //orange
+    scene.load.atlas(
+      "pacman_c_o",
+      "/assets/maps/pacman/pacman_c_o.png",
+      "/assets/maps/pacman/pacman_c_o_atlas.json"
+    );
+
+    scene.load.animation(
+      "pacman_c_o_anim",
+      "/assets/maps/pacman/pacman_c_o_anim.json"
+    );
+    //violet
+    scene.load.atlas(
+      "pacman_c_v",
+      "/assets/maps/pacman/pacman_c_v.png",
+      "/assets/maps/pacman/pacman_c_v_atlas.json"
+    );
+
+    scene.load.animation(
+      "pacman_c_v_anim",
+      "/assets/maps/pacman/pacman_c_v_anim.json"
     );
   }
 
@@ -107,20 +143,24 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     playerVelocity.scale(speed);
     this.setVelocity(playerVelocity.x, playerVelocity.y);
 
+    let animsArrRight = ["pacman_right", "pg_right", "po_right", "pv_right"];
+    let animsArrLeft = ["pacman_left", "pg_left", "po_left", "pv_left"];
+    let animsArrUp = ["pacman_up", "pg_up", "po_up", "pv_up"];
+    let animsArrDown = ["pacman_down", "pg_down", "po_down", "pv_down"];
     //console.log("vx:", this.velocity.x, " vy:", this.velocity.y);
     if (this.velocity.x > 0) {
       //console.log("RIGHT>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
-      this.anims.play("pacman_right", true);
+      this.anims.play(animsArrRight[idx], true);
     } else if (this.velocity.x < 0) {
       //console.log("LEFT>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
-      this.anims.play("pacman_left", true);
+      this.anims.play(animsArrLeft[idx], true);
     }
     if (this.velocity.y < 0) {
       //console.log("UP>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
-      this.anims.play("pacman_up", true);
+      this.anims.play(animsArrUp[idx], true);
     } else if (this.velocity.y > 0.1) {
       //console.log("DOWN>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
-      this.anims.play("pacman_down", true);
+      this.anims.play(animsArrDown[idx], true);
     }
   } // end of updates
 
