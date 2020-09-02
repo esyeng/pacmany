@@ -90,13 +90,16 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     let playerVelocity = new Phaser.Math.Vector2();
     if (this.inputKeys.left.isDown) {
       playerVelocity.x = -1;
-      movePlayer();
+      this.movePlayer();
     } else if (this.inputKeys.right.isDown) {
+      this.movePlayer();
       playerVelocity.x = 1;
     }
     if (this.inputKeys.up.isDown) {
+      this.movePlayer();
       playerVelocity.y = -1;
     } else if (this.inputKeys.down.isDown) {
+      this.movePlayer();
       playerVelocity.y = 1;
     }
 
@@ -122,8 +125,10 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   } // end of updates
 
   movePlayer() {
+    console.log("in move player");
     Client.Client.playerMoved(this.x, this.y, this.id);
   }
+
   CreatePickupCollisions(playerCollider) {
     this.scene.matterCollision.addOnCollideStart({
       objectA: [playerCollider],

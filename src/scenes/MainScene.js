@@ -115,11 +115,42 @@ export default class MainScene extends Phaser.Scene {
   }
 
   movePlayer(id, x, y) {
-    var player = this.player[id];
-    var distance = Phaser.Math.distance(player.x, player.y, x, y);
-    var tween = game.add.tween(player);
-    var duration = distance * 10;
-    tween.to({ x: x, y: y }, duration);
-    tween.start();
+    console.log("in move player main scene");
+    // var player = window.MainScene[`player${id}`];
+    // var distance = Phaser.Math.Distance.Between(player.x, player.y, x, y);
+
+    // console.log("distance: ", distance);
+    // console.log("player: ", player);
+
+    // console.log("this.add: ", this.add.tween(player));
+
+    // var tween = window.MainScene.add.tween(player);
+    // console.log("tween: ", tween);
+    // var duration = distance * 10;
+    // tween.to({ x: x, y: y }, duration);
+    // tween.start();
+
+    if (this.player0 && this.player0.id === id) {
+      console.log("player 0 update being called");
+      this.player0.update(this);
+    }
+
+    if (this.player1 && this.player1.id === id) {
+      console.log("player 1 update being called");
+
+      this.player1.update(this);
+    }
+
+    if (this.player2 && this.player2.id === id) {
+      console.log("player 2 update being called");
+
+      this.player2.update(this);
+    }
+
+    if (this.player3 && this.player3.id === id) {
+      console.log("player 3 update being called");
+
+      this.player3.update(this);
+    }
   }
 }

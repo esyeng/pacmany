@@ -76,13 +76,23 @@ io.on("connection", function (socket) {
     //   // emit a message to all players about the player that moved
     //   socket.broadcast.emit("playerMoved", players[id]);
     // });
+    // socket.broadcast.emit("newplayer", socket.player);
 
     socket.on("playerMoved", function (data) {
-      console.log("player moved data: ", data);
-      // console.log("moved to " + data.x + ", " + data.y + "player id: ", data.id);
-      // socket.player.x = data.x;
-      // socket.player.y = data.y;
-      // io.emit("move", socket.player);
+      let notUpdatedPlayer = players.filter((player) => player.id === data.id);
+      console.log("notUpdatedPlayer player: ", notUpdatedPlayer);
+
+      console.log("players before update: ", players);
+
+      updatePlayer(data);
+      let updatedPlayer = players.filter((player) => player.id === data.id);
+
+      console.log("updtated player: ", updatePlayer);
+
+      console.log("players after update: ", players);
+
+      console.log("socket.player: ", socket.player);
+      socket.broadcast.emit("movePlayer", socket.player);
     });
   });
 
@@ -90,6 +100,23 @@ io.on("connection", function (socket) {
     console.log("test received");
   });
 });
+
+function updatePlayer(data) {
+  Object.keys(io.sockets.connected).forEach(function (socketID) {
+    console.log(
+      "socket: ",
+      io.sockets.connected[socketID].id,
+      ": ",
+      io.sockets.connected[socketID].player
+    );
+
+    var player = io.sockets.connected[socketID].player;
+    if (player) {
+      player.x = data.x;
+      player.y = data.y;
+    }
+  });
+}
 
 function getAllPlayers() {
   Object.keys(io.sockets.connected).forEach(function (socketID) {

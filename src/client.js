@@ -43,9 +43,14 @@ Client.socket.on("allplayers", function (data) {
     );
   }
 
-  Client.socket.on("move", function (data) {
+  Client.socket.on("movePlayer", function (data) {
+    console.log("IN PLAYER MOVEEEEEED");
     window.MainScene.movePlayer(data.id, data.x, data.y);
   });
+
+  // Client.socket.on("move", function (data) {
+  //   console.log("data: ", data);
+  // });
 });
 
 export { Client };
