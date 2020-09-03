@@ -50,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
 
 export const LeftSideBar = (props) => {
   const roomCode = props.roomCode;
-  //const players = props.players || [];
   const classes = useStyles();
   const theme = useTheme();
   return (

@@ -4,9 +4,9 @@ import { config } from "../config/config";
 import { LeftSideBar } from "./LeftSideBar";
 import { RightSideBar } from "./RightSideBar";
 import { Navbar } from "./Navbar";
-import socket from "../scenes/SocketHub";
 import { Button, withStyles } from "@material-ui/core";
 import styles from "./styles";
+import Client from "../client";
 
 class Canvas extends Component {
   constructor(props) {
@@ -27,13 +27,6 @@ class Canvas extends Component {
 
   componentDidMount() {
     const game = new Phaser.Game(config);
-
-    socket.emit("getData");
-    socket.on("dataSent", function (data) {
-      console.log("players: ", this.players);
-      this.players.push(data);
-      this.playerCount++;
-    });
   }
 
   startGame() {
@@ -42,7 +35,6 @@ class Canvas extends Component {
       gameStarted: true,
       gameInProgress: true,
     });
-    // const game = new Phaser.Game(config);
   }
 
   getGameStarted() {

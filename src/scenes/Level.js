@@ -40,7 +40,6 @@ export function addLevelResources(scene) {
 
   const resources = scene.map.getObjectLayer("Object Layer 1");
   resources.objects.forEach((resource, idx) => {
-    //console.log("inside resource creation>>", resource);
     let resItem = new Phaser.Physics.Matter.Sprite(
       scene.matter.world,
       resource.x,
@@ -71,26 +70,16 @@ export function addLevelResources(scene) {
     resItem.sound = scene.sound.add("pickup");
 
     resItem.eraseDot = function () {
-      console.log("res item erase dot", this.idx);
       Client.Client.dotEaten(this.x, this.y, this.idx);
     };
 
     resItem.pickup = function () {
-      console.log("inside resource deletion before>>", this);
       this.eraseDot();
       this.destroy();
       this.sound.play();
-      console.log("inside resource deletion after>>", this);
       return true;
     };
 
     scene.resources.push(resItem);
   });
-
-  //scene.resources = resources.objects;
 }
-
-// export function eraseDot() {
-//   console.log("in move player");
-//   Client.Client.dotEaten(this.x, this.y, this.id);
-// }

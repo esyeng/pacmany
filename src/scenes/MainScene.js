@@ -24,7 +24,6 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    console.log("this IN MAIN SCENE: ", this);
     var defaultCategory = 0x0001;
     var redCategory = 0x0002;
     var greenCategory = 0x0004;
@@ -88,19 +87,8 @@ export default class MainScene extends Phaser.Scene {
     if (this.player3 && this.player3.sId === id) {
       this.player3.update(this, this.player3.id);
     }
-    //console.log("loggin idx and other", idx, x, y);
-    // idx = 1;
-    // if (this[`player${idx}`]) {
-    //   console.log("player !!!!!! update being called");
-    //   this[`player${idx}`].update(this, idx);
-    // }
-
     //ghost update
     this.blinky.update();
-
-    // for (let i = 0; i < 100; i++) {
-    //   window.MainScene.resources[i].visible = false;
-    // }
   }
 
   getCoordinates = function (layer, pointer) {
@@ -108,8 +96,6 @@ export default class MainScene extends Phaser.Scene {
   };
 
   addNewPlayer(id, x, y, sId) {
-    //console.log("main scene add new player: ", this);
-
     let textureArr = ["pacman_c", "pacman_c_g", "pacman_c_o", "pacman_c_v"];
     let frameArr = ["p_right_1", "pg_right_1", "po_right_1", "pv_right_1"];
     this[`player${id}`] = new MissPacMan({
@@ -122,21 +108,15 @@ export default class MainScene extends Phaser.Scene {
       sId: sId,
     });
 
-    //console.log("this is new player; ", this[`player${id}`]);
     this.add.existing(this[`player${id}`]);
-    //console.log(this);
   }
 
   movePlayer(id, x, y) {
-    //console.log("in move player main scene");
     window.MainScene[`player${id}`].x = x;
     window.MainScene[`player${id}`].y = y;
   }
 
   eraseDot(x, y, id) {
-    console.log("erase dot main scene", window.MainScene.resources);
     window.MainScene.resources[id].destroy();
-    // window.MainScene[`player${id}`].x = x;
-    // window.MainScene[`player${id}`].y = y;
   }
 }
