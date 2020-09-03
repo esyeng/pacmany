@@ -13,9 +13,9 @@
     "type": "git",
     "url": "git+https://github.com/esyeng/bloc-party.git"
   },
-  "author": "\"Emre Yenigun\"",
+  "author": "\"Jenna Giordano and Nik Cernomorsky\"",
   "license": "MIT",
-  "homepage": "https://github.com/esyeng/bloc-party#readme",
+  "homepage": "",
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@babel/plugin-proposal-class-properties": "^7.4.0",
@@ -60,6 +60,7 @@
     "redux-thunk": "^2.3.0",
     "socket.io": "2.3.0",
     "socket.io-client": "2.3.0",
-    "style-loader": "^1.0.0"
+    "style-loader": "^1.0.0",
+    "webpack": "^4.28.3"
   }
 }
