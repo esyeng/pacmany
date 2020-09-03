@@ -91,10 +91,6 @@ export default class MainScene extends Phaser.Scene {
     this.blinky.update();
   }
 
-  getCoordinates = function (layer, pointer) {
-    Client.Client.sendClick(pointer.worldX, pointer.worldY);
-  };
-
   addNewPlayer(id, x, y, sId) {
     let textureArr = ["pacman_c", "pacman_c_g", "pacman_c_o", "pacman_c_v"];
     let frameArr = ["p_right_1", "pg_right_1", "po_right_1", "pv_right_1"];

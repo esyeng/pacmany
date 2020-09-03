@@ -5,7 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js ",
-    "start": "npm run start-server & npm run build-watch",
+    "start": "node server/index.js",
     "start-dev": "npm run start-server & npm run build-watch",
     "build-watch": "webpack -w --config webpack.config.js",
     "start-server": "nodemon server/index.js"
