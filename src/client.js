@@ -1,7 +1,6 @@
 import io from "socket.io-client";
 import game from "./startGame";
 
-console.log("window main scene: ", window.MainScene);
 var Client = {};
 Client.socket = io.connect();
 

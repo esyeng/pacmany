@@ -66,7 +66,6 @@ export default class MainScene extends Phaser.Scene {
       frame: "blinky",
     });
     this.add.existing(this.blinky);
-
     Client.Client.askNewPlayer();
   }
 

@@ -12,10 +12,21 @@ const io = require("socket.io").listen(server);
 
 module.exports = app;
 let players = [];
+// let rooms = [
+//   12221: [
+//     player0: {
+//       player info
+//     },
+//     player1: {
+//       player info
+//     },
+//   ]
+//   }
+
+// ];
 
 let roomCount = 0;
 let userName = "";
-let users = [];
 let thisRoom = "";
 
 function joinUser(socketId, userName, roomName) {
@@ -24,7 +35,7 @@ function joinUser(socketId, userName, roomName) {
     userName,
     roomName,
   };
-  users.push(user);
+  player.push(user);
   return user;
 }
 
@@ -63,6 +74,14 @@ server.listen(PORT, async () => {
 });
 
 io.on("connection", function (socket) {
+  socket.on("createRoom", function (data) {
+    // rooms[room] = room;
+    // socket.room = roomname;
+    // socket.join(roomname);
+    // subscribe.subscribe(socket.room);
+    console.log("in server create room: ", data.userName, data.roomCode);
+  });
+
   socket.on("newplayer", function () {
     //   console.log("in room server");
     //   let newUser = joinUser(socket.id, data.userName, data.roomName);
@@ -126,13 +145,19 @@ function updatePlayer(data) {
 
 function getAllPlayers() {
   players = [];
+
   Object.keys(io.sockets.connected).forEach(function (socketID) {
+    console.log("rooms: ", io.sockets.connected[socketID].rooms);
     let player = io.sockets.connected[socketID].player;
     if (player) {
       player.sId = io.sockets.connected[socketID].id;
       players.push(player);
     }
   });
+
+  const rooms = Object.keys(io.sockets.rooms);
+  console.log("rooms from obj: ", rooms);
+
   return players;
 }
 

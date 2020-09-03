@@ -6,7 +6,6 @@ import { RightSideBar } from "./RightSideBar";
 import { Navbar } from "./Navbar";
 import { Button, withStyles } from "@material-ui/core";
 import styles from "./styles";
-import Client from "../client";
 
 class Canvas extends Component {
   constructor(props) {
@@ -26,7 +25,11 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
-    const game = new Phaser.Game(config);
+    console.log("url name: ", this.props.match.url.split("/")[1]);
+    if (this.props.match.url.split("/")[1] === "host") {
+      console.log("route is host");
+      const game = new Phaser.Game(config);
+    }
   }
 
   startGame() {
