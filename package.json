@@ -4,11 +4,10 @@
   "description": "Pac-Man with a twist",
   "main": "server/index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js ",
-    "start": "npm run start-server & npm run build-watch",
-    "start-dev": "npm run start-server & npm run build-watch",
-    "build-watch": "webpack -w --config webpack.config.js",
-    "start-server": "nodemon server/index.js"
+    "build": "webpack --config webpack.config.js",
+    "dev": "webpack --config webpack.config.js --open -w",
+    "start": "npm run start-server & npm run dev",
+    "start-server": "nodemon index.js -e html,js,css --ignore public --ignore client"
   },
   "repository": {
     "type": "git",
@@ -41,27 +40,6 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@babel/core": "^7.4.3",
-    "@babel/plugin-proposal-class-properties": "^7.4.0",
-    "@babel/plugin-transform-modules-commonjs": "^7.4.4",
-    "@babel/preset-env": "^7.4.3",
-    "@babel/preset-react": "^7.0.0",
-    "babel-jest": "^25.5.1",
-    "babel-loader": "^8.0.5",
-    "canvas": "^2.5.0",
-    "clean-webpack-plugin": "^3.0.0",
-    "file-loader": "^6.0.0",
-    "html-webpack-plugin": "^4.3.0",
-    "nodemon": "2.0.4",
-    "path": "^0.12.7",
-    "raw-loader": "^4.0.1",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "terser-webpack-plugin": "^3.0.6",
-    "webpack": "^4.28.3",
-    "webpack-cli": "^3.2.1",
-    "webpack-dev-server": "^3.1.14",
-    "webpack-merge": "^4.2.1",
     "@ion-phaser/react": "^1.2.2",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
