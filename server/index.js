@@ -13,6 +13,21 @@ const io = require("socket.io").listen(server);
 module.exports = app;
 let players = [];
 
+let roomCount = 0;
+let userName = "";
+let users = [];
+let thisRoom = "";
+
+function joinUser(socketId, userName, roomName) {
+  const user = {
+    socketId,
+    userName,
+    roomName,
+  };
+  users.push(user);
+  return user;
+}
+
 /**********************************************
  * EXPRESS ROUTER
  */
@@ -49,6 +64,33 @@ server.listen(PORT, async () => {
 
 io.on("connection", function (socket) {
   socket.on("newplayer", function () {
+    //   console.log("in room server");
+    //   let newUser = joinUser(socket.id, data.userName, data.roomName);
+    //   socket.emit("send data", {
+    //     id: socket.id,
+    //     userName: newUser.userName,
+    //     roomName: newUser.roomName,
+    //   });
+    //   socket.on("getData", function () {
+    //     const data = {
+    //       id: socket.id,
+    //       userName: newUser.userName,
+    //       roomName: newUser.roomName,
+    //     };
+    //     socket.emit("dataSent", data);
+    //   });
+    //   thisRoom = newUser.roomName;
+    //   console.log(newUser);
+    //   console.log("Total users :", users);
+    //   socket.join(newUser.roomName);
+    // });
+
+    //   console.log(`userName : ${userName} left Room Name : ${roomName}`);
+    //   socket.broadcast.to(`${roomName}`).emit("userLeftGameRoom", userName);
+    //   socket.leave(`${roomName}`);
+
+    if (players.length === 4) return;
+
     socket.player = {
       id: server.lastPlayerID++,
       x: server.startCoordinates[server.lastPlayerID - 1][0],
@@ -92,4 +134,11 @@ function getAllPlayers() {
     }
   });
   return players;
+}
+
+function getName(id) {
+  const arr = users.filter((obj) => obj.socketID === id);
+  if (arr) {
+    return arr[0].userName;
+  }
 }
