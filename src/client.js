@@ -5,12 +5,12 @@ console.log("window main scene: ", window.MainScene);
 var Client = {};
 Client.socket = io.connect();
 
-var temp = game.scene.keys.MainScene;
+// var temp = game.scene.keys.MainScene;
 
-Client.sendTest = function () {
-  console.log("test sent");
-  Client.socket.emit("test");
-};
+// Client.sendTest = function () {
+//   console.log("test sent");
+//   Client.socket.emit("test");
+// };
 
 Client.askNewPlayer = function () {
   Client.socket.emit("newplayer");
