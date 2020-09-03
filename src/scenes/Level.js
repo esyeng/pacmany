@@ -1,4 +1,5 @@
 import "phaser";
+var Client = require("../client");
 
 export function baseLevelPreload(scene) {
   // loading tiles(images) for map
@@ -24,7 +25,9 @@ export function baseLevelCreate(scene) {
   const layer1 = map.createStaticLayer("Tile Layer 1", tileset1, 0, 0);
   const tileset2 = map.addTilesetImage("layout2", "tiles", 16, 16, 0, 0);
   const layer2 = map.createStaticLayer("Tile Layer 2", tileset2, 0, 0);
+
   layer2.setCollisionByProperty({ collides: true });
+
   scene.matter.world.convertTilemapLayer(layer2);
 }
 
@@ -33,10 +36,10 @@ export function addLevelResources(scene) {
   var redCategory = 0x0002;
   var greenCategory = 0x0004;
   var blueCategory = 0x0008;
+  scene.resources = [];
 
   const resources = scene.map.getObjectLayer("Object Layer 1");
-  resources.objects.forEach((resource) => {
-    //console.log("resource type>>", resource);
+  resources.objects.forEach((resource, idx) => {
     let resItem = new Phaser.Physics.Matter.Sprite(
       scene.matter.world,
       resource.x,
@@ -44,7 +47,7 @@ export function addLevelResources(scene) {
       "resources",
       resource.type
     );
-
+    resItem.idx = idx;
     let yOrigin = resource.properties.find((p) => p.name == "yOrigin").value;
     resItem.x += resItem.width / 2;
     resItem.y -= resItem.height / 2;
@@ -65,10 +68,18 @@ export function addLevelResources(scene) {
     resItem.setExistingBody(circleCollider);
     resItem.setFrictionAir(1);
     resItem.sound = scene.sound.add("pickup");
+
+    resItem.eraseDot = function () {
+      Client.Client.dotEaten(this.x, this.y, this.idx);
+    };
+
     resItem.pickup = function () {
+      this.eraseDot();
       this.destroy();
       this.sound.play();
       return true;
     };
+
+    scene.resources.push(resItem);
   });
 }

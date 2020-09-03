@@ -6,20 +6,15 @@ import {
 } from "./Level.js";
 import MissPacMan from "../entity/MissPacMan.js";
 import Ghost from "../entity/Ghost.js";
-import socket from "./SocketHub";
-const players = [{ id: 1 }, { id: 2 }]; // test
-// let players = [];
-// let userName = prompt("Your Name, please");
-// let roomName = prompt("room name");
-// let chat = prompt("your message to other players, please");
-// let ID = "";
 
-const message = "hANDWRITTED HARDCODED STRING MESSAGE from MainScene.js";
-let counter = 0;
+var Client = require("../client");
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super("MainScene");
+    if (window) {
+      window.MainScene = this;
+    }
   }
 
   preload() {
@@ -29,23 +24,6 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    /**
-     * sockets --> room initialization
-     */
-    // socket.emit("join room", { userName, roomName });
-    socket.on("send data", (data) => {
-      ID = data.id;
-      console.log("my ID: " + ID);
-    });
-
-    // socket.emit("chat message", chat);
-    // socket.on("startGame", function () {
-    //   socket.emit("get players");
-    //   socket.on("send players", function (users) {
-    //     players = [...users];
-    //   });
-    // });
-
     var defaultCategory = 0x0001;
     var redCategory = 0x0002;
     var greenCategory = 0x0004;
@@ -89,23 +67,56 @@ export default class MainScene extends Phaser.Scene {
     });
     this.add.existing(this.blinky);
 
-    // here we are creating miss pac-man
-    this.player = new MissPacMan({
-      scene: this,
-      x: 223,
-      y: 374,
-      texture: "pacman_c",
-      frame: "p_right_1",
-    });
-    this.add.existing(this.player);
-  } // end of create
+    Client.Client.askNewPlayer();
+  }
 
   update() {
-    this.player.update();
+    let id = Client.Client.socket.id;
+    if (this.player0 && this.player0.sId === id) {
+      this.player0.update(this, this.player0.id);
+    }
+
+    if (this.player1 && this.player1.sId === id) {
+      this.player1.update(this, this.player1.id);
+    }
+
+    if (this.player2 && this.player2.sId === id) {
+      this.player2.update(this, this.player2.id);
+    }
+
+    if (this.player3 && this.player3.sId === id) {
+      this.player3.update(this, this.player3.id);
+    }
+    //ghost update
     this.blinky.update();
-    // this.two.update();
-    // this.pinky.update();
-    // this.clyde.update();
-    // this.inky.update();
+  }
+
+  getCoordinates = function (layer, pointer) {
+    Client.Client.sendClick(pointer.worldX, pointer.worldY);
+  };
+
+  addNewPlayer(id, x, y, sId) {
+    let textureArr = ["pacman_c", "pacman_c_g", "pacman_c_o", "pacman_c_v"];
+    let frameArr = ["p_right_1", "pg_right_1", "po_right_1", "pv_right_1"];
+    this[`player${id}`] = new MissPacMan({
+      scene: this,
+      x: x,
+      y: y,
+      texture: textureArr[id],
+      frame: frameArr[id],
+      id: id,
+      sId: sId,
+    });
+
+    this.add.existing(this[`player${id}`]);
+  }
+
+  movePlayer(id, x, y) {
+    window.MainScene[`player${id}`].x = x;
+    window.MainScene[`player${id}`].y = y;
+  }
+
+  eraseDot(x, y, id) {
+    window.MainScene.resources[id].destroy();
   }
 }

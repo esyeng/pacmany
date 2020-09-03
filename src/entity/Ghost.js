@@ -36,7 +36,13 @@ export default class Ghost extends Phaser.Physics.Matter.Sprite {
     this.scene.matterCollision.addOnCollideStart({
       objectA: [ghostSensor],
       callback: (other) => {
-        if (other.gameObjectB && other.gameObjectB.name == "player") {
+        if (
+          other.gameObjectB &&
+          (other.gameObjectB.name == "player0" ||
+            other.gameObjectB.name == "player1" ||
+            other.gameObjectB.name == "player2" ||
+            other.gameObjectB.name == "player3")
+        ) {
           this.attacking = other.gameObjectB;
           //console.log("callback attack");
         }
@@ -85,7 +91,7 @@ export default class Ghost extends Phaser.Physics.Matter.Sprite {
   };
 
   update() {
-    //console.log("update Ghost", this.attacking);
+    //console.log("update Ghost", idx);
 
     if (this.x < 2) this.x = 470;
     if (this.x > 486) this.x = 10;
