@@ -9,9 +9,8 @@
     "start": "npm run start-server & npm run dev",
     "start-server": "nodemon index.js -e html,js,css --ignore public --ignore client"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/esyeng/bloc-party.git"
+  "engines": {
+    "node": "12.16.x"
   },
   "author": "\"Jenna Giordano and Nik Cernomorsky\"",
   "license": "MIT",
