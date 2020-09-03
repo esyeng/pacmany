@@ -4,8 +4,8 @@
   "description": "Pac-Man with a twist",
   "main": "server/index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "dev": "webpack --config webpack.config.js --open -w",
+    "build": "webpack --config webpack/base.js",
+    "dev": "webpack --config webpack/base.js --open -w",
     "start": "npm run start-server & npm run dev",
     "start-server": "nodemon index.js -e html,js,css --ignore public --ignore client"
   },
