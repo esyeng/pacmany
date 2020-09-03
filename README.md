@@ -128,3 +128,5 @@ edit: - players do not collide with one another
 - See player profile with stats and records
 - Sync my game account with social media
 - Invite friends through FB/Twitter/Email
+
+"start": "webpack-dev-server --config webpack.config.js --open",
