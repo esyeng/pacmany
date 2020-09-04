@@ -12,12 +12,11 @@ var Client = require("../client");
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super("MainScene");
-    if (window) {
-      window.MainScene = this;
-    }
+    window.MainScene = this;
   }
 
   preload() {
+    console.log("in preload: ", window.MainScene);
     baseLevelPreload(this);
     MissPacMan.preload(this);
     Ghost.preload(this);
@@ -66,7 +65,10 @@ export default class MainScene extends Phaser.Scene {
       frame: "blinky",
     });
     this.add.existing(this.blinky);
-    Client.Client.askNewPlayer();
+    // Client.Client.askNewPlayer();
+    console.log("in create: ", window.MainScene);
+    let el = document.getElementById("loading");
+    el.innerHTML = "loaded";
   }
 
   update() {
@@ -91,6 +93,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   addNewPlayer(id, x, y, sId) {
+    console.log("add new mainscene");
     let textureArr = ["pacman_c", "pacman_c_g", "pacman_c_o", "pacman_c_v"];
     let frameArr = ["p_right_1", "pg_right_1", "po_right_1", "pv_right_1"];
     this[`player${id}`] = new MissPacMan({

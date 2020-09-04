@@ -1,5 +1,6 @@
 import io from "socket.io-client";
 import game from "./startGame";
+import MainScene from "./scenes/MainScene";
 
 var Client = {};
 Client.socket = io.connect();
@@ -24,11 +25,13 @@ Client.dotEaten = function (x, y, id) {
   Client.socket.emit("dotEaten", { x: x, y: y, id: id });
 };
 
-Client.socket.on("newplayer", function (data) {
+Client.socket.on("newPlayer", function (data) {
+  console.log("in new player request client");
   window.MainScene.addNewPlayer(data.id, data.x, data.y, data.sId);
 });
 
-Client.socket.on("allplayers", function (data) {
+Client.socket.on("currentPlayers", function (data) {
+  console.log("data in current players: ", currentPlayer);
   for (var i = 0; i < data.length; i++) {
     window.MainScene.addNewPlayer(
       data[i].id,

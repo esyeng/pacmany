@@ -11,34 +11,63 @@ const server = require("http").Server(app);
 const io = require("socket.io").listen(server);
 
 module.exports = app;
+
+let rooms = [];
 let players = [];
-// let rooms = [
-//   12221: [
-//     player0: {
-//       player info
-//     },
-//     player1: {
-//       player info
-//     },
-//   ]
-//   }
 
-// ];
-
-let roomCount = 0;
-let userName = "";
-let thisRoom = "";
-
-function joinUser(socketId, userName, roomName) {
-  const user = {
-    socketId,
-    userName,
-    roomName,
-  };
-  player.push(user);
-  return user;
+//rooms class
+class Room {
+  constructor(roomCode) {
+    this.id = roomCode;
+    this.numberOfPlayers = 0;
+    this.sockets = [];
+    this.players = {};
+    this.started = false;
+  }
 }
 
+//joinRoom Helper function
+const joinRoom = (socket, room, name) => {
+  //if the room has not started yet
+  console.log("has the room started when joining room?", room.started);
+  if (!room.started) {
+    //if it's not at capacity (Max 4)
+    if (room.numberOfPlayers < 4) {
+      //store the socket in a socket array
+      room.sockets.push(socket);
+      //increase # of players in room by 1
+      room.numberOfPlayers += 1;
+      socket.join(room.id, () => {
+        room.players[socket.id] = {
+          id: room.numberOfPlayers - 1,
+          x: server.startCoordinates[room.numberOfPlayers - 1][0],
+          y: server.startCoordinates[room.numberOfPlayers - 1][1],
+          sId: socket.id,
+          name: name,
+          score: 0,
+        };
+
+        console.log(
+          socket.id,
+          `Player${room.players[socket.id].playerNumber}`,
+          "Joined",
+          room.id
+        );
+        socket.emit("newPlayer", room.players);
+      });
+    } else {
+      console.log(
+        "This room is at capacity. No. of players right now:",
+        room.numberOfPlayers
+      );
+    }
+  } else {
+    console.log("Room", room.id, "is invalid or has already started");
+    socket.emit("gameAlreadyStarted", room.id);
+  }
+
+  console.log("Rooms: ", room);
+};
 /**********************************************
  * EXPRESS ROUTER
  */
@@ -74,40 +103,42 @@ server.listen(PORT, async () => {
 });
 
 io.on("connection", function (socket) {
-  socket.on("createRoom", function (data) {
-    // rooms[room] = room;
-    // socket.room = roomname;
-    // socket.join(roomname);
-    // subscribe.subscribe(socket.room);
-    console.log("in server create room: ", data.userName, data.roomCode);
+  //room creation
+  socket.on("createRoom", (data) => {
+    room = new Room(data.roomCode);
+    rooms[data.roomCode] = room;
+
+    // have the socket join the room they've just created.
+    joinRoom(socket, room, data.userName);
+  });
+
+  //adds player to room
+  socket.on("joinRoom", (data) => {
+    const room = rooms[data.roomCode];
+    if (room) {
+      joinRoom(socket, room, data.userName);
+    } else {
+      console.log("Sorry, game room:", data.roomCode, "not found");
+      socket.emit("invalidRoom", data.roomCode);
+    }
+  });
+
+  socket.on("startGame", (room) => {
+    console.log(room.roomCode);
+    if (rooms[room.roomCode].numberOfPlayers > 1) {
+      rooms[room.roomCode].started = true;
+      // io.in(roomCode).emit("startCountdown");
+      // io.in(room.roomCode).emit("currentPlayers", rooms[room.roomCode].players);
+      socket.emit("currentPlayers", rooms[room.roomCode].players);
+
+      socket.emit("sound");
+      io.in(room.roomCode).emit("gameStarted");
+    } else {
+      socket.emit("notEnoughPlayers");
+    }
   });
 
   socket.on("newplayer", function () {
-    //   console.log("in room server");
-    //   let newUser = joinUser(socket.id, data.userName, data.roomName);
-    //   socket.emit("send data", {
-    //     id: socket.id,
-    //     userName: newUser.userName,
-    //     roomName: newUser.roomName,
-    //   });
-    //   socket.on("getData", function () {
-    //     const data = {
-    //       id: socket.id,
-    //       userName: newUser.userName,
-    //       roomName: newUser.roomName,
-    //     };
-    //     socket.emit("dataSent", data);
-    //   });
-    //   thisRoom = newUser.roomName;
-    //   console.log(newUser);
-    //   console.log("Total users :", users);
-    //   socket.join(newUser.roomName);
-    // });
-
-    //   console.log(`userName : ${userName} left Room Name : ${roomName}`);
-    //   socket.broadcast.to(`${roomName}`).emit("userLeftGameRoom", userName);
-    //   socket.leave(`${roomName}`);
-
     if (players.length === 4) return;
 
     socket.player = {
@@ -143,7 +174,7 @@ function updatePlayer(data) {
   });
 }
 
-function getAllPlayers() {
+function getAllPlayers(roomId) {
   players = [];
 
   Object.keys(io.sockets.connected).forEach(function (socketID) {
@@ -155,10 +186,9 @@ function getAllPlayers() {
     }
   });
 
-  const rooms = Object.keys(io.sockets.rooms);
-  console.log("rooms from obj: ", rooms);
+  rooms[roomId].players = players;
 
-  return players;
+  return rooms[roomId].players;
 }
 
 function getName(id) {

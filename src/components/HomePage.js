@@ -49,31 +49,20 @@ class HomePage extends Component {
   createGame() {
     console.log("state vars: ", this.state.userName, this.state.roomName);
 
-    Client.Client.socket.emit("createRoom", {
-      userName: this.state.userName,
-      roomCode: this.state.roomName,
-    });
+    // Client.Client.socket.emit("createRoom", {
+    //   userName: this.state.userName,
+    //   roomCode: this.state.roomName,
+    // });
   }
 
   joinGame() {
-    console.log("join game");
-    // let data = {
-    //   id: 0,
+    console.log("join room");
+    // Client.Client.socket.emit("joinRoom", {
     //   userName: this.state.userName,
-    //   roomName: this.state.roomName,
-    // };
-    // console.log(this.state.userName);
-    // socket.emit("join room", data);
-    // socket.on("send data", (data) => {
-    //   players.push(data);
-    //   playerCount++;
+    //   roomCode: this.state.roomName,
     // });
-    // console.log(players);
-    // socket.on("show players", function (users) {
-    //   players = [...users];
-    // });
-    // this.setState({ players: players });
   }
+
   handleOpenModal() {
     this.setState({
       openModal: true,
@@ -267,7 +256,9 @@ class HomePage extends Component {
                     />
                   </div>
                   {!this.state.openJoinGameSettings ? (
-                    <Link to={`/host/room/${this.state.roomName}`}>
+                    <Link
+                      to={`/host/${this.state.userName}/room/${this.state.roomName}`}
+                    >
                       <button
                         className={classes.button}
                         onClick={this.createGame}
@@ -276,8 +267,13 @@ class HomePage extends Component {
                       </button>
                     </Link>
                   ) : (
-                    <Link to={`/guest/room/${this.state.roomName}`}>
-                      <button className={classes.button}>
+                    <Link
+                      to={`/guest/${this.state.userName}/room/${this.state.roomName}`}
+                    >
+                      <button
+                        className={classes.button}
+                        onClick={this.joinGame}
+                      >
                         Continue To Game...
                       </button>
                     </Link>
