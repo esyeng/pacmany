@@ -101,7 +101,7 @@ export default class MainScene extends Phaser.Scene {
       id,
       "x",
       x,
-      "y",git 
+      "y",
       y,
       "sId",
       sId,
