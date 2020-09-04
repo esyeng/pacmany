@@ -8,10 +8,9 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
-import io from "socket.io-client";
-import Client from "../client";
-// import startGame from "../startGame";
-import game from "../config/config";
+import config from "../config/config";
+
+var Client = require("../client");
 
 class HomePage extends Component {
   constructor(props) {
@@ -21,6 +20,7 @@ class HomePage extends Component {
       openModal: false,
       showStartButton: true,
       openGameSettings: false,
+      userName: "",
       roomName: 0,
       openJoinGameSettings: false,
       players: [],
@@ -35,14 +35,34 @@ class HomePage extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.joinGame = this.joinGame.bind(this);
     this.addNewPlayer = this.addNewPlayer.bind(this);
+    this.createGame = this.createGame.bind(this);
   }
-
+  // componentDidMount() {
+  //   const game = new Phaser.Game(config);
+  // }
   addNewPlayer() {
     console.log("in add new player");
     console.log("game in add new player: ", game);
     // game.state.add("Game", Game);
     // game.state.start("Game");
     // game.stage.disableVisibilityChange = true;
+  }
+
+  createGame() {
+    console.log("state vars: ", this.state.userName, this.state.roomName);
+
+    Client.Client.socket.emit("createRoom", {
+      userName: this.state.userName,
+      roomCode: this.state.roomName,
+    });
+  }
+
+  joinGame() {
+    console.log("join room");
+    // Client.Client.socket.emit("joinRoom", {
+    //   userName: this.state.userName,
+    //   roomCode: this.state.roomName,
+    // });
   }
 
   handleOpenModal() {
@@ -100,26 +120,6 @@ class HomePage extends Component {
     this.setState({
       roomName: result,
     });
-  }
-
-  joinGame() {
-    console.log("in join game");
-    let data = {
-      id: 0,
-      userName: this.state.userName,
-      roomName: this.state.roomName,
-    };
-    console.log(this.state.userName);
-    socket.emit("join room", data);
-    socket.on("send data", (data) => {
-      players.push(data);
-      playerCount++;
-    });
-    console.log(players);
-    socket.on("show players", function (users) {
-      players = [...users];
-    });
-    this.setState({ players: players });
   }
 
   render() {
@@ -257,13 +257,29 @@ class HomePage extends Component {
                       placeholder="Enter Player Name"
                     />
                   </div>
-                  <Link to={`/room/${this.state.roomName}`}>
-                    <button className={classes.button}>
-                      {this.state.openJoinGameSettings
-                        ? "Continue to Game..."
-                        : "Create Game"}
-                    </button>
-                  </Link>
+                  {!this.state.openJoinGameSettings ? (
+                    <Link
+                      to={`/host/${this.state.userName}/room/${this.state.roomName}`}
+                    >
+                      <button
+                        className={classes.button}
+                        onClick={this.createGame}
+                      >
+                        Create Game
+                      </button>
+                    </Link>
+                  ) : (
+                    <Link
+                      to={`/guest/${this.state.userName}/room/${this.state.roomName}`}
+                    >
+                      <button
+                        className={classes.button}
+                        onClick={this.joinGame}
+                      >
+                        Continue To Game...
+                      </button>
+                    </Link>
+                  )}
                 </form>
               </div>
             </Fade>

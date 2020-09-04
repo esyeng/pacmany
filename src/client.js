@@ -1,7 +1,7 @@
 import io from "socket.io-client";
 import game from "./startGame";
+import MainScene from "./scenes/MainScene";
 
-console.log("window main scene: ", window.MainScene);
 var Client = {};
 Client.socket = io.connect();
 
@@ -25,17 +25,33 @@ Client.dotEaten = function (x, y, id) {
   Client.socket.emit("dotEaten", { x: x, y: y, id: id });
 };
 
-Client.socket.on("newplayer", function (data) {
-  window.MainScene.addNewPlayer(data.id, data.x, data.y, data.sId);
+Client.socket.on("newPlayer", function (data, socketId) {
+  console.log("in new player request client", data);
+  //for (let player in data) {
+  window.MainScene.addNewPlayer(
+    data[socketId].id,
+    data[socketId].x,
+    data[socketId].y,
+    data[socketId].sId,
+    data[socketId].name,
+    data[socketId].score,
+    data[socketId].roomId
+  );
 });
 
-Client.socket.on("allplayers", function (data) {
-  for (var i = 0; i < data.length; i++) {
+Client.socket.on("allPlayers", function (data) {
+  // console.log("data in current players: ", currentPlayer);
+  console.log("in all player request client", data);
+
+  for (let player in data) {
     window.MainScene.addNewPlayer(
-      data[i].id,
-      data[i].x,
-      data[i].y,
-      data[i].sId
+      data[player].id,
+      data[player].x,
+      data[player].y,
+      data[player].sId,
+      data[player].name,
+      data[player].score,
+      data[player].roomId
     );
   }
 

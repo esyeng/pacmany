@@ -12,12 +12,11 @@ var Client = require("../client");
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super("MainScene");
-    if (window) {
-      window.MainScene = this;
-    }
+    window.MainScene = this;
   }
 
   preload() {
+    console.log("in preload: ", window.MainScene);
     baseLevelPreload(this);
     MissPacMan.preload(this);
     Ghost.preload(this);
@@ -67,7 +66,11 @@ export default class MainScene extends Phaser.Scene {
     });
     this.add.existing(this.blinky);
 
-    Client.Client.askNewPlayer();
+    // Client.Client.askNewPlayer();
+
+    // console.log("in create: ", window.MainScene);
+    // let el = document.getElementById("loading");
+    // el.innerHTML = "loaded";
   }
 
   update() {
@@ -91,7 +94,25 @@ export default class MainScene extends Phaser.Scene {
     this.blinky.update();
   }
 
-  addNewPlayer(id, x, y, sId) {
+  addNewPlayer(id, x, y, sId, name, score, roomId) {
+    console.log(
+      "add new mainscene",
+      "id",
+      id,
+      "x",
+      x,
+      "y",
+      y,
+      "sId",
+      sId,
+      "name",
+      name,
+      "score",
+      score,
+      "roomId"
+    );
+    console.log("creating new player <<<this>>>", this);
+
     let textureArr = ["pacman_c", "pacman_c_g", "pacman_c_o", "pacman_c_v"];
     let frameArr = ["p_right_1", "pg_right_1", "po_right_1", "pv_right_1"];
     this[`player${id}`] = new MissPacMan({
@@ -102,9 +123,14 @@ export default class MainScene extends Phaser.Scene {
       frame: frameArr[id],
       id: id,
       sId: sId,
+      userName: name,
+      score: score,
+      roomId: roomId,
     });
 
     this.add.existing(this[`player${id}`]);
+
+    console.log("add new player func mainscene", window.MainScene);
   }
 
   movePlayer(id, x, y) {

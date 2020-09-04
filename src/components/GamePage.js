@@ -6,7 +6,9 @@ import { RightSideBar } from "./RightSideBar";
 import { Navbar } from "./Navbar";
 import { Button, withStyles } from "@material-ui/core";
 import styles from "./styles";
-import Client from "../client";
+import MainScene from "../scenes/MainScene";
+
+var Client = require("../client");
 
 class Canvas extends Component {
   constructor(props) {
@@ -16,17 +18,54 @@ class Canvas extends Component {
       gameStarted: false,
       gameInProgress: false,
       gameEnded: false,
-      roomKey: this.props.match.params,
-      name: this.props.name,
+      roomKey: this.props.match.params.roomCode,
+      name: this.props.match.params.userName,
       players: [],
       playerCount: 0,
     };
     this.getGameStarted = this.getGameStarted.bind(this);
     this.startGame = this.startGame.bind(this);
+    this.createGame = this.createGame.bind(this);
   }
 
   componentDidMount() {
+    // console.log("url name: ", this.props.match.url.split("/")[1]);
+    // if (this.props.match.url.split("/")[1] === "host") {
+    //   console.log("route is host");
+    //   const game = new Phaser.Game(config);
+    // }
+    // window.addEventListener("load", this.createGame);
+
+    // const element = document.getElementById("loading");
+
+    // const callback = function (mutationsList, observer) {};
+
+    // const config = { attributes: true, childList: true, subtree: true };
+
+    // const observer = new MutationObserver(callback);
+
+    // element.addEventListener("");
+
+    /////
     const game = new Phaser.Game(config);
+    /////
+    // console.log("game created: ", game);
+
+    console.log("main scene in component did mount: ", window.MainScene);
+    // if (this.props.match.url.split("/")[1] === "host") {
+    //   console.log("route is host");
+    //   const game = new Phaser.Game(config);
+    // }
+    Client.Client.socket.emit("joinRoom", {
+      userName: this.state.name,
+      roomCode: this.state.roomKey,
+    });
+  }
+
+  createGame() {
+    console.log("in create game");
+    // const game = new Phaser.Game(config);
+    // window.MainScene = MainScene;
   }
 
   startGame() {
@@ -35,6 +74,10 @@ class Canvas extends Component {
       gameStarted: true,
       gameInProgress: true,
     });
+
+    console.log("room:", room);
+
+    Client.Client.socket.emit("startGame", room);
   }
 
   getGameStarted() {
