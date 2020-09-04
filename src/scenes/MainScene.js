@@ -94,8 +94,23 @@ export default class MainScene extends Phaser.Scene {
     this.blinky.update();
   }
 
-  addNewPlayer(id, x, y, sId) {
-    console.log("add new mainscene", id, x, y, sId);
+  addNewPlayer(id, x, y, sId, name, score, roomId) {
+    console.log(
+      "add new mainscene",
+      "id",
+      id,
+      "x",
+      x,
+      "y",
+      y,
+      "sId",
+      sId,
+      "name",
+      name,
+      "score",
+      score,
+      "roomId"
+    );
 
     let textureArr = ["pacman_c", "pacman_c_g", "pacman_c_o", "pacman_c_v"];
     let frameArr = ["p_right_1", "pg_right_1", "po_right_1", "pv_right_1"];
@@ -107,6 +122,9 @@ export default class MainScene extends Phaser.Scene {
       frame: frameArr[id],
       id: id,
       sId: sId,
+      userName: name,
+      score: score,
+      roomId: roomId,
     });
 
     this.add.existing(this[`player${id}`]);

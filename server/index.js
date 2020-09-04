@@ -46,8 +46,10 @@ const joinRoom = (socket, room, name) => {
           sId: socket.id,
           name: name,
           score: 0,
+          roomId: room.id,
         };
 
+        console.log("new player in server file: ", room.players[socket.id]);
         console.log("socket rooms>>>", socket.rooms);
 
         console.log(

@@ -32,19 +32,26 @@ Client.socket.on("newPlayer", function (data, socketId) {
     data[socketId].id,
     data[socketId].x,
     data[socketId].y,
-    data[socketId].sId
+    data[socketId].sId,
+    data[socketId].name,
+    data[socketId].score,
+    data[socketId].roomId
   );
-  //}
 });
 
 Client.socket.on("allPlayers", function (data) {
   // console.log("data in current players: ", currentPlayer);
+  console.log("in all player request client", data);
+
   for (let player in data) {
     window.MainScene.addNewPlayer(
       data[player].id,
       data[player].x,
       data[player].y,
-      data[player].sId
+      data[player].sId,
+      data[player].name,
+      data[player].score,
+      data[player].roomId
     );
   }
 
