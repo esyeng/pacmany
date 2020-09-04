@@ -37,7 +37,9 @@ class HomePage extends Component {
     this.addNewPlayer = this.addNewPlayer.bind(this);
     this.createGame = this.createGame.bind(this);
   }
-
+  // componentDidMount() {
+  //   const game = new Phaser.Game(config);
+  // }
   addNewPlayer() {
     console.log("in add new player");
     console.log("game in add new player: ", game);
@@ -49,10 +51,10 @@ class HomePage extends Component {
   createGame() {
     console.log("state vars: ", this.state.userName, this.state.roomName);
 
-    // Client.Client.socket.emit("createRoom", {
-    //   userName: this.state.userName,
-    //   roomCode: this.state.roomName,
-    // });
+    Client.Client.socket.emit("createRoom", {
+      userName: this.state.userName,
+      roomCode: this.state.roomName,
+    });
   }
 
   joinGame() {

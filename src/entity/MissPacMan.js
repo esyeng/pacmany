@@ -3,6 +3,8 @@ var Client = require("../client");
 
 export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   constructor(data) {
+    console.log("data in constructor>>>", data);
+
     let { scene, x, y, texture, frame, id, sId } = data;
 
     super(scene.matter.world, x, y, texture, frame, id, sId);
@@ -12,6 +14,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     this.score = 0;
     this.id = id;
     this.sId = sId;
+
     // this.texture = texture;
     // this.frame = frame;
 
@@ -165,7 +168,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   } // end of updates
 
   movePlayer() {
-    //console.log("in move player");
+    console.log("in move player", this);
     Client.Client.playerMoved(this.x, this.y, this.id);
   }
 

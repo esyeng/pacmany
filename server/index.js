@@ -34,6 +34,7 @@ const joinRoom = (socket, room, name) => {
     //if it's not at capacity (Max 4)
     if (room.numberOfPlayers < 4) {
       //store the socket in a socket array
+
       room.sockets.push(socket);
       //increase # of players in room by 1
       room.numberOfPlayers += 1;
@@ -47,13 +48,18 @@ const joinRoom = (socket, room, name) => {
           score: 0,
         };
 
+        console.log("socket rooms>>>", socket.rooms);
+
         console.log(
           socket.id,
-          `Player${room.players[socket.id].playerNumber}`,
+          `Player${room.players[socket.id].id}`,
           "Joined",
           room.id
         );
-        socket.emit("newPlayer", room.players);
+        // socket.emit("newPlayer", room.players, socket.id);
+        // socket.broadcast.emit("allplayers", room.players);
+        socket.to(room.id).emit("newPlayer", room.players, socket.id);
+        socket.emit("allPlayers", room.players);
       });
     } else {
       console.log(
@@ -109,7 +115,7 @@ io.on("connection", function (socket) {
     rooms[data.roomCode] = room;
 
     // have the socket join the room they've just created.
-    joinRoom(socket, room, data.userName);
+    // joinRoom(socket, room, data.userName);
   });
 
   //adds player to room

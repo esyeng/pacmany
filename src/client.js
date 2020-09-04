@@ -25,19 +25,26 @@ Client.dotEaten = function (x, y, id) {
   Client.socket.emit("dotEaten", { x: x, y: y, id: id });
 };
 
-Client.socket.on("newPlayer", function (data) {
-  console.log("in new player request client");
-  window.MainScene.addNewPlayer(data.id, data.x, data.y, data.sId);
+Client.socket.on("newPlayer", function (data, socketId) {
+  console.log("in new player request client", data);
+  //for (let player in data) {
+  window.MainScene.addNewPlayer(
+    data[socketId].id,
+    data[socketId].x,
+    data[socketId].y,
+    data[socketId].sId
+  );
+  //}
 });
 
-Client.socket.on("currentPlayers", function (data) {
-  console.log("data in current players: ", currentPlayer);
-  for (var i = 0; i < data.length; i++) {
+Client.socket.on("allPlayers", function (data) {
+  // console.log("data in current players: ", currentPlayer);
+  for (let player in data) {
     window.MainScene.addNewPlayer(
-      data[i].id,
-      data[i].x,
-      data[i].y,
-      data[i].sId
+      data[player].id,
+      data[player].x,
+      data[player].y,
+      data[player].sId
     );
   }
 

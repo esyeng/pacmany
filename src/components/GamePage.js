@@ -18,8 +18,8 @@ class Canvas extends Component {
       gameStarted: false,
       gameInProgress: false,
       gameEnded: false,
-      roomKey: this.props.match.params,
-      name: this.props.name,
+      roomKey: this.props.match.params.roomCode,
+      name: this.props.match.params.userName,
       players: [],
       playerCount: 0,
     };
@@ -36,20 +36,30 @@ class Canvas extends Component {
     // }
     // window.addEventListener("load", this.createGame);
 
-    const element = document.getElementById("loading");
+    // const element = document.getElementById("loading");
 
-    const callback = function (mutationsList, observer) {};
+    // const callback = function (mutationsList, observer) {};
 
-    const config = { attributes: true, childList: true, subtree: true };
+    // const config = { attributes: true, childList: true, subtree: true };
 
-    const observer = new MutationObserver(callback);
+    // const observer = new MutationObserver(callback);
 
-    element.addEventListener("");
+    // element.addEventListener("");
+
+    /////
     const game = new Phaser.Game(config);
-
-    console.log("game created: ", game);
+    /////
+    // console.log("game created: ", game);
 
     console.log("main scene in component did mount: ", window.MainScene);
+    // if (this.props.match.url.split("/")[1] === "host") {
+    //   console.log("route is host");
+    //   const game = new Phaser.Game(config);
+    // }
+    Client.Client.socket.emit("joinRoom", {
+      userName: this.state.name,
+      roomCode: this.state.roomKey,
+    });
   }
 
   createGame() {

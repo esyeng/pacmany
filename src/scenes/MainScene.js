@@ -65,10 +65,12 @@ export default class MainScene extends Phaser.Scene {
       frame: "blinky",
     });
     this.add.existing(this.blinky);
+
     // Client.Client.askNewPlayer();
-    console.log("in create: ", window.MainScene);
-    let el = document.getElementById("loading");
-    el.innerHTML = "loaded";
+
+    // console.log("in create: ", window.MainScene);
+    // let el = document.getElementById("loading");
+    // el.innerHTML = "loaded";
   }
 
   update() {
@@ -93,7 +95,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   addNewPlayer(id, x, y, sId) {
-    console.log("add new mainscene");
+    console.log("add new mainscene", id, x, y, sId);
+
     let textureArr = ["pacman_c", "pacman_c_g", "pacman_c_o", "pacman_c_v"];
     let frameArr = ["p_right_1", "pg_right_1", "po_right_1", "pv_right_1"];
     this[`player${id}`] = new MissPacMan({
@@ -107,6 +110,8 @@ export default class MainScene extends Phaser.Scene {
     });
 
     this.add.existing(this[`player${id}`]);
+
+    console.log("add new player func mainscene", window.MainScene);
   }
 
   movePlayer(id, x, y) {
