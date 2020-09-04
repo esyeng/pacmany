@@ -28,6 +28,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
       score,
       roomId
     );
+
     this.scene.add.existing(this);
     this.name = `player${id}`;
     this.id = id;
