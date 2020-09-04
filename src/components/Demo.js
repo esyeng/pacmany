@@ -5,7 +5,7 @@ import { Navbar } from "./Navbar";
 import { withStyles } from "@material-ui/core";
 import styles from "./styles";
 import io from "socket.io-client";
-const socket = io("http://localhost:8080/");
+// const socket = io("http://localhost:8080/");
 // let userName = prompt("Your Name, please");
 // let roomName = prompt("room name");
 // let chat = prompt("your message to other players, please");
