@@ -4,6 +4,8 @@ var Client = require("../client");
 export function baseLevelPreload(scene) {
   // loading tiles(images) for map
   scene.load.image("tiles", "/assets/maps/pacman/map.png");
+  scene.load.image("fonts", "/assets/maps/pacman/font.png");
+  scene.load.image("black", "/assets/maps/pacman/black_rect.png");
   // loading drawn map(data)
   scene.load.tilemapTiledJSON("map", "/assets/maps/pacman/map_nik_test7.json");
   // loading resources (dots) (images and data)
@@ -25,7 +27,10 @@ export function baseLevelCreate(scene) {
   const layer1 = map.createStaticLayer("Tile Layer 1", tileset1, 0, 0);
   const tileset2 = map.addTilesetImage("layout2", "tiles", 16, 16, 0, 0);
   const layer2 = map.createStaticLayer("Tile Layer 2", tileset2, 0, 0);
-
+  // const tileset3 = map.addTilesetImage("black_rect", "black", 16, 16, 0, 0);
+  // const layer3 = map.createStaticLayer("Tile Layer 3", tileset3, 0, 0);
+  // const tileset4 = map.addTilesetImage("font", "fonts", 16, 16, 0, 0);
+  // const layer4 = map.createStaticLayer("Tile Layer 4", tileset4, 0, 0);
   layer2.setCollisionByProperty({ collides: true });
 
   scene.matter.world.convertTilemapLayer(layer2);
@@ -75,6 +80,7 @@ export function addLevelResources(scene) {
     };
 
     resItem.pickup = function () {
+      //scene.input.keyboard.enabled = false; //test for kill keyboard, death simulation
       this.eraseDot();
       this.destroy();
       this.sound.play();

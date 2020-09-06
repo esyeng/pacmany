@@ -17,7 +17,7 @@ Client.askNewPlayer = function () {
 };
 
 Client.playerMoved = function (id, sId, roomId, x, y) {
-  console.log("in client playerMoved", id, sId, roomId, x, y);
+  //console.log("in client playerMoved", id, sId, roomId, x, y);
   Client.socket.emit("playerMoved", {
     id: id,
     sId: sId,
@@ -63,7 +63,7 @@ Client.socket.on("allPlayers", function (data) {
   }
 
   Client.socket.on("movePlayer", function (data) {
-    console.log("client seding to MainScene movePlayer <<data>>", data);
+    ///console.log("client seding to MainScene movePlayer <<data>>", data);
     window.MainScene.movePlayer(data.id, data.x, data.y);
   });
 

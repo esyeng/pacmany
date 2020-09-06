@@ -94,7 +94,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).send(err.message || "Internal server error.");
 });
 
-server.lastPlayerID = 0;
+server.lastPlayerID = 0; // not being used
 server.startCoordinates = [
   [225, 377],
   [125, 233],
@@ -133,11 +133,11 @@ io.on("connection", function (socket) {
 
   // moves player
   socket.on("playerMoved", function (data) {
-    console.log("in server playerMoved <<data>>", data);
+    //console.log("in server playerMoved <<data>>", data);
     const room = rooms[data.roomId];
     updatePlayer(data);
     //players.filter((player) => player.id === data.id);
-    console.log("in server playerMoved <<room>>", room);
+    //console.log("in server playerMoved <<room>>", room);
     // for (let player in room) {
     //   console.log("inside for loop", player);
     //   if (player.id === data.id) {
@@ -159,9 +159,9 @@ io.on("connection", function (socket) {
   //     socket.to(room.id).emit("newPlayer", room.players, socket.id);
   //     socket.emit("allPlayers", room.players);
 
-  // not being used
+  // not being used - but need to start game only with 4 players
   socket.on("startGame", (room) => {
-    console.log(room.roomCode);
+    //console.log(room.roomCode);
     if (rooms[room.roomCode].numberOfPlayers > 1) {
       rooms[room.roomCode].started = true;
       // io.in(roomCode).emit("startCountdown");
@@ -204,7 +204,7 @@ io.on("connection", function (socket) {
 
 // being used
 function updatePlayer(data) {
-  console.log("in server updatePlayer");
+  //console.log("in server updatePlayer");
   Object.keys(io.sockets.connected).forEach(function (socketID) {
     let player = io.sockets.connected[socketID].player;
     if (player) {
@@ -232,6 +232,7 @@ function getAllPlayers(roomId) {
   return rooms[roomId].players;
 }
 
+// not being used
 function getName(id) {
   const arr = users.filter((obj) => obj.socketID === id);
   if (arr) {

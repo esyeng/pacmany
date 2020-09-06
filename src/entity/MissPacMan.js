@@ -75,6 +75,12 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     this.setFixedRotation();
 
     this.CreatePickupCollisions(playerCollider);
+
+    this.beDead = function () {
+      console.log("you are dead hahah!!");
+      //this.destroy();
+      return true;
+    };
   }
 
   static preload(scene) {
@@ -195,14 +201,14 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   } // end of updates
 
   movePlayer() {
-    console.log(
-      "in move player",
-      this.id,
-      this.sId,
-      this.roomId,
-      this.x,
-      this.y
-    );
+    // console.log(
+    //   "in move player",
+    //   this.id,
+    //   this.sId,
+    //   this.roomId,
+    //   this.x,
+    //   this.y
+    // );
     Client.Client.playerMoved(this.id, this.sId, this.roomId, this.x, this.y);
   }
 

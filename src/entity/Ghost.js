@@ -44,11 +44,28 @@ export default class Ghost extends Phaser.Physics.Matter.Sprite {
             other.gameObjectB.name == "player3")
         ) {
           this.attacking = other.gameObjectB;
-          //console.log("callback attack");
+          console.log("callback attack start");
         }
       },
       context: this.scene,
     });
+
+    // this.scene.matterCollision.addOnCollideActive({
+    //   objectA: [ghostSensor],
+    //   callback: (other) => {
+    //     if (
+    //       other.gameObjectB &&
+    //       (other.gameObjectB.name == "player0" ||
+    //         other.gameObjectB.name == "player1" ||
+    //         other.gameObjectB.name == "player2" ||
+    //         other.gameObjectB.name == "player3")
+    //     ) {
+    //       this.attacking = other.gameObjectB;
+    //       console.log("callback attack active");
+    //     }
+    //   },
+    //   context: this.scene,
+    // });
   }
 
   static preload(scene) {
@@ -79,7 +96,7 @@ export default class Ghost extends Phaser.Physics.Matter.Sprite {
 
   hit = () => {
     this.health--;
-    // console.log("G hit");
+    console.log("Ghost hitted target");
   };
 
   attack = (target) => {
@@ -87,6 +104,7 @@ export default class Ghost extends Phaser.Physics.Matter.Sprite {
       clearInterval(this.attacktimer);
       return;
     }
+    console.log("in attack");
     target.hit();
   };
 
