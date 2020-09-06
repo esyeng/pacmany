@@ -9,6 +9,8 @@ import Ghost from "../entity/Ghost.js";
 
 var Client = require("../client");
 
+var playersToCreate = [];
+
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super("MainScene");
@@ -16,13 +18,14 @@ export default class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    console.log("in preload: ", window.MainScene);
+    //console.log("in preload: ", window.MainScene);
     baseLevelPreload(this);
     MissPacMan.preload(this);
     Ghost.preload(this);
   }
 
   create() {
+    // console.log("in create ", window.MainScene);
     var defaultCategory = 0x0001;
     var redCategory = 0x0002;
     var greenCategory = 0x0004;
@@ -66,6 +69,24 @@ export default class MainScene extends Phaser.Scene {
     });
     this.add.existing(this.blinky);
 
+    // for (let id = 0; id < playersToCreate.length; id++) {
+    //   window.MainScene.createNewPlayer(playersToCreate[id]);
+    // }
+
+    // this.player99 = new MissPacMan({
+    //   scene: this,
+    //   x: 100,
+    //   y: 100,
+    //   texture: "pacman_c",
+    //   frame: "p_right_1",
+    //   id: 99,
+    //   sId: "xxx",
+    //   userName: "xxx",
+    //   score: "0",
+    //   roomId: "xxx",
+    // });
+    // this.add.existing(this.player99);
+
     // Client.Client.askNewPlayer();
 
     // console.log("in create: ", window.MainScene);
@@ -74,6 +95,12 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
+    for (let id = 0; id < playersToCreate.length; id++) {
+      if (!this[`player${id}`]) {
+        window.MainScene.createNewPlayer(playersToCreate[id]);
+      }
+    }
+
     let id = Client.Client.socket.id;
     if (this.player0 && this.player0.sId === id) {
       this.player0.update(this, this.player0.id);
@@ -95,28 +122,41 @@ export default class MainScene extends Phaser.Scene {
   }
 
   addNewPlayer(id, x, y, sId, name, score, roomId) {
-    console.log(
-      "add new mainscene",
-      "id",
+    //console.log("in add new player");
+    playersToCreate.push({
       id,
-      "x",
       x,
-      "y",
       y,
-      "sId",
       sId,
-      "name",
       name,
-      "score",
       score,
-      "roomId"
-    );
-    console.log("creating new player <<<this>>>", this);
+      roomId,
+    });
+  }
+
+  createNewPlayer({ id, x, y, sId, name, score, roomId }) {
+    // console.log(
+    //   "add new mainscene",
+    //   "id",
+    //   id,
+    //   "x",
+    //   x,
+    //   "y",
+    //   y,
+    //   "sId",
+    //   sId,
+    //   "name",
+    //   name,
+    //   "score",
+    //   score,
+    //   "roomId"
+    // );
+    //console.log("creating new player <<<this>>>", this);
 
     let textureArr = ["pacman_c", "pacman_c_g", "pacman_c_o", "pacman_c_v"];
     let frameArr = ["p_right_1", "pg_right_1", "po_right_1", "pv_right_1"];
     this[`player${id}`] = new MissPacMan({
-      scene: this,
+      scene: window.MainScene,
       x: x,
       y: y,
       texture: textureArr[id],
@@ -128,17 +168,29 @@ export default class MainScene extends Phaser.Scene {
       roomId: roomId,
     });
 
+    // this[`player${id}`].
+    // texture = textureArr[id];
+    // this[`player${id}`].frame = frameArr[id];
+    // console.log(
+    //   "add new player func mainscene <<<ADDING to scene>>>",
+    //   window.MainScene
+    // );
     this.add.existing(this[`player${id}`]);
 
-    console.log("add new player func mainscene", window.MainScene);
+    //console.log("add new player func mainscene", window.MainScene);
   }
 
   movePlayer(id, x, y) {
+    console.log("main scene movePlayer", "id:", id, "x:", x, "y:", y);
+    console.log("window.MainScene", window.MainScene, this);
+    console.log("player0", window.MainScene.player0);
+    console.log("player1", window.MainScene.player1);
     window.MainScene[`player${id}`].x = x;
     window.MainScene[`player${id}`].y = y;
   }
 
   eraseDot(x, y, id) {
+    //console.log("main scene eraseDot", x, y, id);
     window.MainScene.resources[id].destroy();
   }
 }

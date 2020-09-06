@@ -16,17 +16,24 @@ Client.askNewPlayer = function () {
   Client.socket.emit("newplayer");
 };
 
-Client.playerMoved = function (x, y, id) {
-  Client.socket.emit("playerMoved", { x: x, y: y, id: id });
+Client.playerMoved = function (id, sId, roomId, x, y) {
+  console.log("in client playerMoved", id, sId, roomId, x, y);
+  Client.socket.emit("playerMoved", {
+    id: id,
+    sId: sId,
+    roomId: roomId,
+    x: x,
+    y: y,
+  });
 };
 
 Client.dotEaten = function (x, y, id) {
-  console.log("IN client dot eaten");
+  //console.log("IN client dot eaten", x, y, id);
   Client.socket.emit("dotEaten", { x: x, y: y, id: id });
 };
 
 Client.socket.on("newPlayer", function (data, socketId) {
-  console.log("in new player request client", data);
+  // console.log("in new player request client", data);
   //for (let player in data) {
   window.MainScene.addNewPlayer(
     data[socketId].id,
@@ -41,7 +48,7 @@ Client.socket.on("newPlayer", function (data, socketId) {
 
 Client.socket.on("allPlayers", function (data) {
   // console.log("data in current players: ", currentPlayer);
-  console.log("in all player request client", data);
+  //console.log("in all player request client", data);
 
   for (let player in data) {
     window.MainScene.addNewPlayer(
@@ -56,11 +63,12 @@ Client.socket.on("allPlayers", function (data) {
   }
 
   Client.socket.on("movePlayer", function (data) {
+    console.log("client seding to MainScene movePlayer <<data>>", data);
     window.MainScene.movePlayer(data.id, data.x, data.y);
   });
 
   Client.socket.on("dotEaten", function (data) {
-    console.log("client dot eaten");
+    //console.log("client dot eaten <<data>>", data);
     window.MainScene.eraseDot(data.x, data.y, data.id);
   });
 });

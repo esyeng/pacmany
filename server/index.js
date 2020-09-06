@@ -131,6 +131,35 @@ io.on("connection", function (socket) {
     }
   });
 
+  // moves player
+  socket.on("playerMoved", function (data) {
+    console.log("in server playerMoved <<data>>", data);
+    const room = rooms[data.roomId];
+    updatePlayer(data);
+    //players.filter((player) => player.id === data.id);
+    console.log("in server playerMoved <<room>>", room);
+    // for (let player in room) {
+    //   console.log("inside for loop", player);
+    //   if (player.id === data.id) {
+    //     console.log("in server movePlayer emmited");
+    //     socket.broadcast.emit("movePlayer", data);
+    //   }
+    // }
+    socket.to(room.id).emit("movePlayer", data);
+    // room.players.filter((player) => player.id === data.id);
+    // socket.broadcast.emit("movePlayer", socket.player);
+  });
+  // updates dots - this works
+  socket.on("dotEaten", function (data) {
+    //console.log("in server dotEaten", data);
+    socket.broadcast.emit("dotEaten", data);
+  });
+  // // socket.emit("newPlayer", room.players, socket.id);
+  // // socket.broadcast.emit("allplayers", room.players);
+  //     socket.to(room.id).emit("newPlayer", room.players, socket.id);
+  //     socket.emit("allPlayers", room.players);
+
+  // not being used
   socket.on("startGame", (room) => {
     console.log(room.roomCode);
     if (rooms[room.roomCode].numberOfPlayers > 1) {
@@ -146,6 +175,7 @@ io.on("connection", function (socket) {
     }
   });
 
+  // not being used
   socket.on("newplayer", function () {
     if (players.length === 4) return;
 
@@ -172,7 +202,9 @@ io.on("connection", function (socket) {
   });
 });
 
+// being used
 function updatePlayer(data) {
+  console.log("in server updatePlayer");
   Object.keys(io.sockets.connected).forEach(function (socketID) {
     let player = io.sockets.connected[socketID].player;
     if (player) {
@@ -182,6 +214,7 @@ function updatePlayer(data) {
   });
 }
 
+// not being used
 function getAllPlayers(roomId) {
   players = [];
 

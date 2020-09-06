@@ -154,15 +154,15 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
       playerVelocity.x = -1;
       this.movePlayer();
     } else if (this.inputKeys.right.isDown) {
-      this.movePlayer();
       playerVelocity.x = 1;
+      this.movePlayer();
     }
     if (this.inputKeys.up.isDown) {
-      this.movePlayer();
       playerVelocity.y = -1;
-    } else if (this.inputKeys.down.isDown) {
       this.movePlayer();
+    } else if (this.inputKeys.down.isDown) {
       playerVelocity.y = 1;
+      this.movePlayer();
     }
 
     playerVelocity.normalize();
@@ -174,6 +174,10 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     let animsArrUp = ["pacman_up", "pg_up", "po_up", "pv_up"];
     let animsArrDown = ["pacman_down", "pg_down", "po_down", "pv_down"];
     //console.log("vx:", this.velocity.x, " vy:", this.velocity.y);
+    // if ((this.velocity.x = 0)) {
+    //   //console.log("RIGHT>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
+    //   console.log("i was here X");
+    // } else
     if (this.velocity.x > 0) {
       //console.log("RIGHT>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
       this.anims.play(animsArrRight[idx], true);
@@ -191,8 +195,15 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   } // end of updates
 
   movePlayer() {
-    console.log("in move player", this);
-    Client.Client.playerMoved(this.x, this.y, this.id);
+    console.log(
+      "in move player",
+      this.id,
+      this.sId,
+      this.roomId,
+      this.x,
+      this.y
+    );
+    Client.Client.playerMoved(this.id, this.sId, this.roomId, this.x, this.y);
   }
 
   CreatePickupCollisions(playerCollider) {
