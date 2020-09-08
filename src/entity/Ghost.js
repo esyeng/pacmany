@@ -1,11 +1,14 @@
 import "phaser";
 
+var Client = require("../client");
+
 export default class Ghost extends Phaser.Physics.Matter.Sprite {
   constructor(data) {
     let { scene, x, y, texture, frame } = data;
     super(scene.matter.world, x, y, texture, frame);
     this.scene.add.existing(this);
     this.health = 1;
+    this.name = frame;
     this._position = new Phaser.Math.Vector2(this.x, this.y);
 
     var defaultCategory = 0x0001;
@@ -108,6 +111,10 @@ export default class Ghost extends Phaser.Physics.Matter.Sprite {
     target.hit();
   };
 
+  moveGhost() {
+    Client.Client.ghostMoved(this.x, this.y, this.name);
+  }
+
   update() {
     //console.log("update Ghost", idx);
 
@@ -120,6 +127,9 @@ export default class Ghost extends Phaser.Physics.Matter.Sprite {
         let v = direction.normalize();
         this.setVelocityX(direction.x);
         this.setVelocityY(direction.y);
+
+        this.moveGhost();
+
         if (this.attacktimer) {
           clearInterval(this.attackTimer);
           this.attacktimer = null;

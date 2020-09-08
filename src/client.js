@@ -18,6 +18,15 @@ Client.playerMoved = function (id, sId, roomId, x, y, score) {
   });
 };
 
+Client.ghostMoved = function (x, y, name) {
+  console.log("Client.ghostMoved", x, y, name);
+  Client.socket.emit("ghostMoved", {
+    x: x,
+    y: y,
+    name: name,
+  });
+};
+
 Client.dotEaten = function (x, y, id) {
   Client.socket.emit("dotEaten", { x: x, y: y, id: id });
 };
@@ -63,7 +72,12 @@ Client.socket.on("allPlayers", function (data) {
   }
 
   Client.socket.on("movePlayer", function (data) {
-    window.MainScene.movePlayer(data.id, data.x, data.y, data.score);
+    window.MainScene.movePlayer(data.id, data.x, data.y);
+  });
+
+  Client.socket.on("moveGhost", function (data) {
+    console.log("ghost move sending to MainScene");
+    window.MainScene.moveGhost(data.x, data.y, data.name);
   });
 
   Client.socket.on("dotEaten", function (data) {

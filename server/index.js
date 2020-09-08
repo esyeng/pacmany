@@ -145,6 +145,12 @@ io.on("connection", function (socket) {
     socket.broadcast.emit("dotEaten", data);
   });
 
+  // updates ghost - WIP
+  socket.on("ghostMoved", function (data) {
+    console.log("in server ghostMoved", data);
+    socket.broadcast.emit("moveGhost", data);
+  });
+
   //emits player died to other players
   socket.on("playerDied", function (data) {
     const room = rooms[data.roomId];

@@ -179,6 +179,11 @@ export default class MainScene extends Phaser.Scene {
     window.MainScene[`player${id}`].score = score;
   }
 
+  moveGhost(x, y, name) {
+    window.MainScene[name].x = x;
+    window.MainScene[name].y = y;
+  }
+
   eraseDot(x, y, id) {
     window.MainScene.resources[id].destroy();
   }
