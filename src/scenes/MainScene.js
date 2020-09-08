@@ -123,7 +123,7 @@ export default class MainScene extends Phaser.Scene {
 
       gameOver = true;
 
-      window.MainScene[`player${id}`].x = 2000;
+      window.MainScene[`player${id}`].x = 20;
       window.MainScene[`player${id}`].y = 2000;
 
       const tileset3 = this.map.addTilesetImage(
@@ -139,6 +139,11 @@ export default class MainScene extends Phaser.Scene {
       const layer5 = this.map.createStaticLayer("Tile Layer 5", tileset4, 0, 0);
 
       this.input.keyboard.enabled = false;
+
+      window.MainScene[`player${id}`].x = 20;
+      window.MainScene[`player${id}`].y = 2000;
+
+      //window.MainScene[`player${id}`].destroy();
     }
   }
 

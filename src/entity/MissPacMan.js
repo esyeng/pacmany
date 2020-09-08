@@ -145,6 +145,13 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   };
 
   update(scene, idx) {
+    if (this.dead) {
+      this.x = 20;
+      this.y = 2000;
+      this.movePlayer();
+      return;
+    }
+
     if (this.x < 2) this.x = 470;
     if (this.x > 486) this.x = 10;
 
