@@ -198,7 +198,7 @@ export default class MainScene extends Phaser.Scene {
       this[`player${id}`] &&
       !this[`player${id}`].dead &&
       (otherPlayersDead === 3 ||
-        (totalScore === 50 && this[`player${id}`].score === maxScore))
+        (totalScore === 290 && this[`player${id}`].score === maxScore))
     ) {
       gameOver = true;
 
