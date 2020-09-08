@@ -66,7 +66,7 @@ export default (theme) => ({
     outline: "none",
   },
   paper: {
-    width: 600,
+    width: 700,
     padding: theme.spacing(2, 4, 3),
     justifyContent: "center",
     textAlign: "center",
@@ -81,7 +81,7 @@ export default (theme) => ({
     flexGrow: 2,
     margin: "1em",
     width: "400px",
-    height: "300px",
+    height: "400px",
     backgroundColor: "white",
     padding: "2%",
     border: "2px solid black",

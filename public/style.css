@@ -94,3 +94,21 @@ form div {
   margin: 1em;
   display: inline-block;
 }
+
+#cardComponent {
+  margin-top: 2%;
+}
+
+#returnHomeButton {
+  border: none;
+  border-radius: 5px;
+  height: 65px;
+  width: 100px;
+  font-weight: bold;
+  background-color: red;
+}
+
+#returnHomeButton:focus {
+  outline: none;
+  box-shadow: none;
+}

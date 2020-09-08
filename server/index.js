@@ -5,6 +5,7 @@
 const path = require("path");
 const PORT = process.env.PORT || 8080;
 const express = require("express");
+const e = require("express");
 const app = express();
 
 const server = require("http").Server(app);
@@ -13,7 +14,6 @@ const io = require("socket.io").listen(server);
 module.exports = app;
 
 let rooms = [];
-let players = [];
 
 //rooms class
 class Room {
@@ -47,6 +47,7 @@ const joinRoom = (socket, room, name) => {
           name: name,
           score: 0,
           roomId: room.id,
+          isAlive: true,
         };
 
         console.log("new player in server file: ", room.players[socket.id]);
@@ -58,8 +59,6 @@ const joinRoom = (socket, room, name) => {
           "Joined",
           room.id
         );
-        // socket.emit("newPlayer", room.players, socket.id);
-        // socket.broadcast.emit("allplayers", room.players);
         socket.to(room.id).emit("newPlayer", room.players, socket.id);
         socket.emit("allPlayers", room.players);
       });
@@ -68,13 +67,12 @@ const joinRoom = (socket, room, name) => {
         "This room is at capacity. No. of players right now:",
         room.numberOfPlayers
       );
+      socket.emit("roomAtCapacity");
     }
   } else {
     console.log("Room", room.id, "is invalid or has already started");
     socket.emit("gameAlreadyStarted", room.id);
   }
-
-  console.log("Rooms: ", room);
 };
 /**********************************************
  * EXPRESS ROUTER
@@ -94,7 +92,6 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).send(err.message || "Internal server error.");
 });
 
-server.lastPlayerID = 0; // not being used
 server.startCoordinates = [
   [225, 377],
   [125, 233],
@@ -115,9 +112,6 @@ io.on("connection", function (socket) {
   socket.on("createRoom", (data) => {
     room = new Room(data.roomCode);
     rooms[data.roomCode] = room;
-
-    // have the socket join the room they've just created.
-    // joinRoom(socket, room, data.userName);
   });
 
   //adds player to room
@@ -127,115 +121,82 @@ io.on("connection", function (socket) {
       joinRoom(socket, room, data.userName);
     } else {
       console.log("Sorry, game room:", data.roomCode, "not found");
-      socket.emit("invalidRoom", data.roomCode);
+      socket.emit("invalidRoom");
     }
   });
 
   // moves player
   socket.on("playerMoved", function (data) {
-    //console.log("in server playerMoved <<data>>", data);
     const room = rooms[data.roomId];
     updatePlayer(data);
-    //players.filter((player) => player.id === data.id);
-    //console.log("in server playerMoved <<room>>", room);
-    // for (let player in room) {
-    //   console.log("inside for loop", player);
-    //   if (player.id === data.id) {
-    //     console.log("in server movePlayer emmited");
-    //     socket.broadcast.emit("movePlayer", data);
-    //   }
-    // }
     socket.to(room.id).emit("movePlayer", data);
-    // room.players.filter((player) => player.id === data.id);
-    // socket.broadcast.emit("movePlayer", socket.player);
   });
+
+  //player scores
+  socket.on("updatePlayerScore", function (data) {
+    const room = rooms[data.roomId];
+    updateScore(data);
+    socket.to(room.id).emit("updatePlayerScore", data);
+    socket.emit("updateYourScore", data);
+  });
+
   // updates dots - this works
   socket.on("dotEaten", function (data) {
-    //console.log("in server dotEaten", data);
     socket.broadcast.emit("dotEaten", data);
   });
-  // // socket.emit("newPlayer", room.players, socket.id);
-  // // socket.broadcast.emit("allplayers", room.players);
-  //     socket.to(room.id).emit("newPlayer", room.players, socket.id);
-  //     socket.emit("allPlayers", room.players);
 
-  // not being used - but need to start game only with 4 players
-  socket.on("startGame", (room) => {
-    //console.log(room.roomCode);
-    if (rooms[room.roomCode].numberOfPlayers > 1) {
-      rooms[room.roomCode].started = true;
-      // io.in(roomCode).emit("startCountdown");
-      // io.in(room.roomCode).emit("currentPlayers", rooms[room.roomCode].players);
-      socket.emit("currentPlayers", rooms[room.roomCode].players);
-
-      socket.emit("sound");
-      io.in(room.roomCode).emit("gameStarted");
-    } else {
-      socket.emit("notEnoughPlayers");
-    }
+  //emits player died to other players
+  socket.on("playerDied", function (data) {
+    const room = rooms[data.roomId];
+    playerDied();
+    socket.to(room.id).emit("playerDied", data);
+    socket.emit("youDied", data);
   });
 
-  // not being used
-  socket.on("newplayer", function () {
-    if (players.length === 4) return;
-
-    socket.player = {
-      id: server.lastPlayerID++,
-      x: server.startCoordinates[server.lastPlayerID - 1][0],
-      y: server.startCoordinates[server.lastPlayerID - 1][1],
-      sId: "",
-    };
-
-    socket.broadcast.emit("newplayer", socket.player);
-    socket.emit("allplayers", getAllPlayers());
-
-    socket.on("playerMoved", function (data) {
-      updatePlayer(data);
-      players.filter((player) => player.id === data.id);
-
-      socket.broadcast.emit("movePlayer", socket.player);
-    });
-
-    socket.on("dotEaten", function (data) {
-      socket.broadcast.emit("dotEaten", data);
-    });
+  //handles start game functionality
+  socket.on("startGame", (data) => {
+    if (data.singlePlayer) {
+      rooms[data.room].started = true;
+      socket.to(data.room).emit("gameStarted");
+    } else {
+      if (rooms[data.room].numberOfPlayers === 4) {
+        rooms[data.room].started = true;
+        socket.to(data.room).emit("gameStarted");
+      } else {
+        socket.emit("notEnoughPlayers");
+      }
+    }
   });
 });
 
 // being used
 function updatePlayer(data) {
-  //console.log("in server updatePlayer");
   Object.keys(io.sockets.connected).forEach(function (socketID) {
     let player = io.sockets.connected[socketID].player;
     if (player) {
+      console.log("player before: ", player);
+
       player.x = data.x;
       player.y = data.y;
+      console.log("player after: ", player);
     }
   });
 }
 
-// not being used
-function getAllPlayers(roomId) {
-  players = [];
-
+function updateScore(data) {
   Object.keys(io.sockets.connected).forEach(function (socketID) {
-    console.log("rooms: ", io.sockets.connected[socketID].rooms);
     let player = io.sockets.connected[socketID].player;
     if (player) {
-      player.sId = io.sockets.connected[socketID].id;
-      players.push(player);
+      player.score = data.score;
     }
   });
-
-  rooms[roomId].players = players;
-
-  return rooms[roomId].players;
 }
 
-// not being used
-function getName(id) {
-  const arr = users.filter((obj) => obj.socketID === id);
-  if (arr) {
-    return arr[0].userName;
-  }
+function playerDied() {
+  Object.keys(io.sockets.connected).forEach(function (socketID) {
+    let player = io.sockets.connected[socketID].player;
+    if (player) {
+      player.isAlive = false;
+    }
+  });
 }

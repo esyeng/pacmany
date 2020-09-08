@@ -1,4 +1,5 @@
 import "phaser";
+import { Socket } from "socket.io-client";
 var Client = require("../client");
 
 export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
@@ -14,6 +15,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
       userName,
       score,
       roomId,
+      isAlive,
     } = data;
 
     super(
@@ -26,7 +28,8 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
       sId,
       userName,
       score,
-      roomId
+      roomId,
+      isAlive
     );
 
     this.scene.add.existing(this);
@@ -37,9 +40,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     this.health = 1;
     this.userName = userName;
     this.roomId = roomId;
-
-    // this.texture = texture;
-    // this.frame = frame;
+    this.isAlive = isAlive;
 
     this._position = new Phaser.Math.Vector2(this.x, this.y);
     this.inputKeys = scene.input.keyboard.addKeys({
@@ -63,10 +64,6 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
       category: redCategory,
       mask: defaultCategory | greenCategory,
     };
-    // var playerSensor = Bodies.circle(this.x, this.y, 10, {
-    //   isSensor: true,
-    //   label: "playerSensor",
-    // });
     const compoundBody = Body.create({
       parts: [playerCollider], //playerSensor],
       frictionAir: 0.35,
@@ -78,7 +75,8 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
 
     this.beDead = function () {
       console.log("you are dead hahah!!");
-      //this.destroy();
+      this.isAlive = false;
+      Client.Client.playerDied(this.id, this.roomId);
       return true;
     };
   }
@@ -145,12 +143,9 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
 
   hit = () => {
     this.health--;
-    // console.log("PC hit");
   };
 
   update(scene, idx) {
-    //console.log("MissPacMan update>>>", idx);
-
     if (this.x < 2) this.x = 470;
     if (this.x > 486) this.x = 10;
 
@@ -179,36 +174,19 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     let animsArrLeft = ["pacman_left", "pg_left", "po_left", "pv_left"];
     let animsArrUp = ["pacman_up", "pg_up", "po_up", "pv_up"];
     let animsArrDown = ["pacman_down", "pg_down", "po_down", "pv_down"];
-    //console.log("vx:", this.velocity.x, " vy:", this.velocity.y);
-    // if ((this.velocity.x = 0)) {
-    //   //console.log("RIGHT>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
-    //   console.log("i was here X");
-    // } else
     if (this.velocity.x > 0) {
-      //console.log("RIGHT>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
       this.anims.play(animsArrRight[idx], true);
     } else if (this.velocity.x < 0) {
-      //console.log("LEFT>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
       this.anims.play(animsArrLeft[idx], true);
     }
     if (this.velocity.y < 0) {
-      //console.log("UP>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
       this.anims.play(animsArrUp[idx], true);
     } else if (this.velocity.y > 0.1) {
-      //console.log("DOWN>>", "vx:", this.velocity.x, " vy:", this.velocity.y);
       this.anims.play(animsArrDown[idx], true);
     }
   } // end of updates
 
   movePlayer() {
-    // console.log(
-    //   "in move player",
-    //   this.id,
-    //   this.sId,
-    //   this.roomId,
-    //   this.x,
-    //   this.y
-    // );
     Client.Client.playerMoved(this.id, this.sId, this.roomId, this.x, this.y);
   }
 
@@ -216,9 +194,17 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     this.scene.matterCollision.addOnCollideStart({
       objectA: [playerCollider],
       callback: (other) => {
-        if (other.gameObjectB && other.gameObjectB.pickup)
+        if (other.gameObjectB && other.gameObjectB.pickup) {
           other.gameObjectB.pickup();
-        this.score++;
+          this.score++;
+        }
+
+        // Client.Client.updatePlayerScore(
+        //   this.id,
+        //   this.sId,
+        //   this.roomId,
+        //   this.score
+        // );
       },
       context: this.scene,
     });

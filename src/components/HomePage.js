@@ -8,7 +8,8 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
-import config from "../config/config";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { RightSideBar } from "./RightSideBar";
 
 var Client = require("../client");
 
@@ -25,44 +26,35 @@ class HomePage extends Component {
       openJoinGameSettings: false,
       players: [],
       playerCount: 0,
+      codeCopied: false,
+      singlePlayer: false,
     };
 
     this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleOpenGameSettings = this.handleOpenGameSettings.bind(this);
+    this.handleOpenJoinGameSettings = this.handleOpenJoinGameSettings.bind(
+      this
+    );
     this.handleCloseGameSettings = this.handleCloseGameSettings.bind(this);
     this.generateRoomName = this.generateRoomName.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.joinGame = this.joinGame.bind(this);
-    this.addNewPlayer = this.addNewPlayer.bind(this);
     this.createGame = this.createGame.bind(this);
+    this.alertCopied = this.alertCopied.bind(this);
+    this.openSettings = this.openSettings.bind(this);
+    this.handleSinglePlayerGame = this.handleSinglePlayerGame.bind(this);
   }
-  // componentDidMount() {
-  //   const game = new Phaser.Game(config);
-  // }
-  addNewPlayer() {
-    console.log("in add new player");
-    console.log("game in add new player: ", game);
-    // game.state.add("Game", Game);
-    // game.state.start("Game");
-    // game.stage.disableVisibilityChange = true;
-  }
-
   createGame() {
-    console.log("state vars: ", this.state.userName, this.state.roomName);
-
     Client.Client.socket.emit("createRoom", {
       userName: this.state.userName,
       roomCode: this.state.roomName,
     });
   }
 
-  joinGame() {
-    console.log("join room");
-    // Client.Client.socket.emit("joinRoom", {
-    //   userName: this.state.userName,
-    //   roomCode: this.state.roomName,
-    // });
+  alertCopied() {
+    this.setState({
+      codeCopied: true,
+    });
   }
 
   handleOpenModal() {
@@ -86,19 +78,29 @@ class HomePage extends Component {
   }
 
   handleOpenGameSettings(e) {
-    console.log(e.target);
+    this.openSettings();
+    this.generateRoomName();
+  }
+
+  handleSinglePlayerGame() {
+    this.openSettings();
+    this.setState({
+      singlePlayer: true,
+    });
+  }
+
+  openSettings() {
     this.setState({
       openModal: false,
       openGameSettings: true,
     });
+  }
 
-    if (e.target.name === "joinGame") {
-      this.setState({
-        openJoinGameSettings: true,
-      });
-    } else {
-      this.generateRoomName();
-    }
+  handleOpenJoinGameSettings() {
+    this.openSettings();
+    this.setState({
+      openJoinGameSettings: true,
+    });
   }
 
   handleCloseGameSettings() {
@@ -138,25 +140,6 @@ class HomePage extends Component {
             backgroundImage: `url(https://www.hivplusmag.com/sites/default/files/2017/10/20/pac-man-x750.jpg)`,
           }}
         />
-        <Link to="game">
-          <Button
-            style={{ backgroundColor: "black" }}
-            className={classnames(classes.button, classes.startPlaying)}
-            onClick={this.addNewPlayer}
-          >
-            TEST
-            <ArrowRightAlt className={classes.buttonIcon} />
-          </Button>
-        </Link>
-        <Link to="demo">
-          <Button
-            style={{ backgroundColor: "black" }}
-            className={classnames(classes.button, classes.startPlaying)}
-          >
-            DEMO
-            <ArrowRightAlt className={classes.buttonIcon} />
-          </Button>
-        </Link>
         <div className={classes.gameActions}>
           <Button
             className={classnames(classes.button, classes.startPlaying)}
@@ -191,18 +174,20 @@ class HomePage extends Component {
                 >
                   Start New Game
                 </Button>
-                <button
+                <Button
                   name="joinGame"
-                  onClick={this.handleOpenGameSettings}
+                  onClick={this.handleOpenJoinGameSettings}
                   className={classes.modalButtons}
                 >
                   Join Existing Game
-                </button>
-                <Link to={`/room/${this.state.roomName}`}>
-                  <Button className={classes.modalButtons}>
-                    Play on your own
-                  </Button>
-                </Link>
+                </Button>
+                <Button
+                  name="createGame"
+                  onClick={this.handleSinglePlayerGame}
+                  className={classes.modalButtons}
+                >
+                  Play on your own
+                </Button>
               </div>
             </Fade>
           </Modal>
@@ -237,12 +222,35 @@ class HomePage extends Component {
                         placeholder="Enter Game Code"
                       />
                     </div>
+                  ) : this.state.singlePlayer ? (
+                    <span></span>
                   ) : (
                     <div>
-                      <span className={classes.roomNameHeader}>
-                        Your Game Code is{" "}
-                      </span>
-                      <strong>{this.state.roomName}</strong>
+                      <div>
+                        <span className={classes.roomNameHeader}>
+                          Your Game Code is{" "}
+                        </span>
+                      </div>
+                      <div>
+                        <CopyToClipboard
+                          text={this.state.roomName}
+                          onCopy={this.alertCopied}
+                        >
+                          <span>{this.state.roomName}</span>
+                        </CopyToClipboard>
+                      </div>
+                      <div style={{ fontSize: "10px", fontStyle: "italic" }}>
+                        <div>
+                          {this.state.codeCopied ? (
+                            <div>
+                              <br />
+                              <span>Code Copy, enjoy Pac-Many!</span>
+                            </div>
+                          ) : (
+                            <span>Click to Code to Share.</span>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   )}
                   <div>
@@ -257,7 +265,8 @@ class HomePage extends Component {
                       placeholder="Enter Player Name"
                     />
                   </div>
-                  {!this.state.openJoinGameSettings ? (
+                  {!this.state.openJoinGameSettings &&
+                  !this.state.singlePlayer ? (
                     <Link
                       to={`/host/${this.state.userName}/room/${this.state.roomName}`}
                     >
@@ -268,14 +277,20 @@ class HomePage extends Component {
                         Create Game
                       </button>
                     </Link>
+                  ) : this.state.singlePlayer ? (
+                    <Link to={`/singlePlayer/${this.state.userName}/room/0`}>
+                      <button
+                        className={classes.button}
+                        onClick={this.createGame}
+                      >
+                        Continue To Game...
+                      </button>
+                    </Link>
                   ) : (
                     <Link
                       to={`/guest/${this.state.userName}/room/${this.state.roomName}`}
                     >
-                      <button
-                        className={classes.button}
-                        onClick={this.joinGame}
-                      >
+                      <button className={classes.button}>
                         Continue To Game...
                       </button>
                     </Link>

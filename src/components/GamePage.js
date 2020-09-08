@@ -10,93 +10,173 @@ import MainScene from "../scenes/MainScene";
 
 var Client = require("../client");
 
-class Canvas extends Component {
+class GamePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       ready: false,
       gameStarted: false,
-      gameInProgress: false,
       gameEnded: false,
       roomKey: this.props.match.params.roomCode,
       name: this.props.match.params.userName,
       players: [],
-      playerCount: 0,
+      numberOfPlayers: 0,
+      isHost: false,
+      notEnoughPlayers: false,
+      singlePlayer: false,
     };
-    this.getGameStarted = this.getGameStarted.bind(this);
     this.startGame = this.startGame.bind(this);
-    this.createGame = this.createGame.bind(this);
+    this.setPlayers = this.setPlayers.bind(this);
+    this.playerDied = this.playerDied.bind(this);
+    this.handleRoomAtCapacity = this.handleRoomAtCapacity.bind(this);
+    this.handleNotEnoughPlayers = this.handleNotEnoughPlayers.bind(this);
+    this.handleGameStarted = this.handleGameStarted.bind(this);
+    this.handleInvalidRoom = this.handleInvalidRoom.bind(this);
   }
 
   componentDidMount() {
-    // console.log("url name: ", this.props.match.url.split("/")[1]);
-    // if (this.props.match.url.split("/")[1] === "host") {
-    //   console.log("route is host");
-    //   const game = new Phaser.Game(config);
-    // }
-    // window.addEventListener("load", this.createGame);
-
-    // const element = document.getElementById("loading");
-
-    // const callback = function (mutationsList, observer) {};
-
-    // const config = { attributes: true, childList: true, subtree: true };
-
-    // const observer = new MutationObserver(callback);
-
-    // element.addEventListener("");
-
-    /////
     const game = new Phaser.Game(config);
-    /////
-    // console.log("game created: ", game);
-
-    console.log("main scene in component did mount: ", window.MainScene);
-    // if (this.props.match.url.split("/")[1] === "host") {
-    //   console.log("route is host");
-    //   const game = new Phaser.Game(config);
-    // }
     Client.Client.socket.emit("joinRoom", {
       userName: this.state.name,
       roomCode: this.state.roomKey,
     });
+
+    this.setState({
+      ready: true,
+    });
+
+    if (this.props.match.url.split("/")[1] === "host") {
+      this.setState({
+        isHost: true,
+      });
+    }
+
+    if (this.props.match.url.split("/")[1] === "singlePlayer") {
+      console.log("single player in url");
+      this.setState({
+        isHost: true,
+        singlePlayer: true,
+      });
+    }
   }
 
-  createGame() {
-    console.log("in create game");
-    // const game = new Phaser.Game(config);
-    // window.MainScene = MainScene;
+  componentDidUpdate() {
+    Client.Client.socket.on("allPlayers", (data) => {
+      this.setPlayers(data);
+    });
+    Client.Client.socket.on("newPlayer", (data) => {
+      this.setPlayers(data);
+    });
+    Client.Client.socket.on("updatePlayerScore", (data) => {
+      this.updatePlayerScore(data);
+    });
+    Client.Client.socket.on("updateYourScore", (data) => {
+      this.updatePlayerScore(data);
+    });
+    Client.Client.socket.on("playerDied", (data) => {
+      this.playerDied(data);
+    });
+    Client.Client.socket.on("youDied", (data) => {
+      this.playerDied(data);
+    });
+    Client.Client.socket.on("roomAtCapacity", this.handleRoomAtCapacity);
+    Client.Client.socket.on("notEnoughPlayers", this.handleNotEnoughPlayers);
+    Client.Client.socket.on("gameStarted", this.handleGameStarted);
+    Client.Client.socket.on("invalidRoom", this.handleInvalidRoom);
+  }
+
+  handleGameStarted() {
+    this.setState({
+      gameStarted: true,
+      notEnoughPlayers: false,
+    });
+  }
+  handleNotEnoughPlayers() {
+    this.setState({
+      notEnoughPlayers: true,
+    });
+  }
+
+  handleRoomAtCapacity() {
+    window.location = "/roomAtCapacity";
+  }
+
+  handleInvalidRoom() {
+    window.location = "/invalidRoom";
+  }
+
+  playerDied(data) {
+    let tempArr = this.state.players;
+    console.log("in player died: ", tempArr);
+
+    tempArr = tempArr.filter((player) => {
+      if (player.id === data.id) {
+        player.isAlive = false;
+      }
+      return player;
+    });
+    this.setState({
+      players: tempArr,
+    });
+  }
+
+  setPlayers(data) {
+    let tempArr = [];
+    for (let player in data) {
+      tempArr.push(data[player]);
+    }
+    this.setState({
+      players: tempArr,
+    });
+  }
+
+  updatePlayerScore(data) {
+    let tempArr = this.state.players;
+    tempArr = tempArr.filter((player) => {
+      if (player.id === data.id) {
+        player.score = data.score;
+      }
+      return player;
+    });
+
+    this.setState({
+      players: tempArr,
+    });
   }
 
   startGame() {
     let room = this.state.roomKey;
-    this.setState({
-      gameStarted: true,
-      gameInProgress: true,
-    });
-
-    console.log("room:", room);
-
-    Client.Client.socket.emit("startGame", room);
-  }
-
-  getGameStarted() {
-    if (!this.gameStarted) {
-      this.setState({ gameStarted: true });
+    if (this.props.match.url.split("/")[1] === "singlePlayer") {
+      window.MainScene.startGame();
+      Client.Client.socket.emit("startGame", {
+        room: room,
+        singlePlayer: true,
+      });
+      this.setState({
+        gameStarted: true,
+      });
+    } else {
+      Client.Client.socket.emit("startGame", { room: room });
+      if (window.MainScene.player3) {
+        window.MainScene.startGame();
+        this.setState({
+          gameStarted: true,
+        });
+      }
     }
   }
+
   render() {
-    const { classes } = this.props;
     return (
       <div>
         <Navbar />
         <div style={{ display: "flex", flexDirection: "row" }}>
-          {/* <div>
+          <div>
             <LeftSideBar
               players={this.state.players}
               roomCode={this.state.roomKey}
             />
-          </div> */}
+          </div>
           <div
             id="phaser-container"
             style={{
@@ -108,9 +188,14 @@ class Canvas extends Component {
           ></div>
           <div>
             <RightSideBar
+              notEnoughPlayers={this.state.notEnoughPlayers}
+              isHost={this.state.isHost}
+              isSinglePlayer={this.state.singlePlayer}
+              roomCode={this.state.roomKey}
               players={this.state.players}
               goBack={this.props.history.goBack}
               startGame={this.startGame}
+              gameStarted={this.state.gameStarted}
             />
           </div>
         </div>
@@ -119,4 +204,4 @@ class Canvas extends Component {
   }
 }
 
-export default withStyles(styles)(Canvas);
+export default withStyles(styles)(GamePage);
