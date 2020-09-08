@@ -18,6 +18,10 @@ Client.playerMoved = function (id, sId, roomId, x, y, score) {
   });
 };
 
+Client.gameOver = function (roomId) {
+  Client.socket.emit("gameOver", roomId);
+};
+
 Client.ghostMoved = function (x, y, name) {
   //console.log("Client.ghostMoved", x, y, name);
   Client.socket.emit("ghostMoved", {
@@ -92,6 +96,9 @@ Client.socket.on("allPlayers", function (data) {
   });
   Client.socket.on("gameStarted", function (data) {
     window.MainScene.startGame();
+  });
+  Client.socket.on("gameOver", function () {
+    window.MainScene.setGameOver();
   });
 });
 

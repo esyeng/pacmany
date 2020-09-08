@@ -23,6 +23,7 @@ class Room {
     this.sockets = [];
     this.players = {};
     this.started = false;
+    this.gameOver = false;
   }
 }
 
@@ -172,6 +173,11 @@ io.on("connection", function (socket) {
         socket.emit("notEnoughPlayers");
       }
     }
+  });
+
+  socket.on("gameOver", (roomId) => {
+    rooms[roomId].gameOver = true;
+    socket.to(roomId).emit("gameOver");
   });
 });
 

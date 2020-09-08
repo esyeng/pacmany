@@ -71,6 +71,7 @@ export default class MainScene extends Phaser.Scene {
       frame: "blinky",
     });
     this.add.existing(this.blinky);
+    this.gameOver = false;
   }
 
   update() {
@@ -112,11 +113,14 @@ export default class MainScene extends Phaser.Scene {
   } // end of update
 
   checkDead(id) {
-    //for (let id = 0; id < 4; id++) {
-    if (!gameOver && this[`player${id}`] && this[`player${id}`].dead) {
-      this[`player${id}`].beDead();
+    if (
+      this.gameOver ||
+      (!gameOver && this[`player${id}`] && this[`player${id}`].dead)
+    ) {
+      if (this[`player${id}`].dead) {
+        this[`player${id}`].beDead();
+      }
 
-      //this.map.layers[1].destroy();
       gameOver = true;
 
       window.MainScene[`player${id}`].x = 2000;
@@ -132,25 +136,65 @@ export default class MainScene extends Phaser.Scene {
       );
       const layer3 = this.map.createStaticLayer("Tile Layer 3", tileset3, 0, 0);
       const tileset4 = this.map.addTilesetImage("font", "fonts", 16, 16, 0, 0);
-      //const layer4 = this.map.createStaticLayer("Tile Layer 4", tileset4, 0, 0);
       const layer5 = this.map.createStaticLayer("Tile Layer 5", tileset4, 0, 0);
 
       this.input.keyboard.enabled = false;
-      //this.map.destroy();
-      // this.map.layer2.destroy();
     }
-    //}
+  }
+
+  getMaxScore() {
+    let player0Score = 0;
+    let player1Score = 0;
+    let player2Score = 0;
+    let player3Score = 0;
+    if (this.player0) player0Score = this.player0.score;
+    if (this.player1) player1Score = this.player1.score;
+    if (this.player2) player2Score = this.player2.score;
+    if (this.player3) player3Score = this.player3.score;
+
+    let max = Math.max(player0Score, player1Score, player2Score, player3Score);
+    return max;
+  }
+
+  checkIfOtherPlayersDead(id) {
+    let playerIds = [1, 2, 3, 4];
+    let allDead = 0;
+    playerIds.filter((player) => {
+      if (player !== id) return player;
+    });
+    playerIds.forEach((id) => {
+      if (this[`player${id}`] && this[`player${id}`].dead) {
+        allDead++;
+      }
+    });
+    return allDead;
+  }
+
+  getTotalScore() {
+    let player0Score = 0;
+    let player1Score = 0;
+    let player2Score = 0;
+    let player3Score = 0;
+    if (this.player0) player0Score = this.player0.score;
+    if (this.player1) player1Score = this.player1.score;
+    if (this.player2) player2Score = this.player2.score;
+    if (this.player3) player3Score = this.player3.score;
+
+    return player0Score + player1Score + player2Score + player3Score;
   }
 
   checkWin(id) {
-    //for (let id = 0; id < 4; id++) {
+    let maxScore = this.getMaxScore();
+    let otherPlayersDead = this.checkIfOtherPlayersDead(id);
+    let totalScore = this.getTotalScore();
+
     if (
       !gameOver &&
       this[`player${id}`] &&
       !this[`player${id}`].dead &&
-      this[`player${id}`].score > 5
+      (otherPlayersDead === 3 ||
+        (totalScore === 50 && this[`player${id}`].score === maxScore))
     ) {
-      //this.map.layers[1].destroy();
       gameOver = true;
 
       window.MainScene[`player${id}`].x = 2000;
@@ -168,11 +212,10 @@ export default class MainScene extends Phaser.Scene {
       const tileset4 = this.map.addTilesetImage("font", "fonts", 16, 16, 0, 0);
       const layer4 = this.map.createStaticLayer("Tile Layer 4", tileset4, 0, 0);
 
+      Client.Client.gameOver(this[`player${id}`].roomId);
+
       this.input.keyboard.enabled = false;
-      //this.map.destroy();
-      // this.map.layer2.destroy();
     }
-    //}
   }
 
   startGame() {
@@ -232,5 +275,10 @@ export default class MainScene extends Phaser.Scene {
 
   playerDied(data) {
     window.MainScene[`player${data.id}`].isAlive = false;
+  }
+
+  setGameOver() {
+    console.log("in set game over");
+    this.gameOver = true;
   }
 }

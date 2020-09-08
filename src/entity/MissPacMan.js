@@ -74,7 +74,6 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
     this.CreatePickupCollisions(playerCollider);
 
     this.beDead = function () {
-      console.log("you are dead hahah!!");
       this.isAlive = false;
       Client.Client.playerDied(this.id, this.roomId);
       return true;

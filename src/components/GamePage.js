@@ -132,21 +132,6 @@ class GamePage extends Component {
       players: tempArr,
     });
   }
-
-  // updatePlayerScore(data) {
-  //   let tempArr = this.state.players;
-  //   tempArr = tempArr.filter((player) => {
-  //     if (player.id === data.id) {
-  //       player.score = data.score;
-  //     }
-  //     return player;
-  //   });
-
-  //   this.setState({
-  //     players: tempArr,
-  //   });
-  // }
-
   updatePlayerScore() {
     let mS = window.MainScene;
     let tempArr = [];
