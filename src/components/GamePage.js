@@ -32,6 +32,7 @@ class GamePage extends Component {
     this.handleNotEnoughPlayers = this.handleNotEnoughPlayers.bind(this);
     this.handleGameStarted = this.handleGameStarted.bind(this);
     this.handleInvalidRoom = this.handleInvalidRoom.bind(this);
+    this.updatePlayerScore = this.updatePlayerScore.bind(this);
   }
 
   componentDidMount() {
@@ -58,6 +59,8 @@ class GamePage extends Component {
         singlePlayer: true,
       });
     }
+
+    setInterval(this.updatePlayerScore, 1000);
   }
 
   componentDidUpdate() {
@@ -67,12 +70,12 @@ class GamePage extends Component {
     Client.Client.socket.on("newPlayer", (data) => {
       this.setPlayers(data);
     });
-    Client.Client.socket.on("updatePlayerScore", (data) => {
-      this.updatePlayerScore(data);
-    });
-    Client.Client.socket.on("updateYourScore", (data) => {
-      this.updatePlayerScore(data);
-    });
+    // Client.Client.socket.on("updatePlayerScore", (data) => {
+    //   this.updatePlayerScore(data);
+    // });
+    // Client.Client.socket.on("updateYourScore", (data) => {
+    //   this.updatePlayerScore(data);
+    // });
     Client.Client.socket.on("playerDied", (data) => {
       this.playerDied(data);
     });
@@ -130,18 +133,33 @@ class GamePage extends Component {
     });
   }
 
-  updatePlayerScore(data) {
-    let tempArr = this.state.players;
-    tempArr = tempArr.filter((player) => {
-      if (player.id === data.id) {
-        player.score = data.score;
-      }
-      return player;
-    });
+  // updatePlayerScore(data) {
+  //   let tempArr = this.state.players;
+  //   tempArr = tempArr.filter((player) => {
+  //     if (player.id === data.id) {
+  //       player.score = data.score;
+  //     }
+  //     return player;
+  //   });
 
-    this.setState({
-      players: tempArr,
-    });
+  //   this.setState({
+  //     players: tempArr,
+  //   });
+  // }
+
+  updatePlayerScore() {
+    let mS = window.MainScene;
+    let tempArr = [];
+    if (mS) {
+      for (let i = 0; i < 4; i++) {
+        if (mS[`player${i}`]) {
+          tempArr.push(mS[`player${i}`]);
+        }
+      }
+      this.setState({
+        players: tempArr,
+      });
+    }
   }
 
   startGame() {

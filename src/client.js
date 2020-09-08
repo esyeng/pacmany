@@ -7,13 +7,14 @@ Client.askNewPlayer = function () {
   Client.socket.emit("newplayer");
 };
 
-Client.playerMoved = function (id, sId, roomId, x, y) {
+Client.playerMoved = function (id, sId, roomId, x, y, score) {
   Client.socket.emit("playerMoved", {
     id: id,
     sId: sId,
     roomId: roomId,
     x: x,
     y: y,
+    score: score,
   });
 };
 
@@ -62,7 +63,7 @@ Client.socket.on("allPlayers", function (data) {
   }
 
   Client.socket.on("movePlayer", function (data) {
-    window.MainScene.movePlayer(data.id, data.x, data.y);
+    window.MainScene.movePlayer(data.id, data.x, data.y, data.score);
   });
 
   Client.socket.on("dotEaten", function (data) {

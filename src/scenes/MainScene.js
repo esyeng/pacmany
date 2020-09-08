@@ -173,9 +173,10 @@ export default class MainScene extends Phaser.Scene {
     this.add.existing(this[`player${id}`]);
   }
 
-  movePlayer(id, x, y) {
+  movePlayer(id, x, y, score) {
     window.MainScene[`player${id}`].x = x;
     window.MainScene[`player${id}`].y = y;
+    window.MainScene[`player${id}`].score = score;
   }
 
   eraseDot(x, y, id) {

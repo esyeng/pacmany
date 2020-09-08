@@ -187,7 +187,14 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
   } // end of updates
 
   movePlayer() {
-    Client.Client.playerMoved(this.id, this.sId, this.roomId, this.x, this.y);
+    Client.Client.playerMoved(
+      this.id,
+      this.sId,
+      this.roomId,
+      this.x,
+      this.y,
+      this.score
+    );
   }
 
   CreatePickupCollisions(playerCollider) {

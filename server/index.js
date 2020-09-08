@@ -178,6 +178,7 @@ function updatePlayer(data) {
 
       player.x = data.x;
       player.y = data.y;
+      player.score = data.score;
       console.log("player after: ", player);
     }
   });
