@@ -88,21 +88,25 @@ export default class MainScene extends Phaser.Scene {
     let id = Client.Client.socket.id;
     if (this.player0 && this.player0.sId === id) {
       window.MainScene.checkDead(0);
+      window.MainScene.checkWin(0);
       this.player0.update(this, this.player0.id);
     }
 
     if (this.player1 && this.player1.sId === id) {
       window.MainScene.checkDead(1);
+      window.MainScene.checkWin(1);
       this.player1.update(this, this.player1.id);
     }
 
     if (this.player2 && this.player2.sId === id) {
       window.MainScene.checkDead(2);
+      window.MainScene.checkWin(2);
       this.player2.update(this, this.player2.id);
     }
 
     if (this.player3 && this.player3.sId === id) {
       window.MainScene.checkDead(3);
+      window.MainScene.checkWin(3);
       this.player3.update(this, this.player3.id);
     }
   } // end of update
@@ -112,6 +116,40 @@ export default class MainScene extends Phaser.Scene {
     if (!gameOver && this[`player${id}`] && this[`player${id}`].dead) {
       this[`player${id}`].beDead();
 
+      //this.map.layers[1].destroy();
+      gameOver = true;
+
+      window.MainScene[`player${id}`].x = 2000;
+      window.MainScene[`player${id}`].y = 2000;
+
+      const tileset3 = this.map.addTilesetImage(
+        "black_rect",
+        "black",
+        16,
+        16,
+        0,
+        0
+      );
+      const layer3 = this.map.createStaticLayer("Tile Layer 3", tileset3, 0, 0);
+      const tileset4 = this.map.addTilesetImage("font", "fonts", 16, 16, 0, 0);
+      //const layer4 = this.map.createStaticLayer("Tile Layer 4", tileset4, 0, 0);
+      const layer5 = this.map.createStaticLayer("Tile Layer 5", tileset4, 0, 0);
+
+      this.input.keyboard.enabled = false;
+      //this.map.destroy();
+      // this.map.layer2.destroy();
+    }
+    //}
+  }
+
+  checkWin(id) {
+    //for (let id = 0; id < 4; id++) {
+    if (
+      !gameOver &&
+      this[`player${id}`] &&
+      !this[`player${id}`].dead &&
+      this[`player${id}`].score > 5
+    ) {
       //this.map.layers[1].destroy();
       gameOver = true;
 
@@ -177,6 +215,11 @@ export default class MainScene extends Phaser.Scene {
     window.MainScene[`player${id}`].x = x;
     window.MainScene[`player${id}`].y = y;
     window.MainScene[`player${id}`].score = score;
+  }
+
+  moveGhost(x, y, name) {
+    window.MainScene[name].x = x;
+    window.MainScene[name].y = y;
   }
 
   eraseDot(x, y, id) {
