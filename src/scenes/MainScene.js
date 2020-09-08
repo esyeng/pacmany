@@ -20,7 +20,6 @@ export default class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    //console.log("in preload: ", window.MainScene);
     baseLevelPreload(this);
     MissPacMan.preload(this);
     Ghost.preload(this);
@@ -36,6 +35,8 @@ export default class MainScene extends Phaser.Scene {
     baseLevelCreate(this);
 
     addLevelResources(this);
+
+    this.input.keyboard.enabled = false;
 
     this.inky = new Ghost({
       scene: this,
@@ -70,30 +71,6 @@ export default class MainScene extends Phaser.Scene {
       frame: "blinky",
     });
     this.add.existing(this.blinky);
-
-    // for (let id = 0; id < playersToCreate.length; id++) {
-    //   window.MainScene.createNewPlayer(playersToCreate[id]);
-    // }
-
-    // this.player99 = new MissPacMan({
-    //   scene: this,
-    //   x: 100,
-    //   y: 100,
-    //   texture: "pacman_c",
-    //   frame: "p_right_1",
-    //   id: 99,
-    //   sId: "xxx",
-    //   userName: "xxx",
-    //   score: "0",
-    //   roomId: "xxx",
-    // });
-    // this.add.existing(this.player99);
-
-    // Client.Client.askNewPlayer();
-
-    // console.log("in create: ", window.MainScene);
-    // let el = document.getElementById("loading");
-    // el.innerHTML = "loaded";
   }
 
   update() {
@@ -160,8 +137,11 @@ export default class MainScene extends Phaser.Scene {
     //}
   }
 
-  addNewPlayer(id, x, y, sId, name, score, roomId) {
-    //console.log("in add new player");
+  startGame() {
+    this.input.keyboard.enabled = true;
+  }
+
+  addNewPlayer(id, x, y, sId, name, score, roomId, isAlive) {
     playersToCreate.push({
       id,
       x,
@@ -170,28 +150,11 @@ export default class MainScene extends Phaser.Scene {
       name,
       score,
       roomId,
+      isAlive,
     });
   }
 
-  createNewPlayer({ id, x, y, sId, name, score, roomId }) {
-    // console.log(
-    //   "add new mainscene",
-    //   "id",
-    //   id,
-    //   "x",
-    //   x,
-    //   "y",
-    //   y,
-    //   "sId",
-    //   sId,
-    //   "name",
-    //   name,
-    //   "score",
-    //   score,
-    //   "roomId"
-    // );
-    //console.log("creating new player <<<this>>>", this);
-
+  createNewPlayer({ id, x, y, sId, name, score, roomId, isAlive }) {
     let textureArr = ["pacman_c", "pacman_c_g", "pacman_c_o", "pacman_c_v"];
     let frameArr = ["p_right_1", "pg_right_1", "po_right_1", "pv_right_1"];
     this[`player${id}`] = new MissPacMan({
@@ -205,31 +168,25 @@ export default class MainScene extends Phaser.Scene {
       userName: name,
       score: score,
       roomId: roomId,
+      isAlive: isAlive,
     });
-
-    // this[`player${id}`].
-    // texture = textureArr[id];
-    // this[`player${id}`].frame = frameArr[id];
-    // console.log(
-    //   "add new player func mainscene <<<ADDING to scene>>>",
-    //   window.MainScene
-    // );
     this.add.existing(this[`player${id}`]);
-
-    //console.log("add new player func mainscene", window.MainScene);
   }
 
   movePlayer(id, x, y) {
-    // console.log("main scene movePlayer", "id:", id, "x:", x, "y:", y);
-    // console.log("window.MainScene", window.MainScene, this);
-    // console.log("player0", window.MainScene.player0);
-    // console.log("player1", window.MainScene.player1);
     window.MainScene[`player${id}`].x = x;
     window.MainScene[`player${id}`].y = y;
   }
 
   eraseDot(x, y, id) {
-    //console.log("main scene eraseDot", x, y, id);
     window.MainScene.resources[id].destroy();
+  }
+
+  updatePlayerScore(score, id) {
+    window.MainScene[`player${id}`].score = score;
+  }
+
+  playerDied(data) {
+    window.MainScene[`player${data.id}`].isAlive = false;
   }
 }

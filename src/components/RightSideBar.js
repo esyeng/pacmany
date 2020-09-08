@@ -4,6 +4,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,13 +40,16 @@ const useStyles = makeStyles((theme) => ({
 
 export const RightSideBar = (props) => {
   const [allIn, setAllIn] = useState(false);
-  const gameStarted = props.gameStarted;
+  const roomCode = props.roomCode;
+  const [alertCopied, setAlertCopied] = useState(false);
   const classes = useStyles();
-  const theme = useTheme();
-
   const handleAllInClick = () => {
     setAllIn(true);
     props.startGame();
+  };
+
+  const handleAlertCopied = () => {
+    setAlertCopied(true);
   };
   return (
     <div>
@@ -70,9 +74,56 @@ export const RightSideBar = (props) => {
         </CardContent>
       </Card>
 
-      <Button id="allInButton" onClick={handleAllInClick}>
-        All In?
-      </Button>
+      {props.isSinglePlayer ? (
+        <div></div>
+      ) : (
+        <Card id="cardComponent" className={classes.root}>
+          <CardContent className={classes.cover}>
+            <span>Room Code</span>
+            <br />
+            <div style={{ fontSize: "10px", fontStyle: "italic" }}>
+              {alertCopied ? (
+                <div>
+                  <br />
+                  <span>Code Copy, enjoy!</span>
+                </div>
+              ) : (
+                <span>Click to Code to Share.</span>
+              )}
+            </div>
+          </CardContent>
+          <hr />
+          <CardContent className={classes.cover}>
+            <CopyToClipboard text={roomCode} onCopy={handleAlertCopied}>
+              <span>{roomCode}</span>
+            </CopyToClipboard>
+          </CardContent>
+        </Card>
+      )}
+
+      {props.isHost ? (
+        <Button id="allInButton" onClick={handleAllInClick}>
+          START GAME
+        </Button>
+      ) : (
+        <span></span>
+      )}
+      {props.isHost && props.notEnoughPlayers ? (
+        <div style={{ color: "red" }}>
+          <h4>Please wait for all players to enter the room.</h4>
+        </div>
+      ) : (
+        <div></div>
+      )}
+      {props.gameStarted ? (
+        <div style={{ color: "red" }}>
+          <h4>Game started!</h4>
+        </div>
+      ) : (
+        <div style={{ color: "red" }}>
+          <h4>Waiting for host to start the game...</h4>
+        </div>
+      )}
     </div>
   );
 };
