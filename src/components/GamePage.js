@@ -160,6 +160,7 @@ class GamePage extends Component {
         players: tempArr,
       });
     }
+    //console.log("upd score", this.state.players);
   }
 
   startGame() {

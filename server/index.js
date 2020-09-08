@@ -147,7 +147,7 @@ io.on("connection", function (socket) {
 
   // updates ghost - WIP
   socket.on("ghostMoved", function (data) {
-    console.log("in server ghostMoved", data);
+    //console.log("in server ghostMoved", data);
     socket.broadcast.emit("moveGhost", data);
   });
 
