@@ -177,7 +177,7 @@ io.on("connection", function (socket) {
   });
 });
 
-// being used
+// updates player location
 function updatePlayer(data) {
   Object.keys(io.sockets.connected).forEach(function (socketID) {
     let player = io.sockets.connected[socketID].player;
@@ -189,6 +189,7 @@ function updatePlayer(data) {
   });
 }
 
+//updates player score
 function updateScore(data) {
   Object.keys(io.sockets.connected).forEach(function (socketID) {
     let player = io.sockets.connected[socketID].player;
@@ -198,6 +199,7 @@ function updateScore(data) {
   });
 }
 
+//updates player isAlive status
 function playerDied() {
   Object.keys(io.sockets.connected).forEach(function (socketID) {
     let player = io.sockets.connected[socketID].player;

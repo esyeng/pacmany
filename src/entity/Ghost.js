@@ -77,11 +77,6 @@ export default class Ghost extends Phaser.Physics.Matter.Sprite {
       "/assets/maps/pacman/ghosts.png",
       "/assets/maps/pacman/ghosts_atlas.json"
     );
-
-    // scene.load.animation(
-    //   "ghosts_anim",
-    //   "/assets/maps/pacman/ghosts_anim.json"
-    // );
   }
 
   get velocity() {
@@ -116,8 +111,6 @@ export default class Ghost extends Phaser.Physics.Matter.Sprite {
   }
 
   update() {
-    //console.log("update Ghost", idx);
-
     if (this.x < 2) this.x = 470;
     if (this.x > 486) this.x = 10;
 
