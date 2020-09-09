@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,32 +53,11 @@ export const RightSideBar = (props) => {
   };
   return (
     <div>
-      <Card className={classes.root}>
-        <div className={classes.details}>
-          <CardContent className={classes.content}>
-            <Typography component="h5" variant="h5">
-              Game
-            </Typography>
-            <Typography component="h5" variant="h5">
-              Options
-            </Typography>
-          </CardContent>
-        </div>
-        <hr />
-
-        <CardContent className={classes.cover}>
-          <Button id="enterCardButton">Enter</Button>
-          <Button id="leaveCardButton" onClick={props.goBack}>
-            Leave
-          </Button>
-        </CardContent>
-      </Card>
-
-      {props.isSinglePlayer ? (
-        <div></div>
-      ) : (
-        <Card id="cardComponent" className={classes.root}>
-          <CardContent className={classes.cover}>
+      <div id="gameOptionButtons">
+        {props.isSinglePlayer ? (
+          <div></div>
+        ) : (
+          <div id="codeChildButton">
             <span>Room Code</span>
             <br />
             <div style={{ fontSize: "10px", fontStyle: "italic" }}>
@@ -91,23 +70,28 @@ export const RightSideBar = (props) => {
                 <span>Click to Code to Share.</span>
               )}
             </div>
-          </CardContent>
-          <hr />
-          <CardContent className={classes.cover}>
-            <CopyToClipboard text={roomCode} onCopy={handleAlertCopied}>
-              <span>{roomCode}</span>
-            </CopyToClipboard>
-          </CardContent>
-        </Card>
-      )}
+            <CardContent className={classes.cover}>
+              <CopyToClipboard text={roomCode} onCopy={handleAlertCopied}>
+                <span>{roomCode}</span>
+              </CopyToClipboard>
+            </CardContent>
+          </div>
+        )}
 
-      {props.isHost ? (
-        <Button id="allInButton" onClick={handleAllInClick}>
-          START GAME
+        {props.isHost ? (
+          <Button id="startChildButton" onClick={handleAllInClick}>
+            START GAME
+          </Button>
+        ) : (
+          <span></span>
+        )}
+        <Button id="leaveChildButton">
+          <Link id="leaveGameLink" to="/">
+            LEAVE GAME
+          </Link>
         </Button>
-      ) : (
-        <span></span>
-      )}
+      </div>
+
       {props.isHost && props.notEnoughPlayers ? (
         <div style={{ color: "red" }}>
           <h4>Please wait for all players to enter the room.</h4>

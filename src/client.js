@@ -23,7 +23,6 @@ Client.gameOver = function (roomId) {
 };
 
 Client.ghostMoved = function (x, y, name) {
-  //console.log("Client.ghostMoved", x, y, name);
   Client.socket.emit("ghostMoved", {
     x: x,
     y: y,
@@ -80,7 +79,6 @@ Client.socket.on("allPlayers", function (data) {
   });
 
   Client.socket.on("moveGhost", function (data) {
-    //console.log("ghost move sending to MainScene");
     window.MainScene.moveGhost(data.x, data.y, data.name);
   });
 

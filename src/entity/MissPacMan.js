@@ -65,7 +65,7 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
       mask: defaultCategory | greenCategory,
     };
     const compoundBody = Body.create({
-      parts: [playerCollider], //playerSensor],
+      parts: [playerCollider],
       frictionAir: 0.35,
     });
     this.setExistingBody(compoundBody);
@@ -211,13 +211,6 @@ export default class MissPacMan extends Phaser.Physics.Matter.Sprite {
           other.gameObjectB.pickup();
           this.score++;
         }
-
-        // Client.Client.updatePlayerScore(
-        //   this.id,
-        //   this.sId,
-        //   this.roomId,
-        //   this.score
-        // );
       },
       context: this.scene,
     });

@@ -26,7 +26,6 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    // console.log("in create ", window.MainScene);
     var defaultCategory = 0x0001;
     var redCategory = 0x0002;
     var greenCategory = 0x0004;
@@ -84,7 +83,6 @@ export default class MainScene extends Phaser.Scene {
     }
     //ghost update
     this.blinky.update();
-    //window.MainScene.checkDead();
 
     let id = Client.Client.socket.id;
     if (this.player0 && this.player0.sId === id) {
@@ -142,8 +140,6 @@ export default class MainScene extends Phaser.Scene {
 
       window.MainScene[`player${id}`].x = 20;
       window.MainScene[`player${id}`].y = 2000;
-
-      //window.MainScene[`player${id}`].destroy();
     }
   }
 
@@ -283,7 +279,6 @@ export default class MainScene extends Phaser.Scene {
   }
 
   setGameOver() {
-    console.log("in set game over");
     this.gameOver = true;
   }
 }

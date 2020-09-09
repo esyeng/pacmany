@@ -75,12 +75,10 @@ export function addLevelResources(scene) {
     resItem.sound = scene.sound.add("pickup");
 
     resItem.eraseDot = function () {
-      //console.log("emit from level.eraseDot", this.x, this.y, this.idx);
       Client.Client.dotEaten(this.x, this.y, this.idx);
     };
 
     resItem.pickup = function () {
-      //scene.input.keyboard.enabled = false; //test for kill keyboard, death simulation
       this.eraseDot();
       this.destroy();
       this.sound.play();

@@ -4,9 +4,8 @@ import { config } from "../config/config";
 import { LeftSideBar } from "./LeftSideBar";
 import { RightSideBar } from "./RightSideBar";
 import { Navbar } from "./Navbar";
-import { Button, withStyles } from "@material-ui/core";
+import { withStyles } from "@material-ui/core";
 import styles from "./styles";
-import MainScene from "../scenes/MainScene";
 
 var Client = require("../client");
 
@@ -26,13 +25,11 @@ class GamePage extends Component {
       singlePlayer: false,
     };
     this.startGame = this.startGame.bind(this);
-    this.setPlayers = this.setPlayers.bind(this);
-    this.playerDied = this.playerDied.bind(this);
+    this.updateGame = this.updateGame.bind(this);
     this.handleRoomAtCapacity = this.handleRoomAtCapacity.bind(this);
     this.handleNotEnoughPlayers = this.handleNotEnoughPlayers.bind(this);
     this.handleGameStarted = this.handleGameStarted.bind(this);
     this.handleInvalidRoom = this.handleInvalidRoom.bind(this);
-    this.updatePlayerScore = this.updatePlayerScore.bind(this);
   }
 
   componentDidMount() {
@@ -53,39 +50,19 @@ class GamePage extends Component {
     }
 
     if (this.props.match.url.split("/")[1] === "singlePlayer") {
-      console.log("single player in url");
       this.setState({
         isHost: true,
         singlePlayer: true,
       });
     }
 
-    setInterval(this.updatePlayerScore, 1000);
+    setInterval(this.updateGame, 900);
   }
 
   componentDidUpdate() {
-    Client.Client.socket.on("allPlayers", (data) => {
-      this.setPlayers(data);
-    });
-    Client.Client.socket.on("newPlayer", (data) => {
-      this.setPlayers(data);
-    });
-    // Client.Client.socket.on("updatePlayerScore", (data) => {
-    //   this.updatePlayerScore(data);
-    // });
-    // Client.Client.socket.on("updateYourScore", (data) => {
-    //   this.updatePlayerScore(data);
-    // });
-    Client.Client.socket.on("playerDied", (data) => {
-      this.playerDied(data);
-    });
-    Client.Client.socket.on("youDied", (data) => {
-      this.playerDied(data);
-    });
     Client.Client.socket.on("roomAtCapacity", this.handleRoomAtCapacity);
-    Client.Client.socket.on("notEnoughPlayers", this.handleNotEnoughPlayers);
-    Client.Client.socket.on("gameStarted", this.handleGameStarted);
     Client.Client.socket.on("invalidRoom", this.handleInvalidRoom);
+    Client.Client.socket.on("notEnoughPlayers", this.handleNotEnoughPlayers);
   }
 
   handleGameStarted() {
@@ -94,6 +71,7 @@ class GamePage extends Component {
       notEnoughPlayers: false,
     });
   }
+
   handleNotEnoughPlayers() {
     this.setState({
       notEnoughPlayers: true,
@@ -108,31 +86,7 @@ class GamePage extends Component {
     window.location = "/invalidRoom";
   }
 
-  playerDied(data) {
-    let tempArr = this.state.players;
-    console.log("in player died: ", tempArr);
-
-    tempArr = tempArr.filter((player) => {
-      if (player.id === data.id) {
-        player.isAlive = false;
-      }
-      return player;
-    });
-    this.setState({
-      players: tempArr,
-    });
-  }
-
-  setPlayers(data) {
-    let tempArr = [];
-    for (let player in data) {
-      tempArr.push(data[player]);
-    }
-    this.setState({
-      players: tempArr,
-    });
-  }
-  updatePlayerScore() {
+  updateGame() {
     let mS = window.MainScene;
     let tempArr = [];
     if (mS) {
@@ -145,7 +99,6 @@ class GamePage extends Component {
         players: tempArr,
       });
     }
-    //console.log("upd score", this.state.players);
   }
 
   startGame() {

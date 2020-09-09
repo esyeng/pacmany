@@ -12,11 +12,6 @@ export const Navbar = () => {
                 <h3>Pac-Many</h3>
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink to="/">
-                <h5>Home</h5>
-              </NavLink>
-            </li>
           </ul>
         </div>
       </nav>

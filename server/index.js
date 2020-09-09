@@ -51,9 +51,6 @@ const joinRoom = (socket, room, name) => {
           isAlive: true,
         };
 
-        console.log("new player in server file: ", room.players[socket.id]);
-        console.log("socket rooms>>>", socket.rooms);
-
         console.log(
           socket.id,
           `Player${room.players[socket.id].id}`,
@@ -141,14 +138,13 @@ io.on("connection", function (socket) {
     socket.emit("updateYourScore", data);
   });
 
-  // updates dots - this works
+  // updates dots
   socket.on("dotEaten", function (data) {
     socket.broadcast.emit("dotEaten", data);
   });
 
-  // updates ghost - WIP
+  // updates ghost
   socket.on("ghostMoved", function (data) {
-    //console.log("in server ghostMoved", data);
     socket.broadcast.emit("moveGhost", data);
   });
 
@@ -186,12 +182,9 @@ function updatePlayer(data) {
   Object.keys(io.sockets.connected).forEach(function (socketID) {
     let player = io.sockets.connected[socketID].player;
     if (player) {
-      console.log("player before: ", player);
-
       player.x = data.x;
       player.y = data.y;
       player.score = data.score;
-      console.log("player after: ", player);
     }
   });
 }
