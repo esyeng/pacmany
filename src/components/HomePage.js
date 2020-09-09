@@ -9,7 +9,6 @@ import Fade from "@material-ui/core/Fade";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { RightSideBar } from "./RightSideBar";
 
 var Client = require("../client");
 
