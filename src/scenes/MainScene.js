@@ -171,30 +171,44 @@ export default class MainScene extends Phaser.Scene {
     return allDead;
   }
 
-  getTotalScore() {
-    let player0Score = 0;
-    let player1Score = 0;
-    let player2Score = 0;
-    let player3Score = 0;
-    if (this.player0) player0Score = this.player0.score;
-    if (this.player1) player1Score = this.player1.score;
-    if (this.player2) player2Score = this.player2.score;
-    if (this.player3) player3Score = this.player3.score;
+  // getTotalScore() {
+  //   let player0Score = 0;
+  //   let player1Score = 0;
+  //   let player2Score = 0;
+  //   let player3Score = 0;
+  //   if (this.player0) player0Score = this.player0.score;
+  //   if (this.player1) player1Score = this.player1.score;
+  //   if (this.player2) player2Score = this.player2.score;
+  //   if (this.player3) player3Score = this.player3.score;
 
-    return player0Score + player1Score + player2Score + player3Score;
+  //   return player0Score + player1Score + player2Score + player3Score;
+  // }
+
+  allEatenCheck() {
+    //console.log(window.MainScene.resources);
+    if (window.MainScene.resources) {
+      const resArr = window.MainScene.resources;
+      for (let i = 0; i < resArr.length; i++) {
+        if (!resArr[i].eaten) return false;
+      }
+      return true;
+    }
   }
 
   checkWin(id) {
     let maxScore = this.getMaxScore();
     let otherPlayersDead = this.checkIfOtherPlayersDead(id);
-    let totalScore = this.getTotalScore();
+    let allEaten = this.allEatenCheck();
+    // to remove for prod
+    let help = window.MainScene.resources.filter((res) => !res.eaten).length; // to remove for prod
+    console.log("help", help); // to remove for prod
 
     if (
       !gameOver &&
       this[`player${id}`] &&
       !this[`player${id}`].dead &&
       (otherPlayersDead === 3 ||
-        (totalScore === 290 && this[`player${id}`].score === maxScore))
+        (allEaten && this[`player${id}`].score === maxScore))
     ) {
       gameOver = true;
 

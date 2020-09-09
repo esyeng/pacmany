@@ -53,6 +53,7 @@ export function addLevelResources(scene) {
       resource.type
     );
     resItem.idx = idx;
+    resItem.eaten = false;
     let yOrigin = resource.properties.find((p) => p.name == "yOrigin").value;
     resItem.x += resItem.width / 2;
     resItem.y -= resItem.height / 2;
@@ -79,6 +80,7 @@ export function addLevelResources(scene) {
     };
 
     resItem.pickup = function () {
+      this.eaten = true;
       this.eraseDot();
       this.destroy();
       this.sound.play();
