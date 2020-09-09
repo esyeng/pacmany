@@ -280,7 +280,8 @@ export default class MainScene extends Phaser.Scene {
     window.MainScene[name].y = y;
   }
 
-  eraseDot(x, y, id) {
+  eraseDot(x, y, id, eaten) {
+    window.MainScene.resources[id].eaten = true;
     window.MainScene.resources[id].destroy();
   }
 

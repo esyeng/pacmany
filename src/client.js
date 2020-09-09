@@ -30,8 +30,8 @@ Client.ghostMoved = function (x, y, name) {
   });
 };
 
-Client.dotEaten = function (x, y, id) {
-  Client.socket.emit("dotEaten", { x: x, y: y, id: id });
+Client.dotEaten = function (x, y, id, eaten) {
+  Client.socket.emit("dotEaten", { x: x, y: y, id: id, eaten: eaten });
 };
 
 Client.updatePlayerScore = function (id, sId, roomId, score) {
@@ -83,7 +83,7 @@ Client.socket.on("allPlayers", function (data) {
   });
 
   Client.socket.on("dotEaten", function (data) {
-    window.MainScene.eraseDot(data.x, data.y, data.id);
+    window.MainScene.eraseDot(data.x, data.y, data.id, data.eaten);
   });
 
   Client.socket.on("updatePlayerScore", function (data) {

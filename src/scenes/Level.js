@@ -76,7 +76,7 @@ export function addLevelResources(scene) {
     resItem.sound = scene.sound.add("pickup");
 
     resItem.eraseDot = function () {
-      Client.Client.dotEaten(this.x, this.y, this.idx);
+      Client.Client.dotEaten(this.x, this.y, this.idx, this.eaten);
     };
 
     resItem.pickup = function () {
